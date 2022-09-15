@@ -9,6 +9,13 @@ https://docs.djangoproject.com/en/2.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
+# 导入配置文件
+import sys
+import os
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(BASE_DIR)
+from config.config import mysql_credit_score
 
 import os
 
@@ -24,7 +31,7 @@ SECRET_KEY = 'hac1w4*(*b&*@2#r%p$8xrgy$@5a0!d86mk-or%0ux0_t7t0yj'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['43.143.26.137','127.0.0.1']
+ALLOWED_HOSTS = ['43.143.26.137', '127.0.0.1']
 # ALLOWED_HOSTS = ['*']
 
 CORS_ORIGIN_WHITELIST = [
@@ -76,30 +83,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Credit_Score_Test.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
-    'default' : {
+    'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'credit_score',  # 数据库名称
-        'USER': 'root',
-        'PASSWORD': '123456',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
+        'NAME': mysql_credit_score['NAME'],
+        'USER': mysql_credit_score['USER'],
+        'PASSWORD': mysql_credit_score['PASSWORD'],
+        'HOST': mysql_credit_score['HOST'],
+        'PORT': mysql_credit_score['PORT'],
     }
 }
-# DATABASES = {
-#     'default' : {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'credit_score',  # 数据库名称
-#         'USER': 'root',
-#         'PASSWORD': 'zhifei123',
-#         'HOST': '127.0.0.1',
-#         'PORT': '3306',
-#     }
-# }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators

@@ -10,6 +10,14 @@ from threading import Thread
 import pymysql
 import re
 
+# 导入配置文件
+import sys
+import os
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(BASE_DIR)
+from config.config import mysql_credit_score, update_credit_score_quantity
+
 mission_statu = 0
 
 
@@ -66,14 +74,15 @@ class ScoreView(View):
         print(f"# POST v1/score/user {re_result} is ready to calculate or update credit score")
 
         # 连接数据库
+        print(mysql_credit_score)
         for i in range(5):
             try:
                 db = pymysql.connect(
-                    host="localhost",
-                    port=3306,
-                    user="root",
-                    password="123456",
-                    database="credit_score",
+                    host=mysql_credit_score['HOST'],
+                    port=int(mysql_credit_score['PORT']),
+                    user=mysql_credit_score['USER'],
+                    password=mysql_credit_score['PASSWORD'],
+                    database=mysql_credit_score['NAME'],
                     charset="utf8")
             except Exception as e:
                 # todo log exception
@@ -144,8 +153,7 @@ class ScoreView(View):
         else:
             # 该用户为新用户
             # todo 计算分数
-            created_time = time.strftime('%y-%m-%d %H:%M:%S')
-            sql = 'insert into user_credit_scores values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
+            sql = 'insert into user_credit_scores (uid,basic_info,corporate,public_welfare,law,economic,life,created_time,updated_time,credit_score) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
             try:
                 cur.execute(sql, [
                     cardID,
@@ -155,7 +163,7 @@ class ScoreView(View):
                     random.randint(3000, 4000),
                     random.randint(5000, 6000),
                     random.randint(2000, 2600),
-                    created_time,
+                    time.strftime('%y-%m-%d %H:%M:%S'),
                     time.strftime('%y-%m-%d %H:%M:%S'),
                     random.randint(500, 800),
                 ])
@@ -178,23 +186,6 @@ class ScoreView(View):
             }
         cur.close()
         db.close()
-        return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
-
-
-class ScoresView(View):
-
-    def get(self, request):
-        result = {
-            "code": '1',
-            'message': "请求不合法"
-        }
-        return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
-
-    def post(self, request):
-        result = {
-            "code": '1',
-            'message': "请求不合法"
-        }
         return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
 
 
@@ -246,34 +237,26 @@ class MissionView(View):
             }
             return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
         if mission == '0':
-            result = {
-                'code': '0',
-                'message': '开始任务执行成功',
-                'data': {}
-            }
             # todo 执行计算任务
-            start_mission()
+            result = start_mission()
+            if result == '数据库连接失败':
+                result = {
+                    'code': '1',
+                    'message': '数据库连接失败',
+                    'data': {}
+                }
+            else:
+                result = {
+                    'code': '0',
+                    'message': '任务开始成功',
+                    'data': {}
+                }
         else:
             result = {
                 'code': '0',
                 'message': '暂停任务执行成功',
                 'data': {}
             }
-        return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
-
-
-def test(request):
-    if request.method == "GET":
-        result = {
-            "code": '1',
-            'message': "请求不合法"
-        }
-        return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
-    if request.method == "POST":
-        result = {
-            "code": '1',
-            'message': "请求不合法"
-        }
         return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
 
 
@@ -284,10 +267,64 @@ def start_mission():
     """
 
     """
-    #创建mysql connect
+    # 创建mysql connect
+    for i in range(5):
+        try:
+            db = pymysql.connect(
+                host=mysql_credit_score['HOST'],
+                port=int(mysql_credit_score['PORT']),
+                user=mysql_credit_score['USER'],
+                password=mysql_credit_score['PASSWORD'],
+                database=mysql_credit_score['NAME'],
+                charset="utf8")
+        except Exception as e:
+            # todo log exception
+            # todo 邮件告警
+            print(f'# POST v1/score/user {i} connect to mysql failed: {e}')
+            if i == 4:
+                return '数据库连接失败'
+            continue
+        break
+    cur = db.cursor()
+    # 获取用户总数
+    sql = 'select count(uid) from user_credit_scores'
+    cur.execute(sql)
+    users_count = cur.fetchone()[0]
+    # 循环 批量获取数据
+    update_one_time_quantity = 1 if users_count <= update_credit_score_quantity else update_credit_score_quantity
+    for i in range(1,users_count,update_one_time_quantity):
+        # 获取开始到结束的批量用户
+        sql='select id,uid from user_credit_scores where id between %s and %s'
+        cur.execute(sql,[i,i+update_one_time_quantity])
+        users=cur.fetchall()
+        if mission_statu==0:
+            for i in users:
+                update_user_credit_score(db,cur,i[1])
+# 多线程
+#   判断mission_statu
+#   计算信用分
+#   插入信用分
 
-    #循环 批量获取数据
-    #多线程
-    #   判断mission_statu
-    #   计算信用分
-    #   插入信用分
+# 单个用户更新信用分
+def update_user_credit_score(db,cur,uid):
+    sql = 'update user_credit_scores set basic_info=%s,corporate=%s,public_welfare=%s,law=%s,economic=%s,life=%s,updated_time=%s,credit_score=%s where uid=%s'
+    try:
+        cur.execute(sql, [
+            random.randint(6000, 7000),
+            random.randint(1500, 2000),
+            random.randint(3000, 4000),
+            random.randint(3000, 4000),
+            random.randint(5000, 6000),
+            random.randint(2000, 2600),
+            time.strftime('%y-%m-%d %H:%M:%S'),
+            random.randint(500, 800),
+            uid
+        ])
+        db.commit()
+    except Exception as e:
+        print('error: %s' % e)
+        db.rollback()
+        cur.close()
+        db.close()
+        print(f"{uid}更新用户信用分是失败 {e}")
+        return uid
