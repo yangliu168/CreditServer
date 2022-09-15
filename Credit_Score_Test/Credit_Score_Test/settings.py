@@ -17,6 +17,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 sys.path.append(BASE_DIR)
 from config.config import mysql_credit_score
 
+mysql_credit_score = {
+    'NAME': 'credit_score',  # 数据库名称
+    'USER': 'root',  # 用户名
+    'PASSWORD': '123456',  # 密码
+    'HOST': '127.0.0.1',  # 地址
+    'PORT': '3306',  # 端口
+}
+
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
