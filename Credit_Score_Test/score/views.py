@@ -10,13 +10,13 @@ from threading import Thread
 import pymysql
 import re
 
-# 导入配置文件
+"""# 导入配置文件
 import sys
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(BASE_DIR)
-from config.config import mysql_credit_score, update_credit_score_quantity
+from config.config import mysql_credit_score, update_credit_score_quantity"""
 
 mysql_credit_score = {
     'NAME': 'credit_score',  # 数据库名称

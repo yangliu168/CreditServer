@@ -9,13 +9,13 @@ https://docs.djangoproject.com/en/2.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
-# 导入配置文件
+"""# 导入配置文件
 import sys
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(BASE_DIR)
-from config.config import mysql_credit_score
+from config.config import mysql_credit_score"""
 
 mysql_credit_score = {
     'NAME': 'credit_score',  # 数据库名称
