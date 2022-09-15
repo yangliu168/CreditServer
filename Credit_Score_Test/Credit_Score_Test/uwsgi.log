@@ -1,0 +1,343 @@
+*** Starting uWSGI 2.0.18 (64bit) on [Wed Sep 14 02:03:52 2022] ***
+compiled with version: 7.5.0 on 08 September 2022 03:23:43
+os: Linux-5.4.0-125-generic #141~18.04.1-Ubuntu SMP Thu Aug 11 20:15:56 UTC 2022
+nodename: tedu
+machine: x86_64
+clock source: unix
+detected number of CPU cores: 4
+current working directory: /home/tarena/桌面/CreditServer/CreditScore/Credit_Score_Test/Credit_Score_Test
+writing pidfile to uwsgi.pid
+detected binary path: /home/tarena/桌面/CreditServer/venv/bin/uwsgi
+!!! no internal routing support, rebuild with pcre support !!!
+chdir() to /home/tarena/桌面/CreditServer/CreditScore/Credit_Score_Test
+your processes number limit is 31511
+your memory page size is 4096 bytes
+detected max file descriptor number: 1048576
+lock engine: pthread robust mutexes
+thunder lock: disabled (you can enable it with --thunder-lock)
+uWSGI http bound on 0.0.0.0:8889 fd 4
+uwsgi socket 0 bound to TCP address 127.0.0.1:35739 (port auto-assigned) fd 3
+Python version: 3.6.9 (default, Jun 29 2022, 11:45:57)  [GCC 8.4.0]
+Python main interpreter initialized at 0x5642daae0380
+python threads support enabled
+your server socket listen backlog is limited to 100 connections
+your mercy for graceful operations on workers is 60 seconds
+mapped 166752 bytes (162 KB) for 2 cores
+*** Operational MODE: threaded ***
+WSGI app 0 (mountpoint='') ready in 1 seconds on interpreter 0x5642daae0380 pid: 40025 (default app)
+*** uWSGI is running in multiple interpreter mode ***
+spawned uWSGI master process (pid: 40025)
+spawned uWSGI worker 1 (pid: 40027, cores: 2)
+spawned uWSGI http 1 (pid: 40029)
+[pid: 40027|app: 0|req: 1/1] 127.0.0.1 () {36 vars in 465 bytes} [Wed Sep 14 02:03:57 2022] POST /v1/score/mission => generated 97 bytes in 221 msecs (HTTP/1.1 200) 4 headers in 114 bytes (1 switches on core 0)
+Wed Sep 14 02:04:56 2022 - uWSGI worker 1 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+Wed Sep 14 02:04:56 2022 - uWSGI worker 1 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+*** Starting uWSGI 2.0.18 (64bit) on [Wed Sep 14 02:05:01 2022] ***
+compiled with version: 7.5.0 on 08 September 2022 03:23:43
+os: Linux-5.4.0-125-generic #141~18.04.1-Ubuntu SMP Thu Aug 11 20:15:56 UTC 2022
+nodename: tedu
+machine: x86_64
+clock source: unix
+detected number of CPU cores: 4
+current working directory: /home/tarena/桌面/CreditServer/CreditScore/Credit_Score_Test/Credit_Score_Test
+writing pidfile to uwsgi.pid
+detected binary path: /home/tarena/桌面/CreditServer/venv/bin/uwsgi
+!!! no internal routing support, rebuild with pcre support !!!
+chdir() to /home/tarena/桌面/CreditServer/CreditScore/Credit_Score_Test
+your processes number limit is 31511
+your memory page size is 4096 bytes
+detected max file descriptor number: 1048576
+lock engine: pthread robust mutexes
+thunder lock: disabled (you can enable it with --thunder-lock)
+uWSGI http bound on 0.0.0.0:8889 fd 4
+uwsgi socket 0 bound to TCP address 127.0.0.1:39431 (port auto-assigned) fd 3
+Python version: 3.6.9 (default, Jun 29 2022, 11:45:57)  [GCC 8.4.0]
+Python main interpreter initialized at 0x55ae029cf380
+python threads support enabled
+your server socket listen backlog is limited to 100 connections
+your mercy for graceful operations on workers is 60 seconds
+mapped 166752 bytes (162 KB) for 2 cores
+*** Operational MODE: threaded ***
+WSGI app 0 (mountpoint='') ready in 0 seconds on interpreter 0x55ae029cf380 pid: 40489 (default app)
+*** uWSGI is running in multiple interpreter mode ***
+spawned uWSGI master process (pid: 40489)
+spawned uWSGI worker 1 (pid: 40491, cores: 2)
+spawned uWSGI http 1 (pid: 40493)
+[pid: 40491|app: 0|req: 1/1] 127.0.0.1 () {36 vars in 464 bytes} [Wed Sep 14 02:05:03 2022] POST /v1/score/mission => generated 97 bytes in 6810 msecs (HTTP/1.1 200) 4 headers in 114 bytes (1 switches on core 0)
+Gracefully killing worker 1 (pid: 40491)...
+gateway "uWSGI http 1" has been buried (pid: 40493)
+...brutally killing workers...
+worker 1 buried after 0 seconds
+binary reloading uWSGI...
+chdir() to /home/tarena/桌面/CreditServer/CreditScore/Credit_Score_Test/Credit_Score_Test
+closing all non-uwsgi socket fds > 2 (max_fd = 1048576)...
+found fd 3 mapped to socket 0 (127.0.0.1:39431)
+running /home/tarena/桌面/CreditServer/venv/bin/uwsgi
+[uWSGI] getting INI configuration from uwsgi.ini
+*** Starting uWSGI 2.0.18 (64bit) on [Wed Sep 14 02:08:01 2022] ***
+compiled with version: 7.5.0 on 08 September 2022 03:23:43
+os: Linux-5.4.0-125-generic #141~18.04.1-Ubuntu SMP Thu Aug 11 20:15:56 UTC 2022
+nodename: tedu
+machine: x86_64
+clock source: unix
+detected number of CPU cores: 4
+current working directory: /home/tarena/桌面/CreditServer/CreditScore/Credit_Score_Test/Credit_Score_Test
+detected binary path: /home/tarena/桌面/CreditServer/venv/bin/uwsgi
+!!! no internal routing support, rebuild with pcre support !!!
+chdir() to /home/tarena/桌面/CreditServer/CreditScore/Credit_Score_Test
+your processes number limit is 31511
+your memory page size is 4096 bytes
+detected max file descriptor number: 1048576
+lock engine: pthread robust mutexes
+thunder lock: disabled (you can enable it with --thunder-lock)
+uWSGI http bound on 0.0.0.0:8889 fd 5
+uwsgi socket 0 bound to TCP address 127.0.0.1:39587 (port auto-assigned) fd 4
+Python version: 3.6.9 (default, Jun 29 2022, 11:45:57)  [GCC 8.4.0]
+Python main interpreter initialized at 0x55a9804aee50
+python threads support enabled
+your server socket listen backlog is limited to 100 connections
+your mercy for graceful operations on workers is 60 seconds
+mapped 166752 bytes (162 KB) for 2 cores
+*** Operational MODE: threaded ***
+WSGI app 0 (mountpoint='') ready in 0 seconds on interpreter 0x55a9804aee50 pid: 40489 (default app)
+*** uWSGI is running in multiple interpreter mode ***
+gracefully (RE)spawned uWSGI master process (pid: 40489)
+spawned uWSGI worker 1 (pid: 51265, cores: 2)
+spawned uWSGI http 1 (pid: 51266)
+*** Starting uWSGI 2.0.18 (64bit) on [Wed Sep 14 09:30:02 2022] ***
+compiled with version: 7.5.0 on 08 September 2022 03:23:43
+os: Linux-5.4.0-125-generic #141~18.04.1-Ubuntu SMP Thu Aug 11 20:15:56 UTC 2022
+nodename: tedu
+machine: x86_64
+clock source: unix
+detected number of CPU cores: 4
+current working directory: /home/tarena/桌面/CreditServer/CreditScore/Credit_Score_Test/Credit_Score_Test
+writing pidfile to uwsgi.pid
+detected binary path: /home/tarena/桌面/CreditServer/venv/bin/uwsgi
+!!! no internal routing support, rebuild with pcre support !!!
+chdir() to /home/tarena/桌面/CreditServer/CreditScore/Credit_Score_Test
+your processes number limit is 31511
+your memory page size is 4096 bytes
+detected max file descriptor number: 1048576
+lock engine: pthread robust mutexes
+thunder lock: disabled (you can enable it with --thunder-lock)
+uWSGI http bound on 0.0.0.0:8889 fd 4
+uwsgi socket 0 bound to TCP address 127.0.0.1:40321 (port auto-assigned) fd 3
+Python version: 3.6.9 (default, Jun 29 2022, 11:45:57)  [GCC 8.4.0]
+Python main interpreter initialized at 0x5564f2468380
+python threads support enabled
+your server socket listen backlog is limited to 100 connections
+your mercy for graceful operations on workers is 60 seconds
+mapped 166752 bytes (162 KB) for 2 cores
+*** Operational MODE: threaded ***
+WSGI app 0 (mountpoint='') ready in 4 seconds on interpreter 0x5564f2468380 pid: 9121 (default app)
+*** uWSGI is running in multiple interpreter mode ***
+spawned uWSGI master process (pid: 9121)
+spawned uWSGI worker 1 (pid: 9156, cores: 2)
+spawned uWSGI http 1 (pid: 9157)
+[pid: 9156|app: 0|req: 1/1] 127.0.0.1 () {36 vars in 459 bytes} [Wed Sep 14 09:30:41 2022] POST /v1/score/user => generated 73 bytes in 269 msecs (HTTP/1.1 200) 4 headers in 114 bytes (1 switches on core 0)
+[pid: 9156|app: 0|req: 2/2] 127.0.0.1 () {36 vars in 465 bytes} [Wed Sep 14 09:31:26 2022] POST /v1/score/mission => generated 27 bytes in 572 msecs (HTTP/1.1 500) 4 headers in 134 bytes (1 switches on core 1)
+[pid: 9156|app: 0|req: 3/3] 127.0.0.1 () {36 vars in 465 bytes} [Wed Sep 14 09:32:25 2022] POST /v1/score/mission => generated 27 bytes in 10 msecs (HTTP/1.1 500) 4 headers in 134 bytes (1 switches on core 0)
+Wed Sep 14 09:33:43 2022 - uWSGI worker 1 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+Wed Sep 14 09:33:43 2022 - uWSGI worker 1 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+*** Starting uWSGI 2.0.18 (64bit) on [Wed Sep 14 09:33:58 2022] ***
+compiled with version: 7.5.0 on 08 September 2022 03:23:43
+os: Linux-5.4.0-125-generic #141~18.04.1-Ubuntu SMP Thu Aug 11 20:15:56 UTC 2022
+nodename: tedu
+machine: x86_64
+clock source: unix
+detected number of CPU cores: 4
+current working directory: /home/tarena/桌面/CreditServer/CreditScore/Credit_Score_Test/Credit_Score_Test
+writing pidfile to uwsgi.pid
+detected binary path: /home/tarena/桌面/CreditServer/venv/bin/uwsgi
+!!! no internal routing support, rebuild with pcre support !!!
+chdir() to /home/tarena/桌面/CreditServer/CreditScore/Credit_Score_Test
+your processes number limit is 31511
+your memory page size is 4096 bytes
+detected max file descriptor number: 1048576
+lock engine: pthread robust mutexes
+thunder lock: disabled (you can enable it with --thunder-lock)
+uWSGI http bound on 0.0.0.0:8889 fd 4
+uwsgi socket 0 bound to TCP address 127.0.0.1:45463 (port auto-assigned) fd 3
+Python version: 3.6.9 (default, Jun 29 2022, 11:45:57)  [GCC 8.4.0]
+Python main interpreter initialized at 0x5584eb0fe380
+python threads support enabled
+your server socket listen backlog is limited to 100 connections
+your mercy for graceful operations on workers is 60 seconds
+mapped 166752 bytes (162 KB) for 2 cores
+*** Operational MODE: threaded ***
+WSGI app 0 (mountpoint='') ready in 0 seconds on interpreter 0x5584eb0fe380 pid: 9764 (default app)
+*** uWSGI is running in multiple interpreter mode ***
+spawned uWSGI master process (pid: 9764)
+spawned uWSGI worker 1 (pid: 9766, cores: 2)
+spawned uWSGI http 1 (pid: 9767)
+mission post ----------------------------
+[pid: 9766|app: 0|req: 1/1] 127.0.0.1 () {36 vars in 465 bytes} [Wed Sep 14 09:34:01 2022] POST /v1/score/mission => generated 27 bytes in 96 msecs (HTTP/1.1 500) 4 headers in 134 bytes (1 switches on core 0)
+mission post ----------------------------
+[pid: 9766|app: 0|req: 2/2] 127.0.0.1 () {36 vars in 465 bytes} [Wed Sep 14 09:34:02 2022] POST /v1/score/mission => generated 27 bytes in 11 msecs (HTTP/1.1 500) 4 headers in 134 bytes (1 switches on core 1)
+mission post ----------------------------
+[pid: 9766|app: 0|req: 3/3] 127.0.0.1 () {36 vars in 465 bytes} [Wed Sep 14 09:34:03 2022] POST /v1/score/mission => generated 27 bytes in 9 msecs (HTTP/1.1 500) 4 headers in 134 bytes (1 switches on core 0)
+mission post ----------------------------
+[pid: 9766|app: 0|req: 4/4] 127.0.0.1 () {36 vars in 465 bytes} [Wed Sep 14 09:34:15 2022] POST /v1/score/mission => generated 27 bytes in 10 msecs (HTTP/1.1 500) 4 headers in 134 bytes (1 switches on core 1)
+Wed Sep 14 09:34:44 2022 - uWSGI worker 1 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+Wed Sep 14 09:34:44 2022 - uWSGI worker 1 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+*** Starting uWSGI 2.0.18 (64bit) on [Wed Sep 14 09:34:47 2022] ***
+compiled with version: 7.5.0 on 08 September 2022 03:23:43
+os: Linux-5.4.0-125-generic #141~18.04.1-Ubuntu SMP Thu Aug 11 20:15:56 UTC 2022
+nodename: tedu
+machine: x86_64
+clock source: unix
+detected number of CPU cores: 4
+current working directory: /home/tarena/桌面/CreditServer/CreditScore/Credit_Score_Test/Credit_Score_Test
+writing pidfile to uwsgi.pid
+detected binary path: /home/tarena/桌面/CreditServer/venv/bin/uwsgi
+!!! no internal routing support, rebuild with pcre support !!!
+chdir() to /home/tarena/桌面/CreditServer/CreditScore/Credit_Score_Test
+your processes number limit is 31511
+your memory page size is 4096 bytes
+detected max file descriptor number: 1048576
+lock engine: pthread robust mutexes
+thunder lock: disabled (you can enable it with --thunder-lock)
+uWSGI http bound on 0.0.0.0:8889 fd 4
+uwsgi socket 0 bound to TCP address 127.0.0.1:33757 (port auto-assigned) fd 3
+Python version: 3.6.9 (default, Jun 29 2022, 11:45:57)  [GCC 8.4.0]
+Python main interpreter initialized at 0x5646c8ae5380
+python threads support enabled
+your server socket listen backlog is limited to 100 connections
+your mercy for graceful operations on workers is 60 seconds
+mapped 166752 bytes (162 KB) for 2 cores
+*** Operational MODE: threaded ***
+WSGI app 0 (mountpoint='') ready in 0 seconds on interpreter 0x5646c8ae5380 pid: 9956 (default app)
+*** uWSGI is running in multiple interpreter mode ***
+spawned uWSGI master process (pid: 9956)
+spawned uWSGI worker 1 (pid: 9958, cores: 2)
+spawned uWSGI http 1 (pid: 9960)
+mission post ----------------------------
+[pid: 9958|app: 0|req: 1/1] 127.0.0.1 () {36 vars in 465 bytes} [Wed Sep 14 09:34:49 2022] POST /v1/score/mission => generated 64 bytes in 49 msecs (HTTP/1.1 200) 4 headers in 114 bytes (1 switches on core 0)
+Wed Sep 14 09:35:03 2022 - uWSGI worker 1 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+Wed Sep 14 09:35:03 2022 - uWSGI worker 1 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+*** Starting uWSGI 2.0.18 (64bit) on [Wed Sep 14 10:42:18 2022] ***
+compiled with version: 7.5.0 on 08 September 2022 03:23:43
+os: Linux-5.4.0-125-generic #141~18.04.1-Ubuntu SMP Thu Aug 11 20:15:56 UTC 2022
+nodename: tedu
+machine: x86_64
+clock source: unix
+detected number of CPU cores: 4
+current working directory: /home/tarena/桌面/CreditServer/CreditScore/Credit_Score_Test/Credit_Score_Test
+writing pidfile to uwsgi.pid
+detected binary path: /home/tarena/桌面/CreditServer/venv/bin/uwsgi
+!!! no internal routing support, rebuild with pcre support !!!
+chdir() to /home/tarena/桌面/CreditServer/CreditScore/Credit_Score_Test
+your processes number limit is 31511
+your memory page size is 4096 bytes
+detected max file descriptor number: 1048576
+lock engine: pthread robust mutexes
+thunder lock: disabled (you can enable it with --thunder-lock)
+uWSGI http bound on 0.0.0.0:8889 fd 4
+uwsgi socket 0 bound to TCP address 127.0.0.1:39087 (port auto-assigned) fd 3
+Python version: 3.6.9 (default, Jun 29 2022, 11:45:57)  [GCC 8.4.0]
+Python main interpreter initialized at 0x56547998a050
+python threads support enabled
+your server socket listen backlog is limited to 100 connections
+your mercy for graceful operations on workers is 60 seconds
+mapped 166752 bytes (162 KB) for 2 cores
+*** Operational MODE: threaded ***
+WSGI app 0 (mountpoint='') ready in 2 seconds on interpreter 0x56547998a050 pid: 21216 (default app)
+*** uWSGI is running in multiple interpreter mode ***
+spawned uWSGI master process (pid: 21216)
+spawned uWSGI worker 1 (pid: 21225, cores: 2)
+spawned uWSGI http 1 (pid: 21226)
+mission post ----------------------------
+None
+[pid: 21225|app: 0|req: 1/1] 127.0.0.1 () {36 vars in 466 bytes} [Wed Sep 14 10:42:26 2022] POST /v1/score/mission => generated 64 bytes in 48 msecs (HTTP/1.1 200) 4 headers in 114 bytes (1 switches on core 0)
+mission post ----------------------------
+None
+[pid: 21225|app: 0|req: 2/2] 127.0.0.1 () {36 vars in 466 bytes} [Wed Sep 14 10:42:29 2022] POST /v1/score/mission => generated 64 bytes in 1 msecs (HTTP/1.1 200) 4 headers in 114 bytes (1 switches on core 1)
+mission post ----------------------------
+None
+[pid: 21225|app: 0|req: 3/3] 127.0.0.1 () {36 vars in 466 bytes} [Wed Sep 14 10:43:05 2022] POST /v1/score/mission => generated 64 bytes in 1 msecs (HTTP/1.1 200) 4 headers in 114 bytes (1 switches on core 0)
+mission post ----------------------------
+None
+[pid: 21225|app: 0|req: 4/4] 127.0.0.1 () {36 vars in 466 bytes} [Wed Sep 14 10:43:07 2022] POST /v1/score/mission => generated 64 bytes in 1 msecs (HTTP/1.1 200) 4 headers in 114 bytes (1 switches on core 1)
+Wed Sep 14 10:47:19 2022 - uWSGI worker 1 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+Wed Sep 14 10:47:19 2022 - uWSGI worker 1 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+*** Starting uWSGI 2.0.18 (64bit) on [Wed Sep 14 10:47:23 2022] ***
+compiled with version: 7.5.0 on 08 September 2022 03:23:43
+os: Linux-5.4.0-125-generic #141~18.04.1-Ubuntu SMP Thu Aug 11 20:15:56 UTC 2022
+nodename: tedu
+machine: x86_64
+clock source: unix
+detected number of CPU cores: 4
+current working directory: /home/tarena/桌面/CreditServer/CreditScore/Credit_Score_Test/Credit_Score_Test
+writing pidfile to uwsgi.pid
+detected binary path: /home/tarena/桌面/CreditServer/venv/bin/uwsgi
+!!! no internal routing support, rebuild with pcre support !!!
+chdir() to /home/tarena/桌面/CreditServer/CreditScore/Credit_Score_Test
+your processes number limit is 31511
+your memory page size is 4096 bytes
+detected max file descriptor number: 1048576
+lock engine: pthread robust mutexes
+thunder lock: disabled (you can enable it with --thunder-lock)
+uWSGI http bound on 0.0.0.0:8889 fd 4
+uwsgi socket 0 bound to TCP address 127.0.0.1:43565 (port auto-assigned) fd 3
+Python version: 3.6.9 (default, Jun 29 2022, 11:45:57)  [GCC 8.4.0]
+Python main interpreter initialized at 0x560317ffc050
+python threads support enabled
+your server socket listen backlog is limited to 100 connections
+your mercy for graceful operations on workers is 60 seconds
+mapped 166752 bytes (162 KB) for 2 cores
+*** Operational MODE: threaded ***
+WSGI app 0 (mountpoint='') ready in 1 seconds on interpreter 0x560317ffc050 pid: 22008 (default app)
+*** uWSGI is running in multiple interpreter mode ***
+spawned uWSGI master process (pid: 22008)
+spawned uWSGI worker 1 (pid: 22010, cores: 2)
+spawned uWSGI http 1 (pid: 22011)
+mission post ----------------------------
+{'mission': '0'}
+[pid: 22010|app: 0|req: 1/1] 127.0.0.1 () {36 vars in 465 bytes} [Wed Sep 14 10:47:27 2022] POST /v1/score/mission => generated 64 bytes in 37 msecs (HTTP/1.1 200) 4 headers in 114 bytes (1 switches on core 0)
+mission post ----------------------------
+{'mission': '0'}
+[pid: 22010|app: 0|req: 2/2] 127.0.0.1 () {36 vars in 465 bytes} [Wed Sep 14 10:47:29 2022] POST /v1/score/mission => generated 64 bytes in 1 msecs (HTTP/1.1 200) 4 headers in 114 bytes (1 switches on core 1)
+mission post ----------------------------
+{'mission': '1'}
+[pid: 22010|app: 0|req: 3/3] 127.0.0.1 () {36 vars in 466 bytes} [Wed Sep 14 10:47:32 2022] POST /v1/score/mission => generated 64 bytes in 0 msecs (HTTP/1.1 200) 4 headers in 114 bytes (1 switches on core 0)
+gateway "uWSGI http 1" has been buried (pid: 22011)
+...brutally killing workers...
+Gracefully killing worker 1 (pid: 22010)...
+worker 1 buried after 1 seconds
+binary reloading uWSGI...
+chdir() to /home/tarena/桌面/CreditServer/CreditScore/Credit_Score_Test/Credit_Score_Test
+closing all non-uwsgi socket fds > 2 (max_fd = 1048576)...
+found fd 3 mapped to socket 0 (127.0.0.1:43565)
+running /home/tarena/桌面/CreditServer/venv/bin/uwsgi
+[uWSGI] getting INI configuration from uwsgi.ini
+*** Starting uWSGI 2.0.18 (64bit) on [Wed Sep 14 10:51:26 2022] ***
+compiled with version: 7.5.0 on 08 September 2022 03:23:43
+os: Linux-5.4.0-125-generic #141~18.04.1-Ubuntu SMP Thu Aug 11 20:15:56 UTC 2022
+nodename: tedu
+machine: x86_64
+clock source: unix
+detected number of CPU cores: 4
+current working directory: /home/tarena/桌面/CreditServer/CreditScore/Credit_Score_Test/Credit_Score_Test
+detected binary path: /home/tarena/桌面/CreditServer/venv/bin/uwsgi
+!!! no internal routing support, rebuild with pcre support !!!
+chdir() to /home/tarena/桌面/CreditServer/CreditScore/Credit_Score_Test
+your processes number limit is 31511
+your memory page size is 4096 bytes
+detected max file descriptor number: 1048576
+lock engine: pthread robust mutexes
+thunder lock: disabled (you can enable it with --thunder-lock)
+uWSGI http bound on 0.0.0.0:8889 fd 5
+uwsgi socket 0 bound to TCP address 127.0.0.1:40185 (port auto-assigned) fd 4
+Python version: 3.6.9 (default, Jun 29 2022, 11:45:57)  [GCC 8.4.0]
+Python main interpreter initialized at 0x561312c28df0
+python threads support enabled
+your server socket listen backlog is limited to 100 connections
+your mercy for graceful operations on workers is 60 seconds
+mapped 166752 bytes (162 KB) for 2 cores
+*** Operational MODE: threaded ***
+WSGI app 0 (mountpoint='') ready in 6 seconds on interpreter 0x561312c28df0 pid: 22008 (default app)
+*** uWSGI is running in multiple interpreter mode ***
+gracefully (RE)spawned uWSGI master process (pid: 22008)
+spawned uWSGI worker 1 (pid: 22988, cores: 2)
+spawned uWSGI http 1 (pid: 22989)
