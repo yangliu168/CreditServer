@@ -1,2 +1,4 @@
 !/Credit_Score_Test/Credit_Score_Test/uwsgi.log
 !/Credit_Score_Test/Credit_Score_Test/uwsgi.pid
+!/Credit_Score_Test/Credit_Score_Test/uwsgi.ini
+!/config.ini
