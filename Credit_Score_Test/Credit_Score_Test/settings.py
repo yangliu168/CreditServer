@@ -9,23 +9,18 @@ https://docs.djangoproject.com/en/2.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
-"""# 导入配置文件
-import sys
+import configparser
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-sys.path.append(BASE_DIR)
-from config.config import mysql_credit_score"""
+with open('myconfig.ini', 'w') as f:
+    with open(BASE_DIR + '/config.ini', 'r') as con_f:
+        f.write(con_f.read())
+conf = configparser.ConfigParser()
+conf.read('myconfig.ini', encoding="utf-8")
+mysql_credit_score = conf['mysql_credit_score']
 
-mysql_credit_score = {
-    'NAME': 'credit_score',  # 数据库名称
-    'USER': 'root',  # 用户名
-    'PASSWORD': '123456',  # 密码
-    'HOST': '127.0.0.1',  # 地址
-    'PORT': '3306',  # 端口
-}
 
-import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -97,11 +92,11 @@ WSGI_APPLICATION = 'Credit_Score_Test.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': mysql_credit_score['NAME'],
-        'USER': mysql_credit_score['USER'],
-        'PASSWORD': mysql_credit_score['PASSWORD'],
-        'HOST': mysql_credit_score['HOST'],
-        'PORT': mysql_credit_score['PORT'],
+        'NAME': mysql_credit_score.get('NAME',None),
+        'USER': mysql_credit_score.get('USER',None),
+        'PASSWORD': mysql_credit_score.get('PASSWORD',None),
+        'HOST': mysql_credit_score.get('HOST',None),
+        'PORT': mysql_credit_score.get('PORT',None),
     }
 }
 

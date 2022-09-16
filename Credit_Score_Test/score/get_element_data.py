@@ -21,7 +21,7 @@ element_appkey_id = {
     "德阳市执行失信名单个人失信状态数据元件": ("daaf1d874747f5f1acb6b9d3a9cd6962", "165465633238698"),
     "德阳市信用专利信息数据元件": ("", ""),
     "德阳市税务局处罚结果数据元件": ("", ""),
-    "德阳市失信黑名单与守信红名单查询数据元件": ("", "")
+    "德阳市失信黑名单与守信红名单查询数据元件": ("b4612cf1dfbe8cd0b4e6fdff143fe311", "165310702467054")
 }
 
 
@@ -129,7 +129,7 @@ class Element(Elements):
         return data
 
     @staticmethod
-    def get_marriage_state(data: dict):
+    def get_marriage_state(user_data: dict):
         """
         获取 德阳市职工婚姻登记状态数据元件 婚姻状态
         反映1960至1996年出生职工的婚姻状态，无输出信息可认定为未婚；（查询人年龄=1960至1996年）
@@ -137,71 +137,129 @@ class Element(Elements):
         :param data:user_info
         :return:lx:varchar
         """
+        data = {}
         data['appkey'] = element_appkey_id["德阳市职工婚姻登记状态数据元件"][0]
         data['id'] = element_appkey_id["德阳市职工婚姻登记状态数据元件"][1]
         data['pagesize'] = 20
         data['pageno'] = 1
-        data['xm'] = None
-        data['sfzh'] = None
+        data['xm'] = user_data['xm']
+        data['sfzh'] = user_data['sfzh']
         element = Element(**data)
         return element.get_element_data()
 
     @staticmethod
-    def get_social_security_payment_months(data: dict):
+    def get_social_security_payment_months(user_data: dict):
         """
         获取 德阳市职工社保累计缴纳月份数数据元件 社保缴费累计年限区间
         通过查询职工社保缴费累计月份数，反映社保缴费年限区间（半年以内，半年至一年，一年至三年，三年至五年，五年至十年，十年以上）
         :param data:user_info
         :return:jfljnxqj:varchar
         """
+        data = {}
         data['appkey'] = element_appkey_id["德阳市职工社保累计缴纳月份数数据元件"][0]
         data['id'] = element_appkey_id["德阳市职工社保累计缴纳月份数数据元件"][1]
         data['pagesize'] = 20  # 必填
         data['pageno'] = 1  # 必填
-        data['xm'] = None
-        data['sfzh'] = None
+        data['xm'] = user_data['xm']
+        data['sfzh'] = user_data['sfzh']
         data['jfljnxqj'] = None  # 必填
         element = Element(**data)
         return element.get_element_data()
 
     @staticmethod
-    def get_unit_nature(data: dict):
+    def get_unit_nature(user_data: dict):
         """
         获取 德阳市职工社保缴费单位性质数据元件 工作单位性质
         通过查询企业行政级别分类反映职工工作单位性质（企业、政府机构、政府单位、事业团体）
         :param data:user_info
         :return:gzdwxz:varchar
         """
+        data = {}
         data['appkey'] = element_appkey_id["德阳市职工社保缴费单位性质数据元件"][0]
         data['id'] = element_appkey_id["德阳市职工社保缴费单位性质数据元件"][1]
-        data['pagesize'] = 20   # 必填
+        data['pagesize'] = 1   # 必填
         data['pageno'] = 1  # 必填
-        # data['xm'] = None
-        # data['sfzh'] = None
+        data['xm'] = user_data['xm']
+        data['sfzh'] = user_data['sfzh']
         # data['gzdwxz'] = None
         element = Element(**data)
         return element.get_element_data()
 
     @staticmethod
-    def get_personal_dishonesty_state(data: dict):
+    def get_personal_dishonesty_state(user_data: dict):
         """
         获取 德阳市执行失信名单个人失信状态数据元件  失信状态
         姓名/名称,证件号码,立案时间,发布时间,状态,屏蔽时间,撤销时间,失信到期日,失信行为情形
         :param data:user_info
         :return:xm:varchar,sfsx:varchar
         """
+        data={}
         data['appkey'] = element_appkey_id["德阳市执行失信名单个人失信状态数据元件"][0]
         data['id'] = element_appkey_id["德阳市执行失信名单个人失信状态数据元件"][1]
         data['pagesize'] = 20
         data['pageno'] = 1
-        data['sfzh'] = None
+        data['sfzh'] = user_data['sfzh']
+        element = Element(**data)
+        return element.get_element_data()
+
+    @staticmethod
+    def get_personal_dishonesty_state(user_data: dict):
+        """
+        获取 德阳市失信黑名单与守信红名单查询数据元件  失信状态
+        姓名/名称,证件号码,立案时间,发布时间,状态,屏蔽时间,撤销时间,失信到期日,失信行为情形
+        :param data:user_info
+        :return:xm:varchar,sfsx:varchar
+        """
+        data={}
+        data['appkey'] = element_appkey_id["德阳市失信黑名单与守信红名单查询数据元件"][0]
+        data['id'] = element_appkey_id["德阳市失信黑名单与守信红名单查询数据元件"][1]
+        data['qygtgshmc'] = 1
+        data['pageno'] = 1
+        data['qygtgshmc'] = user_data['qygtgshmc']
         element = Element(**data)
         return element.get_element_data()
 
 
-data = Element.get_unit_nature({})
-print(data)
-# data = Element.get_social_security_payment_months({})
-print(data)
-# data = Element.get_personal_dishonesty_state({})
-print(data)
+user_list=[
+    {'sfzh':'510623198009210017','xm':'刘辉'},
+    {'sfzh':'510603198511186678','xm':'唐龑'},
+    {'sfzh':'510622199608195718','xm':'何颖'},
+    {'sfzh':'510625199507110016','xm':'郭朋鑫'},
+    {'sfzh':'510723199804070017','xm':'胡笛潇'},
+    {'sfzh':'510603199303110303','xm':'杨春桃'},
+    {'sfzh':'510603199303110303','xm':'邓雨桐'},
+    {'sfzh':'510603199303110303','xm':'周付琴'},
+    {'sfzh':'510603199303110303','xm':'曾潇潇'},
+    {'sfzh':'510603199303110303','xm':'贾丽莎'},
+    {'sfzh':'510603199303110303','xm':'李仁可'},
+    {'sfzh':'510603199303110303','xm':'赖韬'},
+    {'sfzh':'510603199303110303','xm':'边明思'},
+    {'sfzh':'510603199303110303','xm':'朱航'},
+    {'sfzh':'510603199303110303','xm':'曾振金'},
+    {'sfzh':'510603199303110303','xm':'周龙生'},
+    {'sfzh':'510603199303110303','xm':'张又杉'},
+    {'sfzh':'510603199303110303','xm':'邓杰堃'},
+    {'sfzh':'510603199303110303','xm':'邱奕铭'},
+    {'sfzh':'510622199510103010','xm':'董永亮'},
+    {'sfzh':'510623199606040815','xm':'龚荣志'},
+    {'sfzh':'510722199401270026','xm':'曾小苡'},
+    {'sfzh':'510622199508123012','xm':'牟小虎'},
+    {'sfzh':'51068320000831091X','xm':'杜沛霖'},
+    {'sfzh':'510603198710262047','xm':'罗琛'},
+    {'sfzh':'510623199606292115','xm':'满光东'},
+    {'sfzh':'510681199908230319','xm':'廖朗迅'},
+    {'sfzh':'510683200105220027','xm':'梅筱璐'},
+    {'sfzh':'141034199606110068','xm':'王舒婷'},
+    {'sfzh':'510603198602056502','xm':'肖燕燕'},
+
+]
+
+for i in user_list:
+    data = Element.get_unit_nature(i)
+    # print(data)
+    # data = Element.get_social_security_payment_months(i)
+    # print(data)
+    # data = Element.get_personal_dishonesty_state(i)
+    print(data)
+
+

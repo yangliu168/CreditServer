@@ -10,23 +10,17 @@ from threading import Thread
 import pymysql
 import re
 
-"""# 导入配置文件
-import sys
+import configparser
 import os
-
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-sys.path.append(BASE_DIR)
-from config.config import mysql_credit_score, update_credit_score_quantity"""
-
-mysql_credit_score = {
-    'NAME': 'credit_score',  # 数据库名称
-    'USER': 'root',  # 用户名
-    'PASSWORD': '123456',  # 密码
-    'HOST': '127.0.0.1',  # 地址
-    'PORT': '3306',  # 端口
-}
-
-update_credit_score_quantity=100
+with open('myconfig.ini', 'w') as f:
+    with open(BASE_DIR + '/config.ini', 'r') as con_f:
+        f.write(con_f.read())
+conf = configparser.ConfigParser()
+conf.read('myconfig.ini', encoding="utf-8")
+mysql_credit_score = conf['mysql_credit_score']
+mission_config = conf['mission']
+update_credit_score_quantity = mission_config.get('update_credit_score_quantity',1000)
 
 mission_statu = 0
 
@@ -88,11 +82,11 @@ class ScoreView(View):
         for i in range(5):
             try:
                 db = pymysql.connect(
-                    host=mysql_credit_score['HOST'],
-                    port=int(mysql_credit_score['PORT']),
-                    user=mysql_credit_score['USER'],
-                    password=mysql_credit_score['PASSWORD'],
-                    database=mysql_credit_score['NAME'],
+                    host=mysql_credit_score.get('HOST',None),
+                    port=int(mysql_credit_score.get('PORT',None)),
+                    user=mysql_credit_score.get('USER',None),
+                    password=mysql_credit_score.get('PASSWORD',None),
+                    database=mysql_credit_score.get('NAME',None),
                     charset="utf8")
             except Exception as e:
                 # todo log exception
@@ -129,37 +123,21 @@ class ScoreView(View):
             # 该用户为旧用户
             # todo 计算分数
             print(f'execute select created_time success  ')
-            sql = 'update user_credit_scores set basic_info=%s,corporate=%s,public_welfare=%s,law=%s,economic=%s,life=%s,updated_time=%s,credit_score=%s where uid=%s'
-            try:
-                cur.execute(sql, [
-                    random.randint(6000, 7000),
-                    random.randint(1500, 2000),
-                    random.randint(3000, 4000),
-                    random.randint(3000, 4000),
-                    random.randint(5000, 6000),
-                    random.randint(2000, 2600),
-                    time.strftime('%y-%m-%d %H:%M:%S'),
-                    random.randint(500, 800),
-                    cardID
-                ])
-                db.commit()
-            except Exception as e:
-                print('error: %s' % e)
-                db.rollback()
-                cur.close()
-                db.close()
-                print("更新用户信用分是失败 %s" % e)
+            result = update_user_credit_score(db, cur, select_result[0])
+            if result:
                 result = {
                     "code": '1',
                     'message': "该用户信用分更新失败",
                     'data': {}
                 }
-                return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
-            result = {
-                "code": '0',
-                'message': "该用户信用分已更新完成",
-                'data': {}
-            }
+
+            else:
+                result = {
+                    "code": '0',
+                    'message': "该用户信用分已更新完成",
+                    'data': {}
+                }
+            return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
         else:
             # 该用户为新用户
             # todo 计算分数
@@ -207,25 +185,6 @@ class MissionView(View):
         }
         return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
 
-    # def post(self, request):
-    #     r = redis.Redis(host='127.0.0.1', port=6379, db=0, password='')
-    #     mission_id = str(time.time())
-    #     r.set(mission_id, 0)
-    #     mission_status = 'mission_status'
-    #     job = []
-    #     for i in range(100):
-    #         t = Thread(target=caculate, args=(i, r, mission_id, mission_status))
-    #         t.daemon = True
-    #         job.append(t)
-    #     for i in job:
-    #         i.start()
-    #     data = {
-    #         "code": 200,
-    #         'message': "批量计算任务正在进行中",
-    #         "mission_id": mission_id,
-    #     }
-    #     return JsonResponse(data, json_dumps_params={'ensure_ascii': False})
-
     def post(self, request):
         print('mission post ----------------------------')
         json_str = request.body
@@ -248,7 +207,9 @@ class MissionView(View):
             return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
         if mission == '0':
             # todo 执行计算任务
+            print('执行计算任务')
             result = start_mission()
+            print(result)
             if result == '数据库连接失败':
                 result = {
                     'code': '1',
@@ -262,6 +223,9 @@ class MissionView(View):
                     'data': {}
                 }
         else:
+            # todo 暂停计算任务
+            global mission_statu
+            mission_statu=1
             result = {
                 'code': '0',
                 'message': '暂停任务执行成功',
@@ -270,22 +234,19 @@ class MissionView(View):
         return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
 
 
-# def caculate(i, r, mission_id, mission_status):
-#     result=r.incr(mission_id)
-
 def start_mission():
     """
-
+    调度任务开始
     """
     # 创建mysql connect
     for i in range(5):
         try:
             db = pymysql.connect(
-                host=mysql_credit_score['HOST'],
-                port=int(mysql_credit_score['PORT']),
-                user=mysql_credit_score['USER'],
-                password=mysql_credit_score['PASSWORD'],
-                database=mysql_credit_score['NAME'],
+                host=mysql_credit_score.get('HOST', None),
+                port=int(mysql_credit_score.get('PORT', None)),
+                user=mysql_credit_score.get('USER', None),
+                password=mysql_credit_score.get('PASSWORD', None),
+                database=mysql_credit_score.get('NAME', None),
                 charset="utf8")
         except Exception as e:
             # todo log exception
@@ -295,28 +256,36 @@ def start_mission():
                 return '数据库连接失败'
             continue
         break
+    print('数据库连接成功')
     cur = db.cursor()
+
     # 获取用户总数
     sql = 'select count(uid) from user_credit_scores'
     cur.execute(sql)
     users_count = cur.fetchone()[0]
+    mission_config = conf['mission']
+    update_credit_score_quantity = int(mission_config.get('update_credit_score_quantity', 1000))
+    if users_count <= update_credit_score_quantity:
+        update_one_time_quantity=1
+    else:
+        update_one_time_quantity=update_credit_score_quantity
     # 循环 批量获取数据
-    update_one_time_quantity = 1 if users_count <= update_credit_score_quantity else update_credit_score_quantity
-    for i in range(1,users_count,update_one_time_quantity):
-        # 获取开始到结束的批量用户
-        sql='select id,uid from user_credit_scores where id between %s and %s'
-        cur.execute(sql,[i,i+update_one_time_quantity])
-        users=cur.fetchall()
-        if mission_statu==0:
+    for i in range(1, users_count, update_one_time_quantity):
+        if mission_statu == 0:
+            # 获取开始到结束的批量用户
+            print("mission is running....")
+            sql = 'select id,uid from user_credit_scores where id between %s and %s'
+            cur.execute(sql, [i, i+ update_one_time_quantity])
+            users = cur.fetchall()
             for i in users:
-                update_user_credit_score(db,cur,i[1])
-# 多线程
-#   判断mission_statu
-#   计算信用分
-#   插入信用分
+                update_user_credit_score(db, cur, i[1])
+        elif mission_statu == 1:
+            return
+    return 1
+
 
 # 单个用户更新信用分
-def update_user_credit_score(db,cur,uid):
+def update_user_credit_score(db, cur, uid):
     sql = 'update user_credit_scores set basic_info=%s,corporate=%s,public_welfare=%s,law=%s,economic=%s,life=%s,updated_time=%s,credit_score=%s where uid=%s'
     try:
         cur.execute(sql, [
