@@ -186,9 +186,8 @@ class MissionView(View):
         return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
 
     def post(self, request):
-        print('mission post ----------------------------')
+        print(f'mission post from {request.META["REMOTE_ADDR"]}')
         json_str = request.body
-        print(json_str)
         if not json_str:
             result = {
                 'code': '1',
@@ -209,7 +208,6 @@ class MissionView(View):
             # todo 执行计算任务
             print('执行计算任务')
             result = start_mission()
-            print(result)
             if result == '数据库连接失败':
                 result = {
                     'code': '1',
@@ -223,7 +221,6 @@ class MissionView(View):
                     'data': {}
                 }
         else:
-            # todo 暂停计算任务
             global mission_statu
             mission_statu=1
             result = {
@@ -256,7 +253,6 @@ def start_mission():
                 return '数据库连接失败'
             continue
         break
-    print('数据库连接成功')
     cur = db.cursor()
 
     # 获取用户总数
@@ -273,7 +269,6 @@ def start_mission():
     for i in range(1, users_count, update_one_time_quantity):
         if mission_statu == 0:
             # 获取开始到结束的批量用户
-            print("mission is running....")
             sql = 'select id,uid from user_credit_scores where id between %s and %s'
             cur.execute(sql, [i, i+ update_one_time_quantity])
             users = cur.fetchall()
