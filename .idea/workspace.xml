@@ -3,26 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="355ce705-41fd-41f5-8ec4-37b3f902bd2d" name="变更" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/dwebsocket-0.4.2.dist-info/INSTALLER" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/dwebsocket-0.4.2.dist-info/LICENSE" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/dwebsocket-0.4.2.dist-info/METADATA" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/dwebsocket-0.4.2.dist-info/RECORD" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/dwebsocket-0.4.2.dist-info/REQUESTED" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/dwebsocket-0.4.2.dist-info/WHEEL" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/dwebsocket-0.4.2.dist-info/top_level.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/dwebsocket-0.4.2.dist-info/zip-safe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/dwebsocket/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/dwebsocket/backends/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/dwebsocket/backends/default/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/dwebsocket/backends/default/factory.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/dwebsocket/backends/default/protocols.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/dwebsocket/backends/default/websocket.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/dwebsocket/backends/uwsgi/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/dwebsocket/backends/uwsgi/factory.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/dwebsocket/decorators.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/dwebsocket/factory.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/dwebsocket/middleware.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/dwebsocket/websocket.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Credit_Score_Test/score/get_element_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/Credit_Score_Test/score/get_element_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,7 +62,7 @@
       <recent name="$PROJECT_DIR$/CreditScore" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.request_test">
+  <component name="RunManager" selected="Python.get_element_data">
     <configuration name="get_element_data" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="CreditServer-Local" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -188,8 +170,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.request_test" />
         <item itemvalue="Python.get_element_data" />
+        <item itemvalue="Python.request_test" />
         <item itemvalue="Python.readconfig" />
         <item itemvalue="Python.producer (1)" />
         <item itemvalue="Python.producer" />
@@ -324,7 +306,14 @@
       <option name="project" value="LOCAL" />
       <updated>1663510826138</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="requirements.txt remove dwebsocket">
+      <created>1663520012265</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1663520012266</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -382,6 +371,7 @@
     <MESSAGE value="add config&amp;uwsgi ignore" />
     <MESSAGE value="remove websockets" />
     <MESSAGE value="&gt; requirements.txt" />
-    <option name="LAST_COMMIT_MESSAGE" value="&gt; requirements.txt" />
+    <MESSAGE value="requirements.txt remove dwebsocket" />
+    <option name="LAST_COMMIT_MESSAGE" value="requirements.txt remove dwebsocket" />
   </component>
 </project>

@@ -73,7 +73,7 @@ class Elements:
 class Element(Elements):
 
     def __init__(self, appkey=None, id=None, pagesize=None, pageno=None, sfzh=None, xm=None, gzdwxz=None,
-                 jfljnxqj=None, ):
+                 jfljnxqj=None, qygtgshmc=None):
         """
 
         :param appkey: 已完成订单appkey
@@ -84,6 +84,7 @@ class Element(Elements):
         :param xm:姓名
         :param gzdwxz:工作单位性质
         :param jfljnxqj:社保缴费累计年限区间
+        :param qygtgshmc:企业/个体工商户名称
         """
         super().__init__()
         self.appkey = appkey
@@ -93,11 +94,28 @@ class Element(Elements):
             "appkey": appkey,
             "pageSize": pagesize,
             "pageNo": pageno,
-            # "sfzh": sfzh,
-            # "xm": xm,
-            # "gzdwxz": gzdwxz,
-            # "jfljnxqj": jfljnxqj
         }
+        if sfzh:
+            self.query["sfzh"] = sfzh
+        else:
+            pass
+        if xm:
+            self.query["xm"] = xm
+        else:
+            pass
+        if gzdwxz:  # 工作单位性质
+            self.query["gzdwxz"] = gzdwxz
+        else:
+            pass
+        if jfljnxqj:  # 社保缴费累计年限区间
+            self.query["jfljnxqj"] = jfljnxqj
+        else:
+            pass
+        if qygtgshmc:
+            self.query["qygtgshmc"] = qygtgshmc
+        else:
+            pass
+        print(self.query)
 
     # http://222.213.125.95:8081/dc-dbapi/api/getApi164***********?sfzh=*****&xm=***&pageSize=20&pageNo=1
     def get_element_data(self):
@@ -158,11 +176,18 @@ class Element(Elements):
         data = {}
         data['appkey'] = element_appkey_id["德阳市职工社保累计缴纳月份数数据元件"][0]
         data['id'] = element_appkey_id["德阳市职工社保累计缴纳月份数数据元件"][1]
-        data['pagesize'] = 20  # 必填
+        data['pagesize'] = 1  # 必填
         data['pageno'] = 1  # 必填
         data['xm'] = user_data['xm']
         data['sfzh'] = user_data['sfzh']
-        data['jfljnxqj'] = None  # 必填
+        data['jfljnxqj'] = "十年以上"  # 必填
+        '''
+        十年以上
+        五年至十年
+        一年至三年
+        三年至五年
+        一年至三年
+        '''
         element = Element(**data)
         return element.get_element_data()
 
@@ -177,7 +202,7 @@ class Element(Elements):
         data = {}
         data['appkey'] = element_appkey_id["德阳市职工社保缴费单位性质数据元件"][0]
         data['id'] = element_appkey_id["德阳市职工社保缴费单位性质数据元件"][1]
-        data['pagesize'] = 1   # 必填
+        data['pagesize'] = 1  # 必填
         data['pageno'] = 1  # 必填
         data['xm'] = user_data['xm']
         data['sfzh'] = user_data['sfzh']
@@ -193,73 +218,90 @@ class Element(Elements):
         :param data:user_info
         :return:xm:varchar,sfsx:varchar
         """
-        data={}
+        data = {}
         data['appkey'] = element_appkey_id["德阳市执行失信名单个人失信状态数据元件"][0]
         data['id'] = element_appkey_id["德阳市执行失信名单个人失信状态数据元件"][1]
-        data['pagesize'] = 20
+        data['pagesize'] = 1
         data['pageno'] = 1
         data['sfzh'] = user_data['sfzh']
         element = Element(**data)
         return element.get_element_data()
 
     @staticmethod
-    def get_personal_dishonesty_state(user_data: dict):
+    def get_black_and_red_list(user_data: dict):
         """
         获取 德阳市失信黑名单与守信红名单查询数据元件  失信状态
         姓名/名称,证件号码,立案时间,发布时间,状态,屏蔽时间,撤销时间,失信到期日,失信行为情形
-        :param data:user_info
-        :return:xm:varchar,sfsx:varchar
+        :param pagesize:int 分页查询参数，每页多少条数据
+        :param pageno:int   分页查询参数，第几页
+        :param data:dict    user_info
+        :param qygtgshmc:varchar    企业/个体工商户名称
+        :return:
+            hhmdlx:varchar  红黑名单类型
+            fbsj:varchar    发布时间
         """
-        data={}
+        data = {}
         data['appkey'] = element_appkey_id["德阳市失信黑名单与守信红名单查询数据元件"][0]
         data['id'] = element_appkey_id["德阳市失信黑名单与守信红名单查询数据元件"][1]
-        data['qygtgshmc'] = 1
+        data['pagesize'] = 1
         data['pageno'] = 1
         data['qygtgshmc'] = user_data['qygtgshmc']
         element = Element(**data)
         return element.get_element_data()
 
 
-user_list=[
-    {'sfzh':'510623198009210017','xm':'刘辉'},
-    {'sfzh':'510603198511186678','xm':'唐龑'},
-    {'sfzh':'510622199608195718','xm':'何颖'},
-    {'sfzh':'510625199507110016','xm':'郭朋鑫'},
-    {'sfzh':'510723199804070017','xm':'胡笛潇'},
-    {'sfzh':'510603199303110303','xm':'杨春桃'},
-    {'sfzh':'510603199303110303','xm':'邓雨桐'},
-    {'sfzh':'510603199303110303','xm':'周付琴'},
-    {'sfzh':'510603199303110303','xm':'曾潇潇'},
-    {'sfzh':'510603199303110303','xm':'贾丽莎'},
-    {'sfzh':'510603199303110303','xm':'李仁可'},
-    {'sfzh':'510603199303110303','xm':'赖韬'},
-    {'sfzh':'510603199303110303','xm':'边明思'},
-    {'sfzh':'510603199303110303','xm':'朱航'},
-    {'sfzh':'510603199303110303','xm':'曾振金'},
-    {'sfzh':'510603199303110303','xm':'周龙生'},
-    {'sfzh':'510603199303110303','xm':'张又杉'},
-    {'sfzh':'510603199303110303','xm':'邓杰堃'},
-    {'sfzh':'510603199303110303','xm':'邱奕铭'},
-    {'sfzh':'510622199510103010','xm':'董永亮'},
-    {'sfzh':'510623199606040815','xm':'龚荣志'},
-    {'sfzh':'510722199401270026','xm':'曾小苡'},
-    {'sfzh':'510622199508123012','xm':'牟小虎'},
-    {'sfzh':'51068320000831091X','xm':'杜沛霖'},
-    {'sfzh':'510603198710262047','xm':'罗琛'},
-    {'sfzh':'510623199606292115','xm':'满光东'},
-    {'sfzh':'510681199908230319','xm':'廖朗迅'},
-    {'sfzh':'510683200105220027','xm':'梅筱璐'},
-    {'sfzh':'141034199606110068','xm':'王舒婷'},
-    {'sfzh':'510603198602056502','xm':'肖燕燕'},
+user_list = [
+    {'sfzh': '510623198009210017', 'xm': '刘辉'},
+    {'sfzh': '510603198511186678', 'xm': '唐龑'},
+    {'sfzh': '510622199608195718', 'xm': '何颖'},
+    {'sfzh': '510625199507110016', 'xm': '郭朋鑫'},
+    {'sfzh': '510723199804070017', 'xm': '胡笛潇'},
+    {'sfzh': '510603199303110303', 'xm': '杨春桃'},
+    {'sfzh': '510603199702240985', 'xm': '邓雨桐'},
+    {'sfzh': '500229199510210220', 'xm': '周付琴'},
+    {'sfzh': '510682198512240029', 'xm': '曾潇潇'},
+    {'sfzh': '510723199705030044', 'xm': '贾丽莎'},
+    {'sfzh': '510603198701115969', 'xm': '李仁可'},
+    {'sfzh': '510682198707070031', 'xm': '赖韬'},
+    {'sfzh': '510682198607010525', 'xm': '边明思'},
+    {'sfzh': '510602199606227661', 'xm': '朱航'},
+    {'sfzh': '510602197601261693', 'xm': '曾振金'},
+    {'sfzh': '511025197309216791', 'xm': '周龙生'},
+    {'sfzh': '513721199009081008', 'xm': '张又杉'},
+    {'sfzh': '51060319931108783X', 'xm': '邓杰堃'},
+    {'sfzh': '510603199705095939', 'xm': '邱奕铭'},
+    {'sfzh': '510622199510103010', 'xm': '董永亮'},
+    {'sfzh': '510623199606040815', 'xm': '龚荣志'},
+    {'sfzh': '510722199401270026', 'xm': '曾小苡'},
+    {'sfzh': '510622199508123012', 'xm': '牟小虎'},
+    {'sfzh': '51068320000831091X', 'xm': '杜沛霖'},
+    {'sfzh': '510603198710262047', 'xm': '罗琛'},
+    {'sfzh': '510623199606292115', 'xm': '满光东'},
+    {'sfzh': '510681199908230319', 'xm': '廖朗迅'},
+    {'sfzh': '510683200105220027', 'xm': '梅筱璐'},
+    {'sfzh': '141034199606110068', 'xm': '王舒婷'},
+    {'sfzh': '510603198602056502', 'xm': '肖燕燕'},
 
 ]
 
+company_list = [
+    {"qygtgshmc": "德阳鑫锐科技有限公司"},
+    {"qygtgshmc": "工赋（德阳）科技有限公司"},
+    {"qygtgshmc": "百度"},
+    {"qygtgshmc": "德阳市南天科技有限公司"},
+    {"qygtgshmc": "德阳市恒志科技有限公司"},
+    {"qygtgshmc": "德阳鼎宏科技有限责任公司"},
+]
+
 for i in user_list:
+    pass
     data = Element.get_unit_nature(i)
     # print(data)
-    # data = Element.get_social_security_payment_months(i)
+    data = Element.get_social_security_payment_months(i)
     # print(data)
-    # data = Element.get_personal_dishonesty_state(i)
-    print(data)
+    data = Element.get_personal_dishonesty_state(i)
+    # print(data)
 
-
+for i in company_list:
+    data = Element.get_black_and_red_list(i)
+    # print(data)
