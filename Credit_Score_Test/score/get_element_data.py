@@ -20,8 +20,10 @@ with open('myconfig.ini', 'w', encoding="utf-8") as f:
         f.write(con_f.read())
 conf = configparser.ConfigParser()
 conf.read('myconfig.ini', encoding="utf-8")
-mysql_credit_score = conf['mysql_credit_score']
-redis_config = conf['redis']
+envi_config = conf['envi']
+envi=envi_config.get('envi','local')
+mysql_config=conf[envi + '_mysql']
+redis_config = conf[envi + '_redis']
 
 # 元件api地址
 element_api_url = 'http://222.213.125.95:8081/dc-dbapi/api/getApi'
@@ -475,12 +477,12 @@ def get_E2_02_04(user_data):
 def caculate_user_scores(user_indexs: dict):
     user_scores = {}
     # todo 根据指标计算用户信用分数
-    user_scores["basic_info"] = random.randint(6000, 7000),
+    user_scores["basic_info"] = random.randint(700, 1000),
     user_scores["corporate"] = 0,
-    user_scores["public_welfare"] = random.randint(3000, 4000),
-    user_scores["law"] = random.randint(3000, 4000),
-    user_scores["economic"] = random.randint(5000, 6000),
-    user_scores["life"] = 2500,
+    user_scores["public_welfare"] = random.randint(700, 1000),
+    user_scores["law"] = random.randint(700, 1000),
+    user_scores["economic"] = random.randint(700, 1000),
+    user_scores["life"] = 851,
     user_scores["credit_score"] = random.randint(500, 800),
     return user_scores
 

@@ -21,7 +21,10 @@ with open('myconfig.ini', 'w', encoding="utf-8") as f:
         f.write(con_f.read())
 conf = configparser.ConfigParser()
 conf.read('myconfig.ini', encoding="utf-8")
-mysql_credit_score = conf['mysql_credit_score']
+envi_config = conf['envi']
+envi=envi_config.get('envi','local')
+mysql_config=conf[envi + '_mysql']
+redis_config = conf[envi + '_redis']
 mission_config = conf['mission']
 update_credit_score_quantity = mission_config.get('update_credit_score_quantity', 1000)
 
@@ -32,11 +35,11 @@ def connect_mysql():
     for i in range(5):
         try:
             db = pymysql.connect(
-                host=mysql_credit_score.get('HOST', None),
-                port=int(mysql_credit_score.get('PORT', None)),
-                user=mysql_credit_score.get('USER', None),
-                password=mysql_credit_score.get('PASSWORD', None),
-                database=mysql_credit_score.get('NAME', None),
+                host=mysql_config.get('HOST', None),
+                port=int(mysql_config.get('PORT', None)),
+                user=mysql_config.get('USER', None),
+                password=mysql_config.get('PASSWORD', None),
+                database=mysql_config.get('NAME', None),
                 charset="utf8")
         except Exception as e:
             # todo log exception
@@ -72,12 +75,8 @@ def caculate_user_credit_scores_first_time(db, cur, cardID, user_data):
             user_scores["credit_score"],
         ])
         db.commit()
-        cur.close()
-        db.close()
     except Exception as e:
         db.rollback()
-        cur.close()
-        db.close()
         print(f"cuculate user credit_score the first time failed:{cardID} : {e}")
         return
     return cardID
@@ -149,7 +148,6 @@ class ScoreView(View):
         json_obj = json.loads(json_str)
         cardID = json_obj.get('cardID')
         name = json_obj.get('name')
-
         # 判断是否包含必要参数cardID & name
         if not cardID or not name:
             result = {
