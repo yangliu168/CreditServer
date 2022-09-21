@@ -13,15 +13,13 @@ import configparser
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-with open('myconfig.ini', 'w') as f:
-    with open(BASE_DIR + '/config.ini', 'r') as con_f:
+with open('myconfig.ini', 'w', encoding="utf-8") as f:
+    with open(BASE_DIR + '/config.ini', 'r', encoding="utf-8") as con_f:
         f.write(con_f.read())
 conf = configparser.ConfigParser()
 conf.read('myconfig.ini', encoding="utf-8")
 mysql_credit_score = conf['mysql_credit_score']
-
-
-
+host_config = conf['HOST']
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -33,8 +31,7 @@ SECRET_KEY = 'hac1w4*(*b&*@2#r%p$8xrgy$@5a0!d86mk-or%0ux0_t7t0yj'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-
-ALLOWED_HOSTS = ['43.143.26.137', '127.0.0.1']
+ALLOWED_HOSTS = host_config.get('HOST', '127.0.0.1').split(',')
 # ALLOWED_HOSTS = ['*']
 
 CORS_ORIGIN_WHITELIST = [
@@ -92,14 +89,13 @@ WSGI_APPLICATION = 'Credit_Score_Test.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': mysql_credit_score.get('NAME',None),
-        'USER': mysql_credit_score.get('USER',None),
-        'PASSWORD': mysql_credit_score.get('PASSWORD',None),
-        'HOST': mysql_credit_score.get('HOST',None),
-        'PORT': mysql_credit_score.get('PORT',None),
+        'NAME': mysql_credit_score.get('NAME', None),
+        'USER': mysql_credit_score.get('USER', None),
+        'PASSWORD': mysql_credit_score.get('PASSWORD', None),
+        'HOST': mysql_credit_score.get('HOST', None),
+        'PORT': mysql_credit_score.get('PORT', None),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators

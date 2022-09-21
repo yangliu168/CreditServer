@@ -5,10 +5,23 @@ version:220908
 created_time:2022-09-08
 description:可通过调用类方法向 中国电子数据流通平台 获取市民相关数据元件信息
 """
+import os
+import configparser
+import random
+
 import requests
 import json
 from urllib import parse
 import redis
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+with open('myconfig.ini', 'w', encoding="utf-8") as f:
+    with open(BASE_DIR + '/config.ini', 'r', encoding="utf-8") as con_f:
+        f.write(con_f.read())
+conf = configparser.ConfigParser()
+conf.read('myconfig.ini', encoding="utf-8")
+mysql_credit_score = conf['mysql_credit_score']
+redis_config = conf['redis']
 
 # 元件api地址
 element_api_url = 'http://222.213.125.95:8081/dc-dbapi/api/getApi'
@@ -54,6 +67,7 @@ class Elements:
             data = requests.post(url=self.url, headers=headers, data=data, timeout=self.timeout).json()
         except Exception as e:
             # TODO: log
+            print(f"post {appkey} failed")
             pass
 
         """
@@ -88,7 +102,11 @@ class Element(Elements):
         """
         super().__init__()
         self.appkey = appkey
-        self.redis_connection = redis.Redis(host='127.0.0.1', port=6379, db=0)
+        if redis_config["PASSWORD"] == "None":
+            self.redis_connection = redis.Redis(host=redis_config["HOST"], port=int(redis_config["PORT"]), db=0)
+        else:
+            self.redis_connection = redis.Redis(host=redis_config["HOST"], port=int(redis_config["PORT"]),
+                                                password=redis_config["PASSWORD"], db=0)
         self.id = id
         self.query = {
             "appkey": appkey,
@@ -115,7 +133,7 @@ class Element(Elements):
             self.query["qygtgshmc"] = qygtgshmc
         else:
             pass
-        print(self.query)
+        # print(self.query)
 
     # http://222.213.125.95:8081/dc-dbapi/api/getApi164***********?sfzh=*****&xm=***&pageSize=20&pageNo=1
     def get_element_data(self):
@@ -143,6 +161,7 @@ class Element(Elements):
             data = requests.get(url=url, headers=headers, timeout=1).json()
         except Exception as e:
             # TODO: log
+            print(f"post {self.id} failed")
             pass
         return data
 
@@ -180,13 +199,14 @@ class Element(Elements):
         data['pageno'] = 1  # 必填
         data['xm'] = user_data['xm']
         data['sfzh'] = user_data['sfzh']
-        data['jfljnxqj'] = "十年以上"  # 必填
+        # data['jfljnxqj'] = "十年以上"  # 必填
         '''
         十年以上
         五年至十年
-        一年至三年
         三年至五年
         一年至三年
+        半年至一年
+        半年以内
         '''
         element = Element(**data)
         return element.get_element_data()
@@ -294,14 +314,178 @@ company_list = [
 ]
 
 for i in user_list:
+    # data = Element.get_unit_nature(i)
+    # print(data)
+    # data = Element.get_social_security_payment_months(i)
+    # print(data)
+    # data = Element.get_personal_dishonesty_state(i)
+    # print(data)
     pass
-    data = Element.get_unit_nature(i)
-    # print(data)
-    data = Element.get_social_security_payment_months(i)
-    # print(data)
-    data = Element.get_personal_dishonesty_state(i)
-    # print(data)
 
 for i in company_list:
-    data = Element.get_black_and_red_list(i)
+    # data = Element.get_black_and_red_list(i)
     # print(data)
+    pass
+
+
+def get_user_indexs(user_data: dict):
+    user_indexs = {
+        "A1_02_01": get_A1_02_01(user_data),
+        "A2_01_01": get_A2_01_01(user_data),
+        "A2_01_02": get_A2_01_02(user_data),
+        "A3_01_01": get_A3_01_01(user_data),
+        "A3_02_01": get_A3_02_01(user_data),
+        "A3_02_02": get_A3_02_02(user_data),
+        "A3_02_03": get_A3_02_03(user_data),
+        "A3_02_04": get_A3_02_04(user_data),
+        "C1_03_01": get_C1_03_01(user_data),
+        "C1_03_02": get_C1_03_02(user_data),
+        "C2_01_01": get_C2_01_01(user_data),
+        "C2_01_02": get_C2_01_02(user_data),
+        "C2_01_03": get_C2_01_03(user_data),
+        "C2_02_01": get_C2_02_01(user_data),
+        "C2_02_02": get_C2_02_02(user_data),
+        "D1_01_01": get_D1_01_01(user_data),
+        "D2_01_01": get_D2_01_01(user_data),
+        "D2_03_01": get_D2_03_01(user_data),
+        "D3_01_01": get_D3_01_01(user_data),
+        "E2_02_01": get_E2_02_01(user_data),
+        "E2_02_02": get_E2_02_02(user_data),
+        "E2_02_03": get_E2_02_03(user_data),
+        "E2_02_04": get_E2_02_04(user_data),
+    }
+    return user_indexs
+
+
+def get_A1_02_01(user_data):
+    pass
+    return 0
+
+
+def get_A2_01_01(user_data):
+    pass
+    return 0
+
+
+def get_A2_01_02(user_data):
+    pass
+    return 0
+
+
+def get_A3_01_01(user_data):
+    pass
+    return 0
+
+
+def get_A3_02_01(user_data):
+    pass
+    return 0
+
+
+def get_A3_02_02(user_data):
+    pass
+    return 0
+
+
+def get_A3_02_03(user_data):
+    pass
+    return 0
+
+
+def get_A3_02_04(user_data):
+    pass
+    return None
+
+
+def get_C1_03_01(user_data):
+    pass
+    return 0
+
+
+def get_C1_03_02(user_data):
+    pass
+    return 0
+
+
+def get_C2_01_01(user_data):
+    pass
+    return 0
+
+
+def get_C2_01_02(user_data):
+    pass
+    return 0
+
+
+def get_C2_01_03(user_data):
+    pass
+    return 0
+
+
+def get_C2_02_01(user_data):
+    pass
+    return 0
+
+
+def get_C2_02_02(user_data):
+    pass
+    return 0
+
+
+def get_D1_01_01(user_data):
+    pass
+    return 0
+
+
+def get_D2_01_01(user_data):
+    pass
+    return 0
+
+
+def get_D2_03_01(user_data):
+    pass
+    return None
+
+
+def get_D3_01_01(user_data):
+    pass
+    return 0
+
+
+def get_E2_02_01(user_data):
+    pass
+    return 0
+
+
+def get_E2_02_02(user_data):
+    pass
+    return 0
+
+
+def get_E2_02_03(user_data):
+    pass
+    return 0
+
+
+def get_E2_02_04(user_data):
+    pass
+    return 0
+
+
+def caculate_user_scores(user_indexs: dict):
+    user_scores = {}
+    # todo 根据指标计算用户信用分数
+    user_scores["basic_info"] = random.randint(6000, 7000),
+    user_scores["corporate"] = 0,
+    user_scores["public_welfare"] = random.randint(3000, 4000),
+    user_scores["law"] = random.randint(3000, 4000),
+    user_scores["economic"] = random.randint(5000, 6000),
+    user_scores["life"] = 2500,
+    user_scores["credit_score"] = random.randint(500, 800),
+    return user_scores
+
+
+def get_user_scores(user_data: dict):
+    user_indexs = get_user_indexs(user_data)
+    user_scores = caculate_user_scores(user_indexs)
+    return user_scores
