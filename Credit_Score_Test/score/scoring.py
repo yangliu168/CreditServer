@@ -1,5 +1,5 @@
 import json
-from config import Config
+from .config import Config
 
 
 map_value = Config.map_value

@@ -305,7 +305,8 @@ def start_mission():
     cur = db.cursor()
 
     # 获取用户总数
-    sql = 'select count(uid) from user_credit_scores where updated_time>curdate()'
+    sql = 'select count(uid) from user_credit_sco?res where updated_time>curdate()'
+    sql = 'select max(id) from user_credit_scores'
     cur.execute(sql)
     users_count = cur.fetchone()[0]
     mission_config = conf['mission']
@@ -318,7 +319,7 @@ def start_mission():
     for i in range(1, users_count, update_one_time_quantity):
         if mission_statu == 0:
             # 获取开始到结束的批量用户
-            sql = 'select id,uid from user_credit_scores where id between %s and %s and updated_time<curdate()'
+            sql = 'select id,uid from user_credit_scores where id between %s and %s and updated_time<now()'
             cur.execute(sql, [i, i + update_one_time_quantity])
             users = cur.fetchall()
             for user in users:

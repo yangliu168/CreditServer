@@ -1,4 +1,4 @@
-import scoring
+from . import scoring
 
 def caculate_user_scores(user_index:dict):
     try:

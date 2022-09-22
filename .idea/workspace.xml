@@ -2,14 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="355ce705-41fd-41f5-8ec4-37b3f902bd2d" name="变更" comment="">
-      <change beforePath="$PROJECT_DIR$/.config.ini.swp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dbnavigator.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dbnavigator.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Credit_Score_Test/score/caculate_user_scores.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Credit_Score_Test/score/config.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Credit_Score_Test/score/scoring.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Credit_Score_Test/Credit_Score_Test/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/Credit_Score_Test/Credit_Score_Test/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Credit_Score_Test/myconfig.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Credit_Score_Test/myconfig.ini" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Credit_Score_Test/score/get_element_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/Credit_Score_Test/score/get_element_data.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Credit_Score_Test/score/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/Credit_Score_Test/score/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.ini" beforeDir="false" afterPath="$PROJECT_DIR$/config.ini" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,16 +48,17 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/tarena/桌面/credit_server_guazai&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/tarena/桌面/credit_server_guazai/Credit_Score_Test/score&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Credit_Score_Test/score" />
+      <recent name="$APPLICATION_CONFIG_DIR$/scratches/credit_Deyang" />
+      <recent name="$APPLICATION_CONFIG_DIR$/scratches" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/Credit_Score_Test/Credit_Score_Test" />
-      <recent name="$PROJECT_DIR$/Credit_Score_Test/score/mission_celery" />
-      <recent name="$PROJECT_DIR$/cerelytest" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
@@ -68,7 +68,7 @@
       <recent name="$PROJECT_DIR$/CreditScore" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.request_test">
+  <component name="RunManager" selected="Python.get_element_data">
     <configuration name="get_element_data" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="CreditServer-Local" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -90,7 +90,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="producer" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="CreditServer-Local" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -98,11 +98,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/celery_test" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="WORKING_DIRECTORY" value="$APPLICATION_CONFIG_DIR$/scratches/credit_Deyang" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/celery_test/producer.py" />
+      <option name="SCRIPT_NAME" value="$APPLICATION_CONFIG_DIR$/scratches/credit_Deyang/main.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -176,11 +176,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.request_test" />
         <item itemvalue="Python.get_element_data" />
+        <item itemvalue="Python.main" />
+        <item itemvalue="Python.request_test" />
         <item itemvalue="Python.test_watch" />
         <item itemvalue="Python.readconfig" />
-        <item itemvalue="Python.producer" />
       </list>
     </recent_temporary>
   </component>
@@ -333,7 +333,14 @@
       <option name="project" value="LOCAL" />
       <updated>1663559527327</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="envi  and 0-1000">
+      <created>1663769155121</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1663769155121</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -393,6 +400,7 @@
     <MESSAGE value="&gt; requirements.txt" />
     <MESSAGE value="requirements.txt remove dwebsocket" />
     <MESSAGE value="test.py" />
-    <option name="LAST_COMMIT_MESSAGE" value="test.py" />
+    <MESSAGE value="envi  and 0-1000" />
+    <option name="LAST_COMMIT_MESSAGE" value="envi  and 0-1000" />
   </component>
 </project>

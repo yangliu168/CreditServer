@@ -14,6 +14,8 @@ import json
 from urllib import parse
 import redis
 
+from .caculate_user_scores import caculate_user_scores
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 with open('myconfig.ini', 'w', encoding="utf-8") as f:
     with open(BASE_DIR + '/config.ini', 'r', encoding="utf-8") as con_f:
@@ -80,9 +82,16 @@ class Elements:
         "data": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0aW1VzZXJfbmFtZSI6IjE3M......"
         }
         """
-        if data['code'] == 200:
-            return data["data"]
+        # 判断返回结果分类
+        if data.get('code'):
+            if data.get('code')==200:
+                return data.get('data').encode(encoding='utf-8')
+            else:
+                print(data.get('code').encode(encoding='utf-8'))
+                print(data.get('message').encode(encoding='utf-8'))
+                return None
         else:
+            print(2)
             return None
 
 
@@ -211,7 +220,10 @@ class Element(Elements):
         半年以内
         '''
         element = Element(**data)
-        return element.get_element_data()
+        result= element.get_element_data()
+        print(result.get('code'))
+        print(result.get('data')[0].get("jfljnxqj").encode(encoding='utf-8'))
+        return result
 
     @staticmethod
     def get_unit_nature(user_data: dict):
@@ -318,8 +330,8 @@ company_list = [
 for i in user_list:
     # data = Element.get_unit_nature(i)
     # print(data)
-    # data = Element.get_social_security_payment_months(i)
-    # print(data)
+    data = Element.get_social_security_payment_months(i)
+    print(data)
     # data = Element.get_personal_dishonesty_state(i)
     # print(data)
     pass
@@ -370,7 +382,11 @@ def get_A2_01_01(user_data):
 
 
 def get_A2_01_02(user_data):
-    pass
+    """
+    近五年社保累计缴纳时间
+
+    """
+    Element.get_social_security_payment_months(user_data)
     return 0
 
 
@@ -474,20 +490,20 @@ def get_E2_02_04(user_data):
     return 0
 
 
-def caculate_user_scores(user_indexs: dict):
-    user_scores = {}
-    # todo 根据指标计算用户信用分数
-    user_scores["basic_info"] = random.randint(700, 1000),
-    user_scores["corporate"] = 0,
-    user_scores["public_welfare"] = random.randint(700, 1000),
-    user_scores["law"] = random.randint(700, 1000),
-    user_scores["economic"] = random.randint(700, 1000),
-    user_scores["life"] = 851,
-    user_scores["credit_score"] = random.randint(500, 800),
-    return user_scores
+# def caculate_user_scores(user_indexs: dict):
+#     user_scores = {}
+#     # todo 根据指标计算用户信用分数
+#     user_scores["basic_info"] = random.randint(700, 1000),
+#     user_scores["corporate"] = 0,
+#     user_scores["public_welfare"] = random.randint(700, 1000),
+#     user_scores["law"] = random.randint(700, 1000),
+#     user_scores["economic"] = random.randint(700, 1000),
+#     user_scores["life"] = 800,
+#     user_scores["credit_score"] = random.randint(500, 800),
+#     return user_scores
 
 
 def get_user_scores(user_data: dict):
     user_indexs = get_user_indexs(user_data)
     user_scores = caculate_user_scores(user_indexs)
-    return user_scores
+    return json.loads(user_scores)
