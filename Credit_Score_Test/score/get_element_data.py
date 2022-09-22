@@ -396,7 +396,7 @@ def get_A3_02_03(user_data):
 
 def get_A3_02_04(user_data):
     pass
-    return None
+    return 0
 
 
 def get_C1_03_01(user_data):
@@ -446,7 +446,7 @@ def get_D2_01_01(user_data):
 
 def get_D2_03_01(user_data):
     pass
-    return None
+    return 0
 
 
 def get_D3_01_01(user_data):
