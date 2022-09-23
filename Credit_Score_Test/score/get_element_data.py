@@ -508,6 +508,8 @@ def get_E2_02_04(user_data):
 
 
 def get_user_scores(user_data: dict):
+
     user_indexs = get_user_indexs(user_data)
+    print(user_indexs)
     user_scores = caculate_user_scores(user_indexs)
     return json.loads(user_scores)

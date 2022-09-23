@@ -271,7 +271,7 @@ class MissionView(View):
         if mission == '0':
             if mission_statu == 0:
                 result = {
-                    'code': '0',
+                    'code': '1',
                     'message': '任务正在执行中',
                     'data': {}
                 }
@@ -295,7 +295,7 @@ class MissionView(View):
         else:
             if mission_statu==1:
                 result = {
-                    'code': '0',
+                    'code': '1',
                     'message': '任务未开始',
                     'data': {}
                 }
@@ -324,6 +324,7 @@ def start_mission():
     sql = 'select max(id) from user_credit_scores'
     cur.execute(sql)
     users_count = cur.fetchone()[0]
+    print(users_count)
     mission_config = conf['mission']
     update_credit_score_quantity = int(mission_config.get('update_credit_score_quantity', 1000))
     if users_count <= update_credit_score_quantity:
