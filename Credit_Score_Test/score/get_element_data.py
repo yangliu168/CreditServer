@@ -494,17 +494,17 @@ def get_E2_02_04(user_data):
     return 0
 
 
-# def caculate_user_scores(user_indexs: dict):
-#     user_scores = {}
-#     # TODO 根据指标计算用户信用分数
-#     user_scores["basic_info"] = random.randint(700, 1000),
-#     user_scores["corporate"] = 0,
-#     user_scores["public_welfare"] = random.randint(700, 1000),
-#     user_scores["law"] = random.randint(700, 1000),
-#     user_scores["economic"] = random.randint(700, 1000),
-#     user_scores["life"] = 800,
-#     user_scores["credit_score"] = random.randint(500, 800),
-#     return user_scores
+def caculate_user_scores(user_indexs: dict):
+    user_scores = {}
+    # TODO 根据指标计算用户信用分数
+    user_scores["basic_info"] = random.randint(550, 600),
+    user_scores["corporate"] = 0,
+    user_scores["public_welfare"] = random.randint(500, 550),
+    user_scores["law"] = 1000,
+    user_scores["economic"] = random.randint(650, 700),
+    user_scores["life"] = 800,
+    user_scores["credit_score"] = random.randint(700,800 ),
+    return json.dumps(user_scores)
 
 
 def get_user_scores(user_data: dict):
