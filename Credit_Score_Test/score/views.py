@@ -29,7 +29,7 @@ redis_config = conf[envi + '_redis']
 mission_config = conf['mission']
 update_credit_score_quantity = mission_config.get('update_credit_score_quantity', 1000)
 
-mission_statu = 0
+mission_statu = 1
 
 
 def connect_mysql():
@@ -269,10 +269,10 @@ class MissionView(View):
             return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
         global mission_statu
         if mission == '0':
-            if mission_statu=='0':
+            if mission_statu == 0:
                 result = {
                     'code': '0',
-                    'message': '任务已开始',
+                    'message': '任务正在执行中',
                     'data': {}
                 }
                 return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
@@ -289,16 +289,23 @@ class MissionView(View):
             # else:
             result = {
                 'code': '0',
-                'message': '任务开始',
+                'message': '已开始任务',
                 'data': {}
             }
         else:
-            mission_statu = 1
-            result = {
-                'code': '0',
-                'message': '成功已暂停',
-                'data': {}
-            }
+            if mission_statu==1:
+                result = {
+                    'code': '0',
+                    'message': '成功未开始',
+                    'data': {}
+                }
+            else:
+                mission_statu = 1
+                result = {
+                    'code': '0',
+                    'message': '已暂停成功',
+                    'data': {}
+                }
         return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
 
 
@@ -324,6 +331,7 @@ def start_mission():
     else:
         update_one_time_quantity = update_credit_score_quantity
     # 循环 批量获取数据
+    global mission_statu
     for i in range(1, users_count, update_one_time_quantity):
         if mission_statu == 0:
             # 获取开始到结束的批量用户
@@ -342,4 +350,5 @@ def start_mission():
             return
     cur.close()
     db.close()
-    return 1
+    mission_statu = 1
+    return
