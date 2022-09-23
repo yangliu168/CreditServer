@@ -276,10 +276,10 @@ class MissionView(View):
         cur.execute(sql)
         max_id = cur.fetchone()[0]
         print(max_id)
-        sql = 'select mission_time,statu from mission_record_time where id=(select max(id) from mission_record_time)'
-        cur.execute(sql)
         first = 0
         try:
+            sql = 'select mission_time,statu from mission_record_time where id=(select max(id) from mission_record_time)'
+            cur.execute(sql)
             result = cur.fetchone()
             mission_time = result[0]
             statu = result[1]
