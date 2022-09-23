@@ -341,3 +341,221 @@ WSGI app 0 (mountpoint='') ready in 6 seconds on interpreter 0x561312c28df0 pid:
 gracefully (RE)spawned uWSGI master process (pid: 22008)
 spawned uWSGI worker 1 (pid: 22988, cores: 2)
 spawned uWSGI http 1 (pid: 22989)
+*** Starting uWSGI 2.0.18 (64bit) on [Fri Sep 23 13:00:00 2022] ***
+compiled with version: 9.4.0 on 08 September 2022 06:33:31
+os: Linux-5.4.0-121-generic #137-Ubuntu SMP Wed Jun 15 13:33:07 UTC 2022
+nodename: VM-4-15-ubuntu
+machine: x86_64
+clock source: unix
+pcre jit disabled
+detected number of CPU cores: 2
+current working directory: /home/ubuntu/CreditServerTencent/Credit_Score_Test/Credit_Score_Test
+writing pidfile to uwsgi.pid
+detected binary path: /usr/local/bin/uwsgi
+chdir() to /home/ubuntu/CreditServerTencent/Credit_Score_Test
+your processes number limit is 7547
+your memory page size is 4096 bytes
+detected max file descriptor number: 1024
+lock engine: pthread robust mutexes
+thunder lock: disabled (you can enable it with --thunder-lock)
+uWSGI http bound on 0.0.0.0:8889 fd 4
+uwsgi socket 0 bound to TCP address 127.0.0.1:42327 (port auto-assigned) fd 3
+Python version: 3.8.10 (default, Jun 22 2022, 20:18:18)  [GCC 9.4.0]
+Python main interpreter initialized at 0x5645851dad80
+python threads support enabled
+your server socket listen backlog is limited to 100 connections
+your mercy for graceful operations on workers is 60 seconds
+mapped 166752 bytes (162 KB) for 2 cores
+*** Operational MODE: threaded ***
+WSGI app 0 (mountpoint='') ready in 1 seconds on interpreter 0x5645851dad80 pid: 348944 (default app)
+*** uWSGI is running in multiple interpreter mode ***
+spawned uWSGI master process (pid: 348944)
+spawned uWSGI worker 1 (pid: 348961, cores: 2)
+spawned uWSGI http 1 (pid: 348963)
+mission post from 171.212.240.19
+[pid: 348961|app: 0|req: 1/1] 171.212.240.19 () {36 vars in 485 bytes} [Fri Sep 23 13:00:11 2022] POST /v1/score/mission => generated 55 bytes in 430 msecs (HTTP/1.1 200) 7 headers in 212 bytes (1 switches on core 0)
+mission post from 171.212.240.19
+[pid: 348961|app: 0|req: 2/2] 171.212.240.19 () {36 vars in 485 bytes} [Fri Sep 23 13:00:18 2022] POST /v1/score/mission => generated 55 bytes in 1 msecs (HTTP/1.1 200) 7 headers in 212 bytes (1 switches on core 1)
+mission post from 171.212.240.19
+[pid: 348961|app: 0|req: 3/3] 171.212.240.19 () {36 vars in 485 bytes} [Fri Sep 23 13:00:20 2022] POST /v1/score/mission => generated 55 bytes in 4 msecs (HTTP/1.1 200) 7 headers in 212 bytes (1 switches on core 0)
+# POST v1/score/user 0 connect to mysql failed: (1045, "Access denied for user 'root'@'172.18.0.1' (using password: YES)")
+# POST v1/score/user 1 connect to mysql failed: (1045, "Access denied for user 'root'@'172.18.0.1' (using password: YES)")
+# POST v1/score/user 2 connect to mysql failed: (1045, "Access denied for user 'root'@'172.18.0.1' (using password: YES)")
+# POST v1/score/user 3 connect to mysql failed: (1045, "Access denied for user 'root'@'172.18.0.1' (using password: YES)")
+# POST v1/score/user 4 connect to mysql failed: (1045, "Access denied for user 'root'@'172.18.0.1' (using password: YES)")
+Fri Sep 23 13:01:21 2022 - uWSGI worker 1 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+Fri Sep 23 13:01:21 2022 - uWSGI worker 1 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+*** Starting uWSGI 2.0.18 (64bit) on [Fri Sep 23 13:02:04 2022] ***
+compiled with version: 9.4.0 on 08 September 2022 06:33:31
+os: Linux-5.4.0-121-generic #137-Ubuntu SMP Wed Jun 15 13:33:07 UTC 2022
+nodename: VM-4-15-ubuntu
+machine: x86_64
+clock source: unix
+pcre jit disabled
+detected number of CPU cores: 2
+current working directory: /home/ubuntu/CreditServerTencent/Credit_Score_Test/Credit_Score_Test
+writing pidfile to uwsgi.pid
+detected binary path: /usr/local/bin/uwsgi
+chdir() to /home/ubuntu/CreditServerTencent/Credit_Score_Test
+your processes number limit is 7547
+your memory page size is 4096 bytes
+detected max file descriptor number: 1024
+lock engine: pthread robust mutexes
+thunder lock: disabled (you can enable it with --thunder-lock)
+uWSGI http bound on 0.0.0.0:8889 fd 4
+uwsgi socket 0 bound to TCP address 127.0.0.1:45701 (port auto-assigned) fd 3
+Python version: 3.8.10 (default, Jun 22 2022, 20:18:18)  [GCC 9.4.0]
+Python main interpreter initialized at 0x5607d3b71d80
+python threads support enabled
+your server socket listen backlog is limited to 100 connections
+your mercy for graceful operations on workers is 60 seconds
+mapped 166752 bytes (162 KB) for 2 cores
+*** Operational MODE: threaded ***
+WSGI app 0 (mountpoint='') ready in 1 seconds on interpreter 0x5607d3b71d80 pid: 350653 (default app)
+*** uWSGI is running in multiple interpreter mode ***
+spawned uWSGI master process (pid: 350653)
+spawned uWSGI worker 1 (pid: 350655, cores: 2)
+spawned uWSGI http 1 (pid: 350657)
+mission post from 171.212.240.19
+[pid: 350655|app: 0|req: 1/1] 171.212.240.19 () {36 vars in 485 bytes} [Fri Sep 23 13:02:09 2022] POST /v1/score/mission => generated 55 bytes in 337 msecs (HTTP/1.1 200) 7 headers in 212 bytes (1 switches on core 0)
+# POST v1/score/user 0 connect to mysql failed: (1045, "Access denied for user 'root'@'172.18.0.1' (using password: YES)")
+# POST v1/score/user 1 connect to mysql failed: (1045, "Access denied for user 'root'@'172.18.0.1' (using password: YES)")
+# POST v1/score/user 2 connect to mysql failed: (1045, "Access denied for user 'root'@'172.18.0.1' (using password: YES)")
+# POST v1/score/user 3 connect to mysql failed: (1045, "Access denied for user 'root'@'172.18.0.1' (using password: YES)")
+# POST v1/score/user 4 connect to mysql failed: (1045, "Access denied for user 'root'@'172.18.0.1' (using password: YES)")
+mission post from 171.212.240.19
+[pid: 350655|app: 0|req: 2/2] 171.212.240.19 () {36 vars in 485 bytes} [Fri Sep 23 13:02:12 2022] POST /v1/score/mission => generated 61 bytes in 1 msecs (HTTP/1.1 200) 7 headers in 212 bytes (1 switches on core 1)
+mission post from 171.212.240.19
+[pid: 350655|app: 0|req: 3/3] 171.212.240.19 () {36 vars in 485 bytes} [Fri Sep 23 13:02:14 2022] POST /v1/score/mission => generated 55 bytes in 1 msecs (HTTP/1.1 200) 7 headers in 212 bytes (1 switches on core 0)
+mission post from 171.212.240.19
+[pid: 350655|app: 0|req: 4/4] 171.212.240.19 () {36 vars in 485 bytes} [Fri Sep 23 13:02:15 2022] POST /v1/score/mission => generated 55 bytes in 1 msecs (HTTP/1.1 200) 7 headers in 212 bytes (1 switches on core 1)
+mission post from 171.212.240.19
+[pid: 350655|app: 0|req: 5/5] 171.212.240.19 () {36 vars in 485 bytes} [Fri Sep 23 13:02:17 2022] POST /v1/score/mission => generated 55 bytes in 1 msecs (HTTP/1.1 200) 7 headers in 212 bytes (1 switches on core 0)
+Fri Sep 23 13:25:55 2022 - uWSGI worker 1 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+Fri Sep 23 13:25:55 2022 - uWSGI worker 1 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+*** Starting uWSGI 2.0.18 (64bit) on [Fri Sep 23 13:26:06 2022] ***
+compiled with version: 9.4.0 on 08 September 2022 06:33:31
+os: Linux-5.4.0-121-generic #137-Ubuntu SMP Wed Jun 15 13:33:07 UTC 2022
+nodename: VM-4-15-ubuntu
+machine: x86_64
+clock source: unix
+pcre jit disabled
+detected number of CPU cores: 2
+current working directory: /home/ubuntu/CreditServerTencent/Credit_Score_Test/Credit_Score_Test
+writing pidfile to uwsgi.pid
+detected binary path: /usr/local/bin/uwsgi
+chdir() to /home/ubuntu/CreditServerTencent/Credit_Score_Test
+your processes number limit is 7547
+your memory page size is 4096 bytes
+detected max file descriptor number: 1024
+lock engine: pthread robust mutexes
+thunder lock: disabled (you can enable it with --thunder-lock)
+uWSGI http bound on 0.0.0.0:8889 fd 4
+uwsgi socket 0 bound to TCP address 127.0.0.1:37393 (port auto-assigned) fd 3
+Python version: 3.8.10 (default, Jun 22 2022, 20:18:18)  [GCC 9.4.0]
+Python main interpreter initialized at 0x55d4f882dd70
+python threads support enabled
+your server socket listen backlog is limited to 100 connections
+your mercy for graceful operations on workers is 60 seconds
+mapped 166752 bytes (162 KB) for 2 cores
+*** Operational MODE: threaded ***
+WSGI app 0 (mountpoint='') ready in 1 seconds on interpreter 0x55d4f882dd70 pid: 367724 (default app)
+*** uWSGI is running in multiple interpreter mode ***
+spawned uWSGI master process (pid: 367724)
+spawned uWSGI worker 1 (pid: 367742, cores: 2)
+spawned uWSGI http 1 (pid: 367744)
+mission post from 101.206.166.179
+[pid: 367742|app: 0|req: 1/1] 101.206.166.179 () {36 vars in 486 bytes} [Fri Sep 23 13:26:19 2022] POST /v1/score/mission => generated 55 bytes in 222 msecs (HTTP/1.1 200) 7 headers in 212 bytes (1 switches on core 0)
+mission post from 101.206.166.179
+[pid: 367742|app: 0|req: 2/2] 101.206.166.179 () {36 vars in 486 bytes} [Fri Sep 23 13:26:23 2022] POST /v1/score/mission => generated 55 bytes in 1 msecs (HTTP/1.1 200) 7 headers in 212 bytes (1 switches on core 1)
+ready to update user credit_scores 262277857839649604
+None
+get_app_token id:164670660220556 failed 
+{"basic_info": 540, "credit_score": 642, "corporate": 0, "life": 800, "economic": 650, "law": 1000, "public_welfare": 222}
+updated scores successed
+ready to update user credit_scores 262277857839649604
+None
+get_app_token id:164670660220556 failed 
+{"basic_info": 540, "credit_score": 642, "corporate": 0, "life": 800, "economic": 650, "law": 1000, "public_welfare": 222}
+updated scores successed
+ready to update user credit_scores 756304389021117896
+None
+get_app_token id:164670660220556 failed 
+{"basic_info": 540, "credit_score": 642, "corporate": 0, "life": 800, "economic": 650, "law": 1000, "public_welfare": 222}
+updated scores successed
+ready to update user credit_scores 10727048491506558x
+None
+get_app_token id:164670660220556 failed 
+{"basic_info": 540, "credit_score": 642, "corporate": 0, "life": 800, "economic": 650, "law": 1000, "public_welfare": 222}
+updated scores successed
+ready to update user credit_scores 303353525752519304
+None
+mission post from 101.206.166.179
+[pid: 367742|app: 0|req: 3/3] 101.206.166.179 () {36 vars in 486 bytes} [Fri Sep 23 13:26:28 2022] POST /v1/score/mission => generated 55 bytes in 1 msecs (HTTP/1.1 200) 7 headers in 212 bytes (1 switches on core 0)
+get_app_token id:164670660220556 failed 
+{"basic_info": 540, "credit_score": 642, "corporate": 0, "life": 800, "economic": 650, "law": 1000, "public_welfare": 222}
+updated scores successed
+# POST v1/score/user 513701199709154639 is ready to calculate or update credit score
+execute select created_time-----------------
+ready to caculate  user credit_scores the first time 513701199709154639
+做必且方量三
+get_app_token id:164670660220556 failed 
+{"basic_info": 540, "credit_score": 642, "corporate": 0, "life": 800, "economic": 650, "law": 1000, "public_welfare": 222}
+[pid: 367742|app: 0|req: 4/4] 101.206.166.179 () {36 vars in 480 bytes} [Fri Sep 23 13:26:37 2022] POST /v1/score/user => generated 73 bytes in 808 msecs (HTTP/1.1 200) 7 headers in 212 bytes (1 switches on core 1)
+# POST v1/score/user 513701199709154639 is ready to calculate or update credit score
+execute select created_time-----------------
+ready to update user credit_scores 513701199709154639
+做必且方量三
+get_app_token id:164670660220556 failed 
+{"basic_info": 540, "credit_score": 642, "corporate": 0, "life": 800, "economic": 650, "law": 1000, "public_welfare": 222}
+updated scores successed
+[pid: 367742|app: 0|req: 5/5] 101.206.166.179 () {36 vars in 480 bytes} [Fri Sep 23 13:26:39 2022] POST /v1/score/user => generated 73 bytes in 799 msecs (HTTP/1.1 200) 7 headers in 212 bytes (1 switches on core 0)
+# POST v1/score/user 868371503624227466 is ready to calculate or update credit score
+execute select created_time-----------------
+ready to caculate  user credit_scores the first time 868371503624227466
+后己出
+get_app_token id:164670660220556 failed 
+{"basic_info": 540, "credit_score": 642, "corporate": 0, "life": 800, "economic": 650, "law": 1000, "public_welfare": 222}
+[pid: 367742|app: 0|req: 6/6] 101.206.166.179 () {36 vars in 480 bytes} [Fri Sep 23 13:26:42 2022] POST /v1/score/user => generated 73 bytes in 801 msecs (HTTP/1.1 200) 7 headers in 212 bytes (1 switches on core 1)
+# POST v1/score/user 868371503624227466 is ready to calculate or update credit score
+execute select created_time-----------------
+ready to update user credit_scores 868371503624227466
+后己出
+get_app_token id:164670660220556 failed 
+{"basic_info": 540, "credit_score": 642, "corporate": 0, "life": 800, "economic": 650, "law": 1000, "public_welfare": 222}
+updated scores successed
+[pid: 367742|app: 0|req: 7/7] 101.206.166.179 () {36 vars in 480 bytes} [Fri Sep 23 13:26:46 2022] POST /v1/score/user => generated 73 bytes in 828 msecs (HTTP/1.1 200) 7 headers in 212 bytes (1 switches on core 0)
+[pid: 367742|app: 0|req: 8/8] 43.143.26.137 () {34 vars in 474 bytes} [Fri Sep 23 13:43:42 2022] POST /v1/score/user => generated 58 bytes in 1 msecs (HTTP/1.1 200) 7 headers in 212 bytes (1 switches on core 1)
+Fri Sep 23 13:51:18 2022 - uWSGI worker 1 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+Fri Sep 23 13:51:18 2022 - uWSGI worker 1 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+*** Starting uWSGI 2.0.18 (64bit) on [Fri Sep 23 14:26:32 2022] ***
+compiled with version: 9.4.0 on 08 September 2022 06:33:31
+os: Linux-5.4.0-121-generic #137-Ubuntu SMP Wed Jun 15 13:33:07 UTC 2022
+nodename: VM-4-15-ubuntu
+machine: x86_64
+clock source: unix
+pcre jit disabled
+detected number of CPU cores: 2
+current working directory: /home/ubuntu/CreditServerTencent/Credit_Score_Test/Credit_Score_Test
+writing pidfile to uwsgi.pid
+detected binary path: /usr/local/bin/uwsgi
+chdir() to /home/ubuntu/CreditServerTencent/Credit_Score_Test
+your processes number limit is 7547
+your memory page size is 4096 bytes
+detected max file descriptor number: 1024
+lock engine: pthread robust mutexes
+thunder lock: disabled (you can enable it with --thunder-lock)
+uWSGI http bound on 0.0.0.0:8889 fd 4
+uwsgi socket 0 bound to TCP address 127.0.0.1:41119 (port auto-assigned) fd 3
+Python version: 3.8.10 (default, Jun 22 2022, 20:18:18)  [GCC 9.4.0]
+Python main interpreter initialized at 0x55853c834da0
+python threads support enabled
+your server socket listen backlog is limited to 100 connections
+your mercy for graceful operations on workers is 60 seconds
+mapped 166752 bytes (162 KB) for 2 cores
+*** Operational MODE: threaded ***
+WSGI app 0 (mountpoint='') ready in 0 seconds on interpreter 0x55853c834da0 pid: 418522 (default app)
+*** uWSGI is running in multiple interpreter mode ***
+spawned uWSGI master process (pid: 418522)
+spawned uWSGI worker 1 (pid: 418524, cores: 2)
+spawned uWSGI http 1 (pid: 418525)
