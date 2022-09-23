@@ -278,25 +278,26 @@ class MissionView(View):
         print(max_id)
         sql = 'select mission_time,statu from mission_record_time where id=(select max(id) from mission_record_time)'
         cur.execute(sql)
+        first = 0
         try:
-            result=cur.fetchone()
-            mission_time=result[0]
-            statu=result[1]
+            result = cur.fetchone()
+            mission_time = result[0]
+            statu = result[1]
+            print(statu)
+            print(mission_time)
         except Exception as e:
-            print(e)
-        print(statu)
-        print(mission_time)
+            first = 1
         if mission == '0':
-            if statu==0 and mission==0:
+            if mission_statu == 0:
                 result = {
                     'code': '1',
                     'message': '任务正在执行中',
                     'data': {}
                 }
                 return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
-            sql = 'update mission_record_time set statu=%s'
-            cur.execute(sql, [0])
-            mission_threading = Thread(target=start_mission, args=[mission_time,statu])
+            # sql = 'update mission_record_time set statu=%s where mission_time=%s'
+            # cur.execute(sql, [0,mission_time])
+            mission_threading = Thread(target=start_mission, args=[mission_time, mission_statu, first])
             mission_threading.start()
             # result = start_mission()
             # if result == '数据库连接失败':
@@ -312,16 +313,16 @@ class MissionView(View):
                 'data': {}
             }
         else:
-            if statu == 1 and mission_statu==1:
+            if mission_statu == 1:
                 result = {
                     'code': '1',
                     'message': '任务未开始',
                     'data': {}
                 }
             else:
-                sql = 'update mission_record_time set statu=%s'
+                sql = 'update mission_record_time set statu=%s where id=(select max(id) from mission_record_time)'
                 cur.execute(sql, [1])
-                mission_statu=1
+                mission_statu = 1
                 result = {
                     'code': '0',
                     'message': '已暂停成功',
@@ -330,10 +331,11 @@ class MissionView(View):
         return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
 
 
-def start_mission(mission_time,statu):
+def start_mission(mission_time, statu, first):
     """
     调度任务开始
     """
+    time.sleep(1)
     # 创建mysql connect
     db = connect_mysql()
     if not db:
@@ -341,7 +343,7 @@ def start_mission(mission_time,statu):
     cur = db.cursor()
 
     # 获取用户总数
-    sql='select count(id) from user_credit_scores'
+    sql = 'select count(id) from user_credit_scores'
     cur.execute(sql)
     users_count = cur.fetchone()[0]
     print(users_count)
@@ -354,19 +356,28 @@ def start_mission(mission_time,statu):
     # 循环 批量获取数据
     global mission_statu
     for i in range(1, users_count, update_one_time_quantity):
-        if statu == 0:
+        if mission_statu == 0:
             # 获取开始到结束的批量用户
-            sql = 'select id,uid from user_credit_scores where id between %s and %s and updated_time<%s'
-            cur.execute(sql, [i, i + update_one_time_quantity, mission_time])
+            if first == 1:
+                sql = 'select id,uid from user_credit_scores where id between %s and %s and updated_time<now()'
+                cur.execute(sql, [i, i + update_one_time_quantity])
+            else:
+                sql = 'select id,uid from user_credit_scores where id between %s and %s and updated_time<%s'
+                cur.execute(sql, [i, i + update_one_time_quantity, mission_time])
             users = cur.fetchall()
             for user in users:
                 user_data = {"sfzh": user[1]}
                 # TODO 获取用户姓名？根据元件借口需求获取
                 time.sleep(0.1)
                 update_user_credit_scores(db, cur, user[1], user_data)
-        elif statu == 1:
+        elif mission_statu == 1:
             # 停止任务
             return
-    sql = 'update mission_record_time set statu=%s'
-    cur.execute(sql, [1])
+    sql = 'select mission_time,statu from mission_record_time where id=(select max(id) from mission_record_time)'
+    cur.execute(sql)
+    result = cur.fetchone()
+    mission_time = result[0]
+    sql = 'update mission_record_time set statu=%s where mission_time=%s '
+    cur.execute(sql, [1, mission_time])
+    mission_statu = 1
     return
