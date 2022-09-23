@@ -8,6 +8,7 @@ description:可通过调用类方法向 中国电子数据流通平台 获取市
 import os
 import configparser
 import random
+import time
 
 import requests
 import json
@@ -23,8 +24,8 @@ with open('myconfig.ini', 'w', encoding="utf-8") as f:
 conf = configparser.ConfigParser()
 conf.read('myconfig.ini', encoding="utf-8")
 envi_config = conf['envi']
-envi=envi_config.get('envi','local')
-mysql_config=conf[envi + '_mysql']
+envi = envi_config.get('envi', 'local')
+mysql_config = conf[envi + '_mysql']
 redis_config = conf[envi + '_redis']
 
 # 元件api地址
@@ -50,6 +51,7 @@ class Elements:
         url:apptoken获取地址
         """
         self.phone = '13281834377'
+        # self.phone = '13281834371'
         self.password = '123456'
         self.url = 'http://222.213.125.95:8081/dc-sso/componentToken/generateAppToken'
         self.timeout = 1
@@ -66,14 +68,14 @@ class Elements:
             'input': self.phone,
             'password': self.password
         }
-        data = json.dumps(data)
         try:
             data = requests.post(url=self.url, headers=headers, data=data, timeout=self.timeout).json()
         except Exception as e:
             # TODO: log
-            print(f"post {appkey} failed")
-            pass
-
+            print(f"post {appkey} failed!!!!!!!")
+            # 获取app_token失败 登录信息有误
+            # TODO
+            return
         """
         返回结果示例  
         {
@@ -83,16 +85,15 @@ class Elements:
         }
         """
         # 判断返回结果分类
-        if data.get('code'):
-            if data.get('code')==200:
-                return data.get('data').encode(encoding='utf-8')
+        if "code" in data.keys():
+            if data['code'] == 200:
+                return data['data']
             else:
-                print(data.get('code').encode(encoding='utf-8'))
-                print(data.get('message').encode(encoding='utf-8'))
-                return None
+                # 获取app_token失败 登录信息有误
+                return
         else:
-            print(2)
-            return None
+            # 获取app_token失败 登录信息有误
+            return
 
 
 class Element(Elements):
@@ -152,28 +153,31 @@ class Element(Elements):
         url = element_api_url + self.id + '?' + parse.urlencode(self.query)
         app_token = self.redis_connection.get(self.appkey)
         if not app_token:
-            for i in range(5):
+            for i in range(4):
                 app_token = super().get_app_token(self.appkey)
                 if app_token:
                     break
                 else:
-                    if i == 4:
-                        # TODO log
-                        return None
+                    time.sleep(0.1)
+                    if i == 3:
+                        print(f'get_app_token id:{self.id} failed ')
+                        # TODO raise exception
+                        # TODO 暂时返回 0
+                        return 0
                     continue
-            self.redis_connection.set(self.appkey, app_token, 300)
+            self.redis_connection.set(self.appkey, app_token, 3000)
         else:
             app_token = app_token.decode()
         headers = {
             "app-token": app_token
         }
-        data = None
+        # 判断token是否过期
+        data = 0
         try:
             data = requests.get(url=url, headers=headers, timeout=1).json()
         except Exception as e:
             # TODO: log
-            print(f"post {self.id} failed")
-            pass
+            print(f"{self.id} get_element_data failed")
         return data
 
     @staticmethod
@@ -208,7 +212,9 @@ class Element(Elements):
         data['id'] = element_appkey_id["德阳市职工社保累计缴纳月份数数据元件"][1]
         data['pagesize'] = 1  # 必填
         data['pageno'] = 1  # 必填
-        data['xm'] = user_data['xm']
+        # TODO 根据用户身份证查询姓名 的函数
+        data['xm'] = user_data.get('xm')
+        print(data['xm'])
         data['sfzh'] = user_data['sfzh']
         # data['jfljnxqj'] = "十年以上"  # 必填
         '''
@@ -220,9 +226,7 @@ class Element(Elements):
         半年以内
         '''
         element = Element(**data)
-        result= element.get_element_data()
-        print(result.get('code'))
-        print(result.get('data')[0].get("jfljnxqj").encode(encoding='utf-8'))
+        result = element.get_element_data()
         return result
 
     @staticmethod
@@ -286,35 +290,35 @@ class Element(Elements):
 
 user_list = [
     {'sfzh': '510623198009210017', 'xm': '刘辉'},
-    {'sfzh': '510603198511186678', 'xm': '唐龑'},
-    {'sfzh': '510622199608195718', 'xm': '何颖'},
-    {'sfzh': '510625199507110016', 'xm': '郭朋鑫'},
-    {'sfzh': '510723199804070017', 'xm': '胡笛潇'},
-    {'sfzh': '510603199303110303', 'xm': '杨春桃'},
-    {'sfzh': '510603199702240985', 'xm': '邓雨桐'},
-    {'sfzh': '500229199510210220', 'xm': '周付琴'},
-    {'sfzh': '510682198512240029', 'xm': '曾潇潇'},
-    {'sfzh': '510723199705030044', 'xm': '贾丽莎'},
-    {'sfzh': '510603198701115969', 'xm': '李仁可'},
-    {'sfzh': '510682198707070031', 'xm': '赖韬'},
-    {'sfzh': '510682198607010525', 'xm': '边明思'},
-    {'sfzh': '510602199606227661', 'xm': '朱航'},
-    {'sfzh': '510602197601261693', 'xm': '曾振金'},
-    {'sfzh': '511025197309216791', 'xm': '周龙生'},
-    {'sfzh': '513721199009081008', 'xm': '张又杉'},
-    {'sfzh': '51060319931108783X', 'xm': '邓杰堃'},
-    {'sfzh': '510603199705095939', 'xm': '邱奕铭'},
-    {'sfzh': '510622199510103010', 'xm': '董永亮'},
-    {'sfzh': '510623199606040815', 'xm': '龚荣志'},
-    {'sfzh': '510722199401270026', 'xm': '曾小苡'},
-    {'sfzh': '510622199508123012', 'xm': '牟小虎'},
-    {'sfzh': '51068320000831091X', 'xm': '杜沛霖'},
-    {'sfzh': '510603198710262047', 'xm': '罗琛'},
-    {'sfzh': '510623199606292115', 'xm': '满光东'},
-    {'sfzh': '510681199908230319', 'xm': '廖朗迅'},
-    {'sfzh': '510683200105220027', 'xm': '梅筱璐'},
-    {'sfzh': '141034199606110068', 'xm': '王舒婷'},
-    {'sfzh': '510603198602056502', 'xm': '肖燕燕'},
+    # {'sfzh': '510603198511186678', 'xm': '唐龑'},
+    # {'sfzh': '510622199608195718', 'xm': '何颖'},
+    # {'sfzh': '510625199507110016', 'xm': '郭朋鑫'},
+    # {'sfzh': '510723199804070017', 'xm': '胡笛潇'},
+    # {'sfzh': '510603199303110303', 'xm': '杨春桃'},
+    # {'sfzh': '510603199702240985', 'xm': '邓雨桐'},
+    # {'sfzh': '500229199510210220', 'xm': '周付琴'},
+    # {'sfzh': '510682198512240029', 'xm': '曾潇潇'},
+    # {'sfzh': '510723199705030044', 'xm': '贾丽莎'},
+    # {'sfzh': '510603198701115969', 'xm': '李仁可'},
+    # {'sfzh': '510682198707070031', 'xm': '赖韬'},
+    # {'sfzh': '510682198607010525', 'xm': '边明思'},
+    # {'sfzh': '510602199606227661', 'xm': '朱航'},
+    # {'sfzh': '510602197601261693', 'xm': '曾振金'},
+    # {'sfzh': '511025197309216791', 'xm': '周龙生'},
+    # {'sfzh': '513721199009081008', 'xm': '张又杉'},
+    # {'sfzh': '51060319931108783X', 'xm': '邓杰堃'},
+    # {'sfzh': '510603199705095939', 'xm': '邱奕铭'},
+    # {'sfzh': '510622199510103010', 'xm': '董永亮'},
+    # {'sfzh': '510623199606040815', 'xm': '龚荣志'},
+    # {'sfzh': '510722199401270026', 'xm': '曾小苡'},
+    # {'sfzh': '510622199508123012', 'xm': '牟小虎'},
+    # {'sfzh': '51068320000831091X', 'xm': '杜沛霖'},
+    # {'sfzh': '510603198710262047', 'xm': '罗琛'},
+    # {'sfzh': '510623199606292115', 'xm': '满光东'},
+    # {'sfzh': '510681199908230319', 'xm': '廖朗迅'},
+    # {'sfzh': '510683200105220027', 'xm': '梅筱璐'},
+    # {'sfzh': '141034199606110068', 'xm': '王舒婷'},
+    # {'sfzh': '510603198602056502', 'xm': '肖燕燕'},
 
 ]
 
@@ -330,8 +334,8 @@ company_list = [
 for i in user_list:
     # data = Element.get_unit_nature(i)
     # print(data)
-    data = Element.get_social_security_payment_months(i)
-    print(data)
+    # data = Element.get_social_security_payment_months(i)
+    # print(data)
     # data = Element.get_personal_dishonesty_state(i)
     # print(data)
     pass
@@ -492,7 +496,7 @@ def get_E2_02_04(user_data):
 
 # def caculate_user_scores(user_indexs: dict):
 #     user_scores = {}
-#     # todo 根据指标计算用户信用分数
+#     # TODO 根据指标计算用户信用分数
 #     user_scores["basic_info"] = random.randint(700, 1000),
 #     user_scores["corporate"] = 0,
 #     user_scores["public_welfare"] = random.randint(700, 1000),

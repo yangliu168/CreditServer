@@ -9,6 +9,7 @@ from django.views import View
 from django.http import JsonResponse
 import redis
 from threading import Thread
+from multiprocessing import Process
 import pymysql
 import re
 from .get_element_data import get_user_scores
@@ -22,8 +23,8 @@ with open('myconfig.ini', 'w', encoding="utf-8") as f:
 conf = configparser.ConfigParser()
 conf.read('myconfig.ini', encoding="utf-8")
 envi_config = conf['envi']
-envi=envi_config.get('envi','local')
-mysql_config=conf[envi + '_mysql']
+envi = envi_config.get('envi', 'local')
+mysql_config = conf[envi + '_mysql']
 redis_config = conf[envi + '_redis']
 mission_config = conf['mission']
 update_credit_score_quantity = mission_config.get('update_credit_score_quantity', 1000)
@@ -93,10 +94,9 @@ def update_user_credit_scores(db, cur, cardID, user_data):
     """
     print(f'ready to update user credit_scores {cardID}')
     user_scores = get_user_scores(user_data)
+
     sql = 'update user_credit_scores set basic_info=%s,corporate=%s,public_welfare=%s,law=%s,economic=%s,life=%s,updated_time=now(),credit_score=%s where uid=%s'
-    print('get scores successed')
     try:
-        print('get scores successed')
         cur.execute(sql, [
             user_scores["basic_info"],
             user_scores["corporate"],
@@ -107,7 +107,6 @@ def update_user_credit_scores(db, cur, cardID, user_data):
             user_scores["credit_score"],
             cardID
         ])
-        print('get scores successed')
         db.commit()
         print('updated scores successed')
     except Exception as e:
@@ -270,25 +269,34 @@ class MissionView(View):
             return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
         global mission_statu
         if mission == '0':
-            mission_statu = 0
-            result = start_mission()
-            if result == '数据库连接失败':
-                result = {
-                    'code': '1',
-                    'message': '开始任务数据库连接失败',
-                    'data': {}
-                }
-            else:
+            if mission_statu=='0':
                 result = {
                     'code': '0',
-                    'message': '开始任务执行成功',
+                    'message': '任务已开始',
                     'data': {}
                 }
+                return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
+            mission_statu = 0
+            mission_threading = Thread(target=start_mission)
+            mission_threading.start()
+            # result = start_mission()
+            # if result == '数据库连接失败':
+            #     result = {
+            #         'code': '1',
+            #         'message': '开始任务数据库连接失败',
+            #         'data': {}
+            #     }
+            # else:
+            result = {
+                'code': '0',
+                'message': '任务开始',
+                'data': {}
+            }
         else:
             mission_statu = 1
             result = {
                 'code': '0',
-                'message': '暂停任务执行成功',
+                'message': '成功已暂停',
                 'data': {}
             }
         return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
@@ -323,9 +331,10 @@ def start_mission():
             cur.execute(sql, [i, i + update_one_time_quantity])
             users = cur.fetchall()
             for user in users:
-                user_data={"sfzh":user[1]}
+                user_data = {"sfzh": user[1]}
+                # TODO 获取用户姓名？根据元件借口需求获取
                 time.sleep(0.1)
-                update_user_credit_scores(db, cur, user[1],user_data)
+                update_user_credit_scores(db, cur, user[1], user_data)
         elif mission_statu == 1:
             # 停止任务
             cur.close()
