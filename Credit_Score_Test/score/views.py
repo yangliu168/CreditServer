@@ -296,7 +296,7 @@ class MissionView(View):
             if mission_statu==1:
                 result = {
                     'code': '0',
-                    'message': '成功未开始',
+                    'message': '任务未开始',
                     'data': {}
                 }
             else:
