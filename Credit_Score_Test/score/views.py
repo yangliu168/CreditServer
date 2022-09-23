@@ -268,16 +268,28 @@ class MissionView(View):
             }
             return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
         global mission_statu
+        db = connect_mysql()
+        cur = db.cursor()
+        sql = 'select max(id) from mission_record_time'
+        cur.execute(sql)
+        max_id = cur.fetchone()[0]
+
+        sql = 'select mission_time,statu from mission_record_time where id=%s'
+        cur.execute(sql, [max_id, ])
+        statu = cur.fetchone()[1]
+        mission_time = cur.fetchone()[0]
+
         if mission == '0':
-            if mission_statu == 0:
+            if statu == 0:
                 result = {
                     'code': '1',
                     'message': '任务正在执行中',
                     'data': {}
                 }
                 return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
-            mission_statu = 0
-            mission_threading = Thread(target=start_mission)
+            sql = 'update mission_record_time set statu=%s'
+            cur.execute(sql, [0])
+            mission_threading = Thread(target=start_mission, args=[mission_time])
             mission_threading.start()
             # result = start_mission()
             # if result == '数据库连接失败':
@@ -293,14 +305,14 @@ class MissionView(View):
                 'data': {}
             }
         else:
-            if mission_statu==1:
+            if statu == 1:
                 result = {
                     'code': '1',
                     'message': '任务未开始',
                     'data': {}
                 }
             else:
-                mission_statu = 1
+                statu = 1
                 result = {
                     'code': '0',
                     'message': '已暂停成功',
@@ -309,7 +321,7 @@ class MissionView(View):
         return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
 
 
-def start_mission():
+def start_mission(mission_time):
     """
     调度任务开始
     """
@@ -320,7 +332,6 @@ def start_mission():
     cur = db.cursor()
 
     # 获取用户总数
-    sql = 'select count(uid) from user_credit_sco?res where updated_time>curdate()'
     sql = 'select max(id) from user_credit_scores'
     cur.execute(sql)
     users_count = cur.fetchone()[0]
@@ -336,8 +347,8 @@ def start_mission():
     for i in range(1, users_count, update_one_time_quantity):
         if mission_statu == 0:
             # 获取开始到结束的批量用户
-            sql = 'select id,uid from user_credit_scores where id between %s and %s and updated_time<now()'
-            cur.execute(sql, [i, i + update_one_time_quantity])
+            sql = 'select id,uid from user_credit_scores where id between %s and %s and updated_time<%s'
+            cur.execute(sql, [i, i + update_one_time_quantity, mission_time])
             users = cur.fetchall()
             for user in users:
                 user_data = {"sfzh": user[1]}
@@ -351,5 +362,6 @@ def start_mission():
             return
     cur.close()
     db.close()
-    mission_statu = 1
+    sql = 'update mission_record_time set statu=%s'
+    cur.execute(sql, [1])
     return
