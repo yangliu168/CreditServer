@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="355ce705-41fd-41f5-8ec4-37b3f902bd2d" name="变更" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Credit_Score_Test/score/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/Credit_Score_Test/score/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -355,7 +355,21 @@
       <option name="project" value="LOCAL" />
       <updated>1663908949710</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="0740">
+      <created>1663976429885</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1663976429885</updated>
+    </task>
+    <task id="LOCAL-00026" summary="0740">
+      <created>1663976601952</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1663976601952</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -422,6 +436,7 @@
     <MESSAGE value="0922 night" />
     <MESSAGE value="0923 0919" />
     <MESSAGE value="判断任务状态" />
-    <option name="LAST_COMMIT_MESSAGE" value="判断任务状态" />
+    <MESSAGE value="0740" />
+    <option name="LAST_COMMIT_MESSAGE" value="0740" />
   </component>
 </project>

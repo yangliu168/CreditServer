@@ -274,10 +274,11 @@ class MissionView(View):
         cur = db.cursor()
         sql = 'select max(id) from mission_record_time'
         cur.execute(sql)
-        max_id = cur.fetchone()[0]
-        print(max_id)
+        result= cur.fetchone()
         first = 0
-        try:
+        if result:
+            max_id = cur.fetchone()[0]
+            print(max_id)
             sql = 'select mission_time,statu from mission_record_time where id=(select max(id) from mission_record_time)'
             cur.execute(sql)
             result = cur.fetchone()
@@ -285,8 +286,8 @@ class MissionView(View):
             statu = result[1]
             print(statu)
             print(mission_time)
-        except Exception as e:
-            first = 1
+        else:
+            first=1
         if mission == '0':
             if mission_statu == 0:
                 result = {
