@@ -277,7 +277,7 @@ class MissionView(View):
         result= cur.fetchone()
         first = 0
         if result:
-            print('aaaaaaaaaaaaa')
+            print('1')
             max_id = cur.fetchone()[0]
             print(max_id)
             sql = 'select mission_time,statu from mission_record_time where id=(select max(id) from mission_record_time)'
@@ -289,6 +289,7 @@ class MissionView(View):
             print(mission_time)
         else:
             first=1
+            print('2')
         if mission == '0':
             if mission_statu == 0:
                 result = {
@@ -337,6 +338,7 @@ def start_mission(mission_time, statu, first):
     """
     调度任务开始
     """
+    print('3')
     time.sleep(1)
     # 创建mysql connect
     db = connect_mysql()
