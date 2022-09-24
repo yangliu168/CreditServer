@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="355ce705-41fd-41f5-8ec4-37b3f902bd2d" name="变更" comment="" />
+    <list default="true" id="355ce705-41fd-41f5-8ec4-37b3f902bd2d" name="变更" comment="">
+      <change beforePath="$PROJECT_DIR$/Credit_Score_Test/score/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/Credit_Score_Test/score/views.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -514,7 +516,14 @@
       <option name="project" value="LOCAL" />
       <updated>1663984098456</updated>
     </task>
-    <option name="localTasksCounter" value="48" />
+    <task id="LOCAL-00048" summary="1">
+      <created>1663984683589</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1663984683589</updated>
+    </task>
+    <option name="localTasksCounter" value="49" />
     <servers />
   </component>
   <component name="UnknownFeatures">

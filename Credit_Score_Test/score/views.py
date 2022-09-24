@@ -347,8 +347,8 @@ class MissionView(View):
                     'data': {}
                 }
             else:
-                sql = 'update mission_record_time set statu=%s where id=(select max(id) from mission_record_time)'
-                cur.execute(sql, [1])
+                # sql = 'update mission_record_time set statu=%s where id=(select max(id) from mission_record_time)'
+                # cur.execute(sql, [1])
                 mission_statu = 2
                 result = {
                     'code': '0',
@@ -422,7 +422,10 @@ def start_mission(mission_time, statu, first):
         sql = 'update mission_record_time set statu=1 where id=%s'
         cur.execute(sql,[max_id])
         print("seccess")
-        print(max_id)
+        sql = 'select statu from mission_record_time ORDER BY id DESC limit 1'
+        cur.execute(sql)
+        statu = cur.fetchone()[0]
+        print(statu)
     except:
         print("update mission_record_time set statu=1  failed")
     mission_statu = 1
