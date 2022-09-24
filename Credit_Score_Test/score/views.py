@@ -328,6 +328,7 @@ class MissionView(View):
                 'message': '已开始任务',
                 'data': {}
             }
+            return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
         else:
             if mission_statu == 1:
                 result = {
@@ -358,7 +359,7 @@ def start_mission(mission_time, statu, first):
     调度任务开始
     """
     print('m4')
-    time.sleep(1)
+    time.sleep(3)
     # 创建mysql connect
     db = connect_mysql()
     if not db:
@@ -398,7 +399,8 @@ def start_mission(mission_time, statu, first):
             return
     sql = 'select mission_time,statu from mission_record_time where id=(select max(id) from mission_record_time)'
     cur.execute(sql)
-    result = cur.fetchone()
+    result = cur.fetchone()[0]
+    print(result)
     mission_time = result[0]
     sql = 'update mission_record_time set statu=%s where mission_time=%s '
     cur.execute(sql, [1, mission_time])
