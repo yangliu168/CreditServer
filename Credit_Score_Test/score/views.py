@@ -413,10 +413,12 @@ def start_mission(mission_time, statu, first):
     # mission_time = result[0]
     # sql = 'update mission_record_time set statu=%s where mission_time=%s '
     # cur.execute(sql, [1, mission_time])
+    time.sleep(2)
     try:
         sql='select max(id) from mission_record_time'
         cur.execute(sql)
         max_id= cur.fetchone()[0]
+        print(max_id)
         sql = 'update mission_record_time set statu=1 where id=%s'
         cur.execute(sql,[max_id])
     except:
