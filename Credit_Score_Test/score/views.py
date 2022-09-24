@@ -421,6 +421,8 @@ def start_mission(mission_time, statu, first):
         print(max_id)
         sql = 'update mission_record_time set statu=1 where id=%s'
         cur.execute(sql,[max_id])
+        print("seccess")
+        print(max_id)
     except:
         print("update mission_record_time set statu=1  failed")
     mission_statu = 1
