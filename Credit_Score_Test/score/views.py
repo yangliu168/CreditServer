@@ -303,7 +303,7 @@ class MissionView(View):
                 return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
             elif mission_statu == 2:
                 result = {
-                    'code': '1',
+                    'code': '0',
                     'message': '任务继续执行',
                     'data': {}
                 }

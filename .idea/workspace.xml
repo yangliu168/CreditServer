@@ -187,13 +187,6 @@
       <option name="presentableId" value="Default" />
       <updated>1663051722455</updated>
     </task>
-    <task id="LOCAL-00001" summary="CreditServer user users mission API">
-      <created>1663056447075</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1663056447075</updated>
-    </task>
     <task id="LOCAL-00002" summary="CreditServer test API">
       <created>1663058083426</created>
       <option name="number" value="00002" />
@@ -523,7 +516,21 @@
       <option name="project" value="LOCAL" />
       <updated>1663984683589</updated>
     </task>
-    <option name="localTasksCounter" value="49" />
+    <task id="LOCAL-00049" summary="1">
+      <created>1663985024079</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1663985024079</updated>
+    </task>
+    <task id="LOCAL-00050" summary="1">
+      <created>1663985279498</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1663985279499</updated>
+    </task>
+    <option name="localTasksCounter" value="51" />
     <servers />
   </component>
   <component name="UnknownFeatures">
