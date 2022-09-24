@@ -294,6 +294,7 @@ class MissionView(View):
             mission_time = None
             print('第一次请求')
         if mission == '0':
+            print(mission_statu)
             if mission_statu == 0:
                 result = {
                     'code': '1',
