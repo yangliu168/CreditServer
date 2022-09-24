@@ -187,13 +187,6 @@
       <option name="presentableId" value="Default" />
       <updated>1663051722455</updated>
     </task>
-    <task id="LOCAL-00002" summary="CreditServer test API">
-      <created>1663058083426</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1663058083426</updated>
-    </task>
     <task id="LOCAL-00003" summary="CreditServer test API">
       <created>1663059548377</created>
       <option name="number" value="00003" />
@@ -530,7 +523,14 @@
       <option name="project" value="LOCAL" />
       <updated>1663985279499</updated>
     </task>
-    <option name="localTasksCounter" value="51" />
+    <task id="LOCAL-00051" summary="1">
+      <created>1663985475719</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1663985475719</updated>
+    </task>
+    <option name="localTasksCounter" value="52" />
     <servers />
   </component>
   <component name="UnknownFeatures">

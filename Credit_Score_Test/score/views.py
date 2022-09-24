@@ -308,7 +308,7 @@ class MissionView(View):
                     'data': {}
                 }
                 print('2')
-                mission_threading = Thread(target=start_mission, args=[mission_time, mission_statu, 0])
+                mission_threading = Thread(target=start_mission, args=[mission_time, mission_statu, first])
                 mission_threading.start()
                 return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
             # sql = 'update mission_record_time set statu=%s where mission_time=%s'
