@@ -383,7 +383,14 @@
       <option name="project" value="LOCAL" />
       <updated>1663976869729</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="i">
+      <created>1663977543203</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1663977543203</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -451,6 +458,7 @@
     <MESSAGE value="0923 0919" />
     <MESSAGE value="判断任务状态" />
     <MESSAGE value="0740" />
-    <option name="LAST_COMMIT_MESSAGE" value="0740" />
+    <MESSAGE value="i" />
+    <option name="LAST_COMMIT_MESSAGE" value="i" />
   </component>
 </project>

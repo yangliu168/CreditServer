@@ -287,6 +287,7 @@ class MissionView(View):
             statu = result[1]
             print(statu)
             print(mission_time)
+            print('1')
         else:
             first=1
             print('2')
@@ -298,8 +299,19 @@ class MissionView(View):
                     'data': {}
                 }
                 return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
+            elif mission_statu == 2:
+                result = {
+                    'code': '1',
+                    'message': '任务继续执行',
+                    'data': {}
+                }
+                print('2')
+                mission_threading = Thread(target=start_mission, args=[mission_time, mission_statu, 0])
+                mission_threading.start()
+                return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
             # sql = 'update mission_record_time set statu=%s where mission_time=%s'
             # cur.execute(sql, [0,mission_time])
+            print('3')
             mission_threading = Thread(target=start_mission, args=[mission_time, mission_statu, first])
             mission_threading.start()
             # result = start_mission()
@@ -322,10 +334,16 @@ class MissionView(View):
                     'message': '任务未开始',
                     'data': {}
                 }
+            elif mission_statu == 2:
+                result = {
+                    'code': '1',
+                    'message': '任务已被暂停，请勿重复提交',
+                    'data': {}
+                }
             else:
                 sql = 'update mission_record_time set statu=%s where id=(select max(id) from mission_record_time)'
                 cur.execute(sql, [1])
-                mission_statu = 1
+                mission_statu = 2
                 result = {
                     'code': '0',
                     'message': '已暂停成功',
@@ -338,7 +356,7 @@ def start_mission(mission_time, statu, first):
     """
     调度任务开始
     """
-    print('3')
+    print('m4')
     time.sleep(1)
     # 创建mysql connect
     db = connect_mysql()
@@ -374,7 +392,7 @@ def start_mission(mission_time, statu, first):
                 # TODO 获取用户姓名？根据元件借口需求获取
                 time.sleep(0.1)
                 update_user_credit_scores(db, cur, user[1], user_data)
-        elif mission_statu == 1:
+        elif mission_statu == 2:
             # 停止任务
             return
     sql = 'select mission_time,statu from mission_record_time where id=(select max(id) from mission_record_time)'
