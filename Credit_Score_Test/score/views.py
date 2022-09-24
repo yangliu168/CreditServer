@@ -383,9 +383,11 @@ def start_mission(mission_time, statu, first):
         if mission_statu == 0:
             # 获取开始到结束的批量用户
             if first == 1:
+                print(" first == 1")
                 sql = 'select id,uid from user_credit_scores where id between %s and %s and updated_time<now()'
                 cur.execute(sql, [i, i + update_one_time_quantity])
             else:
+                print(" first != 1")
                 sql = 'select id,uid from user_credit_scores where id between %s and %s and updated_time<%s'
                 cur.execute(sql, [i, i + update_one_time_quantity, mission_time])
             users = cur.fetchall()
@@ -397,12 +399,12 @@ def start_mission(mission_time, statu, first):
         elif mission_statu == 2:
             # 停止任务
             return
-    sql = 'select mission_time,statu from mission_record_time where id=(select max(id) from mission_record_time)'
-    cur.execute(sql)
-    result = cur.fetchone()[0]
-    print(result)
-    mission_time = result[0]
-    sql = 'update mission_record_time set statu=%s where mission_time=%s '
-    cur.execute(sql, [1, mission_time])
+    # sql = 'select mission_time,statu from mission_record_time where id=(select max(id) from mission_record_time)'
+    # cur.execute(sql)
+    # result = cur.fetchone()[0]
+    # print(result)
+    # mission_time = result[0]
+    # sql = 'update mission_record_time set statu=%s where mission_time=%s '
+    # cur.execute(sql, [1, mission_time])
     mission_statu = 1
     return
