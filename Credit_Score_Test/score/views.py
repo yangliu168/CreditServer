@@ -290,6 +290,7 @@ class MissionView(View):
             print('1')
         else:
             first=1
+            mission_time=None
             print('2')
         if mission == '0':
             if mission_statu == 0:
