@@ -309,6 +309,7 @@ class MissionView(View):
                     'data': {}
                 }
                 print('任务准备继续执行')
+                mission_statu=0
                 mission_threading = Thread(target=start_mission, args=[mission_time, mission_statu, first])
                 mission_threading.start()
                 print('任务继续执行')
