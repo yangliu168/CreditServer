@@ -275,6 +275,7 @@ class MissionView(View):
         sql = 'select max(id) from mission_record_time'
         cur.execute(sql)
         result= cur.fetchone()[0]
+        print(result)
         first = 0
         if result:
             print(result)
