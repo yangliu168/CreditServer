@@ -370,7 +370,7 @@ def start_mission(mission_time, statu, first):
     cur = db.cursor()
 
     # 获取用户总数
-    sql = 'select count(id) from user_credit_scores'
+    sql = 'select max(id) from user_credit_scores'
     cur.execute(sql)
     users_count = cur.fetchone()[0]
     print("users_count")
@@ -378,7 +378,7 @@ def start_mission(mission_time, statu, first):
     mission_config = conf['mission']
     update_credit_score_quantity = int(mission_config.get('update_credit_score_quantity', 1000))
     if users_count <= update_credit_score_quantity:
-        update_one_time_quantity = 1
+        update_one_time_quantity = 2
     else:
         update_one_time_quantity = update_credit_score_quantity
     # 循环 批量获取数据
