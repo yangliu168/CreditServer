@@ -390,7 +390,6 @@ def start_mission(mission_time, statu, first):
                 sql = 'select id,uid from user_credit_scores where id between %s and %s and updated_time<now()'
                 cur.execute(sql, [i, i + update_one_time_quantity])
                 print(" first == 1")
-                print(i,i + update_one_time_quantity)
             else:
                 print(" first != 1")
                 sql = 'select id,uid from user_credit_scores where id between %s and %s and updated_time<%s'
@@ -413,4 +412,5 @@ def start_mission(mission_time, statu, first):
     # sql = 'update mission_record_time set statu=%s where mission_time=%s '
     # cur.execute(sql, [1, mission_time])
     mission_statu = 1
+    print(mission_statu)
     return
