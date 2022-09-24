@@ -426,8 +426,10 @@ def start_mission(mission_time, statu, first):
         cur.execute(sql)
         statu = cur.fetchone()[0]
         print(statu)
+        db.commit()
     except:
         print("update mission_record_time set statu=1  failed")
+        db.rollback()
     mission_statu = 1
     print(mission_statu)
     return
