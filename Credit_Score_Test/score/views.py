@@ -393,8 +393,9 @@ def start_mission(mission_time, statu, first):
                 print(" first == 1")
             else:
                 print(" first != 1")
-                sql = 'select id,uid from user_credit_scores where id between %s and %s and updated_time<%s'
-                cur.execute(sql, [i, i + update_one_time_quantity, mission_time])
+                sql = 'select id,uid from user_credit_scores where id between %s and %s and updated_time<'
+                sql+='(select mission_time from mission_record_time ORDER BY id limit 1;)'
+                cur.execute(sql, [i, i + update_one_time_quantity])
             users = cur.fetchall()
             print(users)
             for user in users:
