@@ -274,7 +274,7 @@ class MissionView(View):
         cur = db.cursor()
         sql = 'select max(id) from mission_record_time'
         cur.execute(sql)
-        result= cur.fetchone()[0]
+        result = cur.fetchone()[0]
         print(result)
         first = 0
         if result:
@@ -290,8 +290,8 @@ class MissionView(View):
             print(mission_time)
             print('不是第一次')
         else:
-            first=1
-            mission_time=None
+            first = 1
+            mission_time = None
             print('第一次请求')
         if mission == '0':
             if mission_statu == 0:
@@ -363,7 +363,7 @@ def start_mission(mission_time, statu, first):
     调度任务开始
     """
     print('m4')
-    time.sleep(3)
+    time.sleep(0.5)
     # 创建mysql connect
     db = connect_mysql()
     if not db:
@@ -412,6 +412,11 @@ def start_mission(mission_time, statu, first):
     # mission_time = result[0]
     # sql = 'update mission_record_time set statu=%s where mission_time=%s '
     # cur.execute(sql, [1, mission_time])
+    try:
+        sql = 'update mission_record_time set statu=1 where id=(select max(id) from mission_record_time)'
+        cur.execute(sql)
+    except:
+        print("update mission_record_time set statu=1  failed")
     mission_statu = 1
     print(mission_statu)
     return
