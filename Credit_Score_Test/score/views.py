@@ -385,6 +385,7 @@ def start_mission(mission_time, statu, first):
     else:
         update_one_time_quantity = update_credit_score_quantity
     # 循环 批量获取数据
+    print("begin")
     global mission_statu
     for i in range(1, users_count, update_one_time_quantity):
         if mission_statu == 0:
