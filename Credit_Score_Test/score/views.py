@@ -287,11 +287,11 @@ class MissionView(View):
             statu = result[1]
             print(statu)
             print(mission_time)
-            print('1')
+            print('不是第一次')
         else:
             first=1
             mission_time=None
-            print('2')
+            print('第一次请求')
         if mission == '0':
             if mission_statu == 0:
                 result = {
@@ -313,6 +313,7 @@ class MissionView(View):
             # sql = 'update mission_record_time set statu=%s where mission_time=%s'
             # cur.execute(sql, [0,mission_time])
             print('3')
+
             mission_threading = Thread(target=start_mission, args=[mission_time, mission_statu, first])
             mission_threading.start()
             # result = start_mission()
@@ -323,6 +324,7 @@ class MissionView(View):
             #         'data': {}
             #     }
             # else:
+            mission_statu = 0
             result = {
                 'code': '0',
                 'message': '已开始任务',
@@ -370,6 +372,7 @@ def start_mission(mission_time, statu, first):
     sql = 'select count(id) from user_credit_scores'
     cur.execute(sql)
     users_count = cur.fetchone()[0]
+    print("users_count")
     print(users_count)
     mission_config = conf['mission']
     update_credit_score_quantity = int(mission_config.get('update_credit_score_quantity', 1000))
