@@ -363,7 +363,7 @@ def start_mission(mission_time, statu, first):
     调度任务开始
     """
     print('m4')
-    time.sleep(0.5)
+    time.sleep(2)
     # 创建mysql connect
     db = connect_mysql()
     if not db:
@@ -394,7 +394,7 @@ def start_mission(mission_time, statu, first):
             else:
                 print(" first != 1")
                 sql = 'select id,uid from user_credit_scores where id between %s and %s and updated_time<'
-                sql+='(select mission_time from mission_record_time ORDER BY id limit 1)'
+                sql+='(select mission_time from mission_record_time ORDER BY id DESC limit 1)'
                 cur.execute(sql, [i, i + update_one_time_quantity])
             users = cur.fetchall()
             print(users)
