@@ -325,6 +325,7 @@ class MissionView(View):
             #     }
             # else:
             mission_statu = 0
+            print('return success')
             result = {
                 'code': '0',
                 'message': '已开始任务',
@@ -386,14 +387,16 @@ def start_mission(mission_time, statu, first):
         if mission_statu == 0:
             # 获取开始到结束的批量用户
             if first == 1:
-                print(" first == 1")
                 sql = 'select id,uid from user_credit_scores where id between %s and %s and updated_time<now()'
                 cur.execute(sql, [i, i + update_one_time_quantity])
+                print(" first == 1")
+                print(i,i + update_one_time_quantity)
             else:
                 print(" first != 1")
                 sql = 'select id,uid from user_credit_scores where id between %s and %s and updated_time<%s'
                 cur.execute(sql, [i, i + update_one_time_quantity, mission_time])
             users = cur.fetchall()
+            print(users)
             for user in users:
                 user_data = {"sfzh": user[1]}
                 # TODO 获取用户姓名？根据元件借口需求获取
