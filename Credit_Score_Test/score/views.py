@@ -250,7 +250,6 @@ class MissionView(View):
 
     def post(self, request):
         print(f'mission post from {request.META["REMOTE_ADDR"]}')
-        print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
         json_str = request.body
         if not json_str:
             result = {
@@ -271,11 +270,27 @@ class MissionView(View):
         global mission_statu
         print('xxxx')
         db = connect_mysql()
+        if not db:
+            result = {
+                'code': '1',
+                'message': '数据库连接失败',
+                'data': {}
+            }
+            return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
         cur = db.cursor()
-        sql = 'select max(id) from mission_record_time'
-        cur.execute(sql)
-        result = cur.fetchone()[0]
-        print(result)
+        try:
+            sql = 'select max(id) from mission_record_time'
+            cur.execute(sql)
+            result = cur.fetchone()[0]
+            print(result)
+        except Exception as e:
+            print('mission_record_time  max(id) 查询失败')
+            result = {
+                'code': '1',
+                'message': '数据库表mission_record_time查询失败',
+                'data': {}
+            }
+            return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
         first = 0
         if result:
             print(result)
