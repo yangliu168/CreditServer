@@ -51,7 +51,6 @@ class Elements:
         url:apptoken获取地址
         """
         self.phone = '13281834377'
-        # self.phone = '13281834371'
         self.password = '123456'
         self.url = 'http://222.213.125.95:8081/dc-sso/componentToken/generateAppToken'
         self.timeout = 1
@@ -69,7 +68,7 @@ class Elements:
             'password': self.password
         }
         try:
-            data = requests.post(url=self.url, headers=headers, data=data, timeout=self.timeout).json()
+            data = requests.post(url=self.url, headers=headers, json=data, timeout=self.timeout).json()
         except Exception as e:
             # TODO: log
             print(f"post {appkey} failed!!!!!!!")
@@ -156,29 +155,32 @@ class Element(Elements):
             for i in range(4):
                 app_token = super().get_app_token(self.appkey)
                 if app_token:
+                    self.redis_connection.set(self.appkey, app_token, 3000)
                     break
                 else:
-                    time.sleep(0.1)
                     if i == 3:
                         print(f'get_app_token id:{self.id} failed ')
                         # TODO raise exception
                         # TODO 暂时返回 0
                         return 0
                     continue
-            self.redis_connection.set(self.appkey, app_token, 3000)
         else:
             app_token = app_token.decode()
         headers = {
             "app-token": app_token
         }
-        # 判断token是否过期
+        # TODO 判断token是否过期
         data = 0
         try:
-            data = requests.get(url=url, headers=headers, timeout=1).json()
+            # TODO timeout?
+            data = requests.get(url=url, headers=headers).json()
         except Exception as e:
             # TODO: log
             print(f"{self.id} get_element_data failed")
-        return data
+        if data:
+            return data['data'][0]["jfljnxqj"]
+        else:
+            return 0
 
     @staticmethod
     def get_marriage_state(user_data: dict):
