@@ -129,7 +129,7 @@ class ScoreView(View):
 
     def post(self, request):
         """
-        功能：单个用户查询信用分
+        功能：单个用户查询信用分，计算或者更新
         param:
             cardID:身份证号
             name：姓名
@@ -147,6 +147,7 @@ class ScoreView(View):
         json_obj = json.loads(json_str)
         cardID = json_obj.get('cardID')
         name = json_obj.get('name')
+
         # 判断是否包含必要参数cardID & name
         if not cardID or not name:
             result = {
