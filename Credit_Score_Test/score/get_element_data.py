@@ -15,7 +15,7 @@ import json
 from urllib import parse
 import redis
 
-from .algorithm.caculate_user_scores import caculate_user_scores
+from algorithm.calculate_user_scores import calculate_user_scores
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 with open('myconfig.ini', 'w', encoding="utf-8") as f:
@@ -29,7 +29,7 @@ mysql_config = conf[envi + '_mysql']
 redis_config = conf[envi + '_redis']
 
 # 元件api地址
-element_api_url = 'http://222.213.125.95:8081/dc-dbapi/api/getApi'
+element_api_url = 'http://59.213.91.96:80/dc-dbapi/api/getApi'
 
 element_appkey_id = {
     "德阳市职工婚姻登记状态数据元件": ("", "164819098898223"),
@@ -52,7 +52,7 @@ class Elements:
         """
         self.phone = '13281834377'
         self.password = '123456'
-        self.url = 'http://222.213.125.95:8081/dc-sso/componentToken/generateAppToken'
+        self.url = 'http://59.213.91.96:80/dc-sso/componentToken/generateAppToken'
         self.timeout = 1
 
     def get_app_token(self, appkey):
@@ -146,7 +146,7 @@ class Element(Elements):
             pass
         # print(self.query)
 
-    # http://222.213.125.95:8081/dc-dbapi/api/getApi164***********?sfzh=*****&xm=***&pageSize=20&pageNo=1
+    # http://59.213.91.96:80/dc-dbapi/api/getApi164***********?sfzh=*****&xm=***&pageSize=20&pageNo=1
     def get_element_data(self):
         """"""
         url = element_api_url + self.id + '?' + parse.urlencode(self.query)
@@ -178,7 +178,7 @@ class Element(Elements):
             # TODO: log
             print(f"{self.id} get_element_data failed")
         if data:
-            return data['data'][0]["jfljnxqj"]
+            return data
         else:
             return 0
 
@@ -188,16 +188,17 @@ class Element(Elements):
         获取 德阳市职工婚姻登记状态数据元件 婚姻状态
         反映1960至1996年出生职工的婚姻状态，无输出信息可认定为未婚；（查询人年龄=1960至1996年）
         婚姻状态：1-已婚，2-离异
-        :param data:user_info
+        :query param data:user_info
         :return:lx:varchar
         """
-        data = {}
-        data['appkey'] = element_appkey_id["德阳市职工婚姻登记状态数据元件"][0]
-        data['id'] = element_appkey_id["德阳市职工婚姻登记状态数据元件"][1]
-        data['pagesize'] = 20
-        data['pageno'] = 1
-        data['xm'] = user_data['xm']
-        data['sfzh'] = user_data['sfzh']
+        data = {
+            'appkey': element_appkey_id["德阳市职工婚姻登记状态数据元件"][0],
+            'id': element_appkey_id["德阳市职工婚姻登记状态数据元件"][1],
+            'pagesize': 20,
+            'pageno': 1,
+            'xm': user_data['xm'],
+            'sfzh': user_data['sfzh']
+        }
         element = Element(**data)
         return element.get_element_data()
 
@@ -206,16 +207,17 @@ class Element(Elements):
         """
         获取 德阳市职工社保累计缴纳月份数数据元件 社保缴费累计年限区间
         通过查询职工社保缴费累计月份数，反映社保缴费年限区间（半年以内，半年至一年，一年至三年，三年至五年，五年至十年，十年以上）
-        :param data:user_info
+        :query param data:user_info
         :return:jfljnxqj:varchar
         """
-        data = {}
-        data['appkey'] = element_appkey_id["德阳市职工社保累计缴纳月份数数据元件"][0]
-        data['id'] = element_appkey_id["德阳市职工社保累计缴纳月份数数据元件"][1]
-        data['pagesize'] = 1  # 必填
-        data['pageno'] = 1  # 必填
+        data = {
+            'appkey': element_appkey_id["德阳市职工社保累计缴纳月份数数据元件"][0],
+            'id': element_appkey_id["德阳市职工社保累计缴纳月份数数据元件"][1],
+            'pagesize': 1,
+            'pageno': 1,
+            'xm': user_data.get('xm')
+        }
         # TODO 根据用户身份证查询姓名 的函数
-        data['xm'] = user_data.get('xm')
         print(data['xm'])
         data['sfzh'] = user_data['sfzh']
         # data['jfljnxqj'] = "十年以上"  # 必填
@@ -229,23 +231,42 @@ class Element(Elements):
         '''
         element = Element(**data)
         result = element.get_element_data()
-        return result
+        print('德阳市职工社保累计缴纳月份数数据元件',end='    ')
+        print(result)
+        try:
+            result = result['data'][0]["jfljnxqj"]
+            if result == "十年以上":
+                return 5
+            if result == "五年至十年":
+                return 4
+            if result == "三年至五年":
+                return 3
+            if result == "一年至三年":
+                return 2
+            if result == "半年至一年":
+                return 1
+            if result == "半年以内":
+                return 0
+            else:
+                return "None"
+        except:
+            return 'None'
 
     @staticmethod
     def get_unit_nature(user_data: dict):
         """
         获取 德阳市职工社保缴费单位性质数据元件 工作单位性质
         通过查询企业行政级别分类反映职工工作单位性质（企业、政府机构、政府单位、事业团体）
-        :param data:user_info
+        :query param data:user_info
         :return:gzdwxz:varchar
         """
-        data = {}
-        data['appkey'] = element_appkey_id["德阳市职工社保缴费单位性质数据元件"][0]
-        data['id'] = element_appkey_id["德阳市职工社保缴费单位性质数据元件"][1]
-        data['pagesize'] = 1  # 必填
-        data['pageno'] = 1  # 必填
-        data['xm'] = user_data['xm']
-        data['sfzh'] = user_data['sfzh']
+        data = {
+            'appkey': element_appkey_id["德阳市职工社保缴费单位性质数据元件"][0],
+            'id': element_appkey_id["德阳市职工社保缴费单位性质数据元件"][1],
+            'pagesize': 1, 'pageno': 1,
+            'xm': user_data['xm'],
+            'sfzh': user_data['sfzh']
+        }
         # data['gzdwxz'] = None
         element = Element(**data)
         return element.get_element_data()
@@ -255,15 +276,15 @@ class Element(Elements):
         """
         获取 德阳市执行失信名单个人失信状态数据元件  失信状态
         姓名/名称,证件号码,立案时间,发布时间,状态,屏蔽时间,撤销时间,失信到期日,失信行为情形
-        :param data:user_info
+        :query param data:user_info
         :return:xm:varchar,sfsx:varchar
         """
-        data = {}
-        data['appkey'] = element_appkey_id["德阳市执行失信名单个人失信状态数据元件"][0]
-        data['id'] = element_appkey_id["德阳市执行失信名单个人失信状态数据元件"][1]
-        data['pagesize'] = 1
-        data['pageno'] = 1
-        data['sfzh'] = user_data['sfzh']
+        data = {
+            'appkey': element_appkey_id["德阳市执行失信名单个人失信状态数据元件"][0],
+            'id': element_appkey_id["德阳市执行失信名单个人失信状态数据元件"][1],
+            'pagesize': 1,
+            'pageno': 1,
+            'sfzh': user_data['sfzh']}
         element = Element(**data)
         return element.get_element_data()
 
@@ -272,20 +293,21 @@ class Element(Elements):
         """
         获取 德阳市失信黑名单与守信红名单查询数据元件  失信状态
         姓名/名称,证件号码,立案时间,发布时间,状态,屏蔽时间,撤销时间,失信到期日,失信行为情形
-        :param pagesize:int 分页查询参数，每页多少条数据
-        :param pageno:int   分页查询参数，第几页
-        :param data:dict    user_info
-        :param qygtgshmc:varchar    企业/个体工商户名称
+        :query param pagesize:int 分页查询参数，每页多少条数据
+        :query param pageno:int   分页查询参数，第几页
+        :query param data:dict    user_info
+        :query param qygtgshmc:varchar    企业/个体工商户名称
         :return:
             hhmdlx:varchar  红黑名单类型
             fbsj:varchar    发布时间
         """
-        data = {}
-        data['appkey'] = element_appkey_id["德阳市失信黑名单与守信红名单查询数据元件"][0]
-        data['id'] = element_appkey_id["德阳市失信黑名单与守信红名单查询数据元件"][1]
-        data['pagesize'] = 1
-        data['pageno'] = 1
-        data['qygtgshmc'] = user_data['qygtgshmc']
+        data = {
+            'appkey': element_appkey_id["德阳市失信黑名单与守信红名单查询数据元件"][0],
+            'id': element_appkey_id["德阳市失信黑名单与守信红名单查询数据元件"][1],
+            'pagesize': 1,
+            'pageno': 1,
+            'qygtgshmc': user_data['qygtgshmc']
+        }
         element = Element(**data)
         return element.get_element_data()
 
@@ -342,174 +364,22 @@ for i in user_list:
     # print(data)
     pass
 
-for i in company_list:
+for item in company_list:
     # data = Element.get_black_and_red_list(i)
     # print(data)
     pass
 
-
-def get_user_indexs(user_data: dict):
-    user_indexs = {
-        "A1_02_01": get_A1_02_01(user_data),
-        "A2_01_01": get_A2_01_01(user_data),
-        "A2_01_02": get_A2_01_02(user_data),
-        "A3_01_01": get_A3_01_01(user_data),
-        "A3_02_01": get_A3_02_01(user_data),
-        "A3_02_02": get_A3_02_02(user_data),
-        "A3_02_03": get_A3_02_03(user_data),
-        "A3_02_04": get_A3_02_04(user_data),
-        "C1_03_01": get_C1_03_01(user_data),
-        "C1_03_02": get_C1_03_02(user_data),
-        "C2_01_01": get_C2_01_01(user_data),
-        "C2_01_02": get_C2_01_02(user_data),
-        "C2_01_03": get_C2_01_03(user_data),
-        "C2_02_01": get_C2_02_01(user_data),
-        "C2_02_02": get_C2_02_02(user_data),
-        "D1_01_01": get_D1_01_01(user_data),
-        "D2_01_01": get_D2_01_01(user_data),
-        "D2_03_01": get_D2_03_01(user_data),
-        "D3_01_01": get_D3_01_01(user_data),
-        "E2_02_01": get_E2_02_01(user_data),
-        "E2_02_02": get_E2_02_02(user_data),
-        "E2_02_03": get_E2_02_03(user_data),
-        "E2_02_04": get_E2_02_04(user_data),
-    }
-    return user_indexs
-
-
-def get_A1_02_01(user_data):
-    pass
-    return 0
-
-
-def get_A2_01_01(user_data):
-    pass
-    return 0
-
-
-def get_A2_01_02(user_data):
-    """
-    近五年社保累计缴纳时间
-
-    """
-    Element.get_social_security_payment_months(user_data)
-    return 0
-
-
-def get_A3_01_01(user_data):
-    pass
-    return 0
-
-
-def get_A3_02_01(user_data):
-    pass
-    return 0
-
-
-def get_A3_02_02(user_data):
-    pass
-    return 0
-
-
-def get_A3_02_03(user_data):
-    pass
-    return 0
-
-
-def get_A3_02_04(user_data):
-    pass
-    return 0
-
-
-def get_C1_03_01(user_data):
-    pass
-    return 0
-
-
-def get_C1_03_02(user_data):
-    pass
-    return 0
-
-
-def get_C2_01_01(user_data):
-    pass
-    return 0
-
-
-def get_C2_01_02(user_data):
-    pass
-    return 0
-
-
-def get_C2_01_03(user_data):
-    pass
-    return 0
-
-
-def get_C2_02_01(user_data):
-    pass
-    return 0
-
-
-def get_C2_02_02(user_data):
-    pass
-    return 0
-
-
-def get_D1_01_01(user_data):
-    pass
-    return 0
-
-
-def get_D2_01_01(user_data):
-    pass
-    return 0
-
-
-def get_D2_03_01(user_data):
-    pass
-    return 0
-
-
-def get_D3_01_01(user_data):
-    pass
-    return 0
-
-
-def get_E2_02_01(user_data):
-    pass
-    return 0
-
-
-def get_E2_02_02(user_data):
-    pass
-    return 0
-
-
-def get_E2_02_03(user_data):
-    pass
-    return 0
-
-
-def get_E2_02_04(user_data):
-    pass
-    return 0
-
-
-def caculate_user_scores(user_indexs: dict):
-    user_scores = {}
-    # TODO 根据指标计算用户信用分数
-    user_scores["basic_info"] = random.randint(550, 600),
-    user_scores["corporate"] = 0,
-    user_scores["public_welfare"] = random.randint(500, 550),
-    user_scores["law"] = 1000,
-    user_scores["economic"] = random.randint(650, 700),
-    user_scores["life"] = 800,
-    user_scores["credit_score"] = random.randint(700,800 ),
-    return json.dumps(user_scores)
-
-
-def get_user_scores(user_data: dict):
-    user_indexs = get_user_indexs(user_data)
-    user_scores = caculate_user_scores(user_indexs)
-    return json.loads(user_scores)
+# def calculate_user_scores(user_indexs: dict):
+#     """
+#     随机模拟分数
+#     """
+#     user_scores = {}
+#     # TODO 根据指标计算用户信用分数
+#     user_scores["basic_info"] = random.randint(550, 600),
+#     user_scores["corporate"] = 0,
+#     user_scores["public_welfare"] = random.randint(500, 550),
+#     user_scores["law"] = 1000,
+#     user_scores["economic"] = random.randint(650, 700),
+#     user_scores["life"] = 800,
+#     user_scores["credit_score"] = random.randint(700, 800),
+#     return user_scores

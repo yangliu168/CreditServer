@@ -1,7 +1,6 @@
 import json
 from .config import Config
 
-
 map_value = Config.map_value
 value_dict = Config.value_dict
 d_index = Config.d_index
@@ -63,8 +62,8 @@ def format_data(input_dict):
         # k_dic = {'name': name, 'data': int(input_dict.get(name))}
         k_dic[name] = int(input_dict.get(name))
         # output.append(k_dic)
-    result = json.dumps(k_dic, ensure_ascii=False)
-    return result
+    # result = json.dumps(k_dic, ensure_ascii=False)
+    return k_dic
 
 
 # From request parameter to final output, main function.
