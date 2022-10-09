@@ -5,6 +5,10 @@ version:220929
 created_time:2022-09-29
 description:可通过调用类方法向 中国电子数据流通平台 获取市民相关数据元件信息
 """
+import configparser
+import os
+
+import pymysql
 import requests
 import time
 import urllib3
@@ -15,6 +19,42 @@ from .get_element_data import Element
 
 # 忽略警告
 urllib3.disable_warnings()
+
+# 获取配置
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+with open('myconfig.ini', 'w', encoding="utf-8") as f:
+    with open(BASE_DIR + '/config.ini', 'r', encoding="utf-8") as con_f:
+        f.write(con_f.read())
+conf = configparser.ConfigParser()
+conf.read('myconfig.ini', encoding="utf-8")
+envi_config = conf['envi']
+envi = envi_config.get('envi', 'local')
+mysql_config = conf[envi + '_mysql']
+redis_config = conf[envi + '_redis']
+
+
+def connect_mysql():
+    """
+    连接数据库
+    """
+    for i in range(5):
+        try:
+            db = pymysql.connect(
+                host=mysql_config.get('HOST', None),
+                port=int(mysql_config.get('PORT', None)),
+                user=mysql_config.get('USER', None),
+                password=mysql_config.get('PASSWORD', None),
+                database=mysql_config.get('NAME', None),
+                charset="utf8")
+        except Exception as e:
+            # todo log exception
+            # todo 邮件告警
+            print(f'# POST v1/score/user {i} connect to mysql failed: {e}')
+            if i == 4:
+                return False
+            continue
+        return db
+
 
 element_indexname_apiToken_path = {
     # 是否具有教师资格证
@@ -208,7 +248,7 @@ class TemporaryElement(TemporaryElements):
             temporary_element.query)
         result = temporary_element.get_temporary_element_data(url)
         if result:
-            print('旌阳区-根据身份证查询教师资格认定合格人员信息',end='    ')
+            print('旌阳区-根据身份证查询教师资格认定合格人员信息', end='    ')
             print(result)
             return 1 if result["data"] else 0
 
@@ -227,7 +267,7 @@ class TemporaryElement(TemporaryElements):
             temporary_element.query)
         result = temporary_element.get_temporary_element_data(url)
         if result:
-            print('广汉市-教师资格认定人员名册',end='    ')
+            print('广汉市-教师资格认定人员名册', end='    ')
             print(result)
             return 1 if result["data"] else 0
 
@@ -246,7 +286,7 @@ class TemporaryElement(TemporaryElements):
             temporary_element.query)
         result = temporary_element.get_temporary_element_data(url)
         if result:
-            print('市文旅局-根据身份证查询德阳市导游资格信息',end='    ')
+            print('市文旅局-根据身份证查询德阳市导游资格信息', end='    ')
             print(result)
             return 1 if result["data"] else 0
 
@@ -265,7 +305,7 @@ class TemporaryElement(TemporaryElements):
             temporary_element.query)
         result = temporary_element.get_temporary_element_data(url)
         if result:
-            print('市司法局-根据身份证查询律师执业信息',end='    ')
+            print('市司法局-根据身份证查询律师执业信息', end='    ')
             print(result)
             return 1 if result["data"] else 0
 
@@ -284,7 +324,7 @@ class TemporaryElement(TemporaryElements):
             temporary_element.query)
         result = temporary_element.get_temporary_element_data(url)
         if result:
-            print('市自然资源局-根据身份证号查询个人抵押信息',end='    ')
+            print('市自然资源局-根据身份证号查询个人抵押信息', end='    ')
             print(result)
             return 1 if result["data"] else 0
 
@@ -314,7 +354,7 @@ class TemporaryElement(TemporaryElements):
         try:
             # 取消验证
             result = requests.post(url=url, json=data, headers=headers, verify=False).json()
-            print('市住建局-德阳市根据买方身份信息获取存量房合同',end='    ')
+            print('市住建局-德阳市根据买方身份信息获取存量房合同', end='    ')
             print(result)
             if result['code'] == 200:
                 if isinstance(result['data'], dict):
@@ -343,7 +383,7 @@ class TemporaryElement(TemporaryElements):
             temporary_element.query)
         result = temporary_element.get_temporary_element_data(url)
         if result:
-            print('市发改委-失信被执行人名单信息',end='    ')
+            print('市发改委-失信被执行人名单信息', end='    ')
             print(result)
             return 1 if result["data"] else 0
 
@@ -362,7 +402,7 @@ class TemporaryElement(TemporaryElements):
             temporary_element.query)
         result = temporary_element.get_temporary_element_data(url)
         if result:
-            print('市发改委-根据自然人身份证号码查询行政处罚信息',end='    ')
+            print('市发改委-根据自然人身份证号码查询行政处罚信息', end='    ')
             print(result)
             return 1 if result["data"] else 0
 
@@ -381,7 +421,7 @@ class TemporaryElement(TemporaryElements):
             temporary_element.query)
         result = temporary_element.get_temporary_element_data(url)
         if result:
-            print('市自然资源局-根据身份证号码查询德阳市自然人表彰信息',end='    ')
+            print('市自然资源局-根据身份证号码查询德阳市自然人表彰信息', end='    ')
             print(result)
             return 1 if result["data"] else 0
 
@@ -395,9 +435,30 @@ class TemporaryElement(TemporaryElements):
     #     pass
 
 
+def log_get_element(user_data, type_code, cur, status, element=None, reason="成功获取该用户所有指标数据"):
+    """
+    记录获取元件异常日志
+    """
+    year = time.localtime()[0]
+    month = time.localtime()[1]
+    uid = user_data.get('sfzh')
+    if status == 0:
+        sql = f'insert into calculate_score_log_{year}_{month} (uid,type,status,reason,mission_time) values (%s,%s,%s,%s,now())'
+        try:
+            cur.execute(sql, [uid, type_code, 0, reason])
+        except Exception as e:
+            print(f'{time.strftime("%Y-%m-%d %H:%M:%S")} ERROR log_get_element all element success execute failed {e}')
+    else:
+        sql = f'insert into calculate_score_log_{year}_{month} (uid,type,status,element,reason,mission_time) values (%s,%s,%s,%s,%s,now())'
+        try:
+            cur.execute(sql, [uid, type_code, 1, element, reason])
+        except Exception as e:
+            print(f'{time.strftime("%Y-%m-%d %H:%M:%S")} ERROR log_get_element single element error execute failed {e}')
+
+
 class UserIndex:
     @staticmethod
-    def get_A1_02_01(user_data: dict):
+    def get_A1_02_01(user_data: dict, type_code, status, cur):
         """
         婚姻状况
         """
@@ -405,7 +466,7 @@ class UserIndex:
         return 0
 
     @staticmethod
-    def get_A2_01_01(user_data: dict):
+    def get_A2_01_01(user_data: dict, type_code, status, cur):
         """
         近5年是否缴纳社保
         """
@@ -413,14 +474,23 @@ class UserIndex:
         return 0
 
     @staticmethod
-    def get_A2_01_02(user_data: dict):
+    def get_A2_01_02(user_data: dict, type_code, status, cur):
         """
         近五年社保累计缴纳时间
         """
-        return Element.get_social_security_payment_months(user_data)
+        result = Element.get_social_security_payment_months(user_data)
+        if result.startswith('ERROR'):
+            status['status'] = 1
+            # TODO 记录异常日志
+            log_get_element(user_data, type_code, cur, status['status'], '近五年社保累计缴纳时间', result)
+            return
+        elif result == 'None':
+            return 'None'
+        else:
+            return int(result)
 
     @staticmethod
-    def get_A3_01_01(user_data: dict):
+    def get_A3_01_01(user_data: dict, type_code, status, cur):
         """
         工作类型
         """
@@ -428,21 +498,21 @@ class UserIndex:
         return 'None'
 
     @staticmethod
-    def get_A3_02_01(user_data: dict):
+    def get_A3_02_01(user_data: dict, type_code, status, cur):
         """
         是否具有律师执业资格
         """
         return TemporaryElement.get_A3_02_01(user_data)
 
     @staticmethod
-    def get_A3_02_02(user_data: dict):
+    def get_A3_02_02(user_data: dict, type_code, status, cur):
         """
         是否具有导游资格
         """
         return TemporaryElement.get_A3_02_02(user_data)
 
     @staticmethod
-    def get_A3_02_03(user_data: dict):
+    def get_A3_02_03(user_data: dict, type_code, status, cur):
         """
         教师资格
         """
@@ -461,7 +531,7 @@ class UserIndex:
         return 0
 
     @staticmethod
-    def get_A3_02_04(user_data: dict):
+    def get_A3_02_04(user_data: dict, type_code, status, cur):
         """
         是否具有其他职业资格
         """
@@ -469,7 +539,7 @@ class UserIndex:
         return 'None'
 
     @staticmethod
-    def get_C1_03_01(user_data: dict):
+    def get_C1_03_01(user_data: dict, type_code, status, cur):
         """
         个人房产数量
         """
@@ -477,14 +547,14 @@ class UserIndex:
         return TemporaryElement.get_C1_03_01(user_data)
 
     @staticmethod
-    def get_C1_03_02(user_data: dict):
+    def get_C1_03_02(user_data: dict, type_code, status, cur):
         """
         个人被抵押房产数量
         """
         return TemporaryElement.get_C1_03_02(user_data)
 
     @staticmethod
-    def get_C2_01_01(user_data: dict):
+    def get_C2_01_01(user_data: dict, type_code, status, cur):
         """
         账户状态
         """
@@ -492,7 +562,7 @@ class UserIndex:
         return 0
 
     @staticmethod
-    def get_C2_01_02(user_data: dict):
+    def get_C2_01_02(user_data: dict, type_code, status, cur):
         """
         账户余额
         """
@@ -500,7 +570,7 @@ class UserIndex:
         return 0
 
     @staticmethod
-    def get_C2_01_03(user_data: dict):
+    def get_C2_01_03(user_data: dict, type_code, status, cur):
         """
         缴存基数
         """
@@ -508,7 +578,7 @@ class UserIndex:
         return 0
 
     @staticmethod
-    def get_C2_02_01(user_data: dict):
+    def get_C2_02_01(user_data: dict, type_code, status, cur):
         """
         贷款业务明细类型
         """
@@ -516,7 +586,7 @@ class UserIndex:
         return 0
 
     @staticmethod
-    def get_C2_02_02(user_data: dict):
+    def get_C2_02_02(user_data: dict, type_code, status, cur):
         """
         罚息金额
         """
@@ -524,21 +594,21 @@ class UserIndex:
         return 0
 
     @staticmethod
-    def get_D1_01_01(user_data: dict):
+    def get_D1_01_01(user_data: dict, type_code, status, cur):
         """
         近5年被行政处罚的次数
         """
         return TemporaryElement.get_D1_01_01(user_data)
 
     @staticmethod
-    def get_D2_01_01(user_data: dict):
+    def get_D2_01_01(user_data: dict, type_code, status, cur):
         """
         近5年被列入失信被执行人的次数
         """
         return TemporaryElement.get_D2_01_01(user_data)
 
     @staticmethod
-    def get_D2_03_01(user_data: dict):
+    def get_D2_03_01(user_data: dict, type_code, status, cur):
         """
         近5年税务违约的次数
         """
@@ -546,7 +616,7 @@ class UserIndex:
         return 0
 
     @staticmethod
-    def get_D3_01_01(user_data: dict):
+    def get_D3_01_01(user_data: dict, type_code, status, cur):
         """
         近5年发生失信行为的次数（包括被列入失信黑名单、列入经营异常、失信被执行等）
         """
@@ -554,61 +624,67 @@ class UserIndex:
         return 0
 
     @staticmethod
-    def get_E2_02_01(user_data: dict):
+    def get_E2_02_01(user_data: dict, type_code, status, cur):
         """
         近5年获得县（区）级荣誉的次数
         """
         return TemporaryElement.get_E2_02(user_data)
 
     @staticmethod
-    def get_E2_02_02(user_data: dict):
+    def get_E2_02_02(user_data: dict, type_code, status, cur):
         """
         近5年获得市级荣誉的次数
         """
         return TemporaryElement.get_E2_02(user_data)
 
     @staticmethod
-    def get_E2_02_03(user_data: dict):
+    def get_E2_02_03(user_data: dict, type_code, status, cur):
         """
         近5年获得省级荣誉的次数
         """
         return TemporaryElement.get_E2_02(user_data)
 
     @staticmethod
-    def get_E2_02_04(user_data: dict):
+    def get_E2_02_04(user_data: dict, type_code, status, cur):
         """
         近5年获得国家级荣誉的次数
         """
         return TemporaryElement.get_E2_02(user_data)
 
     @staticmethod
-    def get_user_indexs(user_data: dict):
-        user_indexs = {
-            "A1_02_01": UserIndex.get_A1_02_01(user_data),
-            "A2_01_01": UserIndex.get_A2_01_01(user_data),
-            "A2_01_02": UserIndex.get_A2_01_02(user_data),
-            "A3_01_01": UserIndex.get_A3_01_01(user_data),
-            "A3_02_01": UserIndex.get_A3_02_01(user_data),
-            "A3_02_02": UserIndex.get_A3_02_02(user_data),
-            "A3_02_03": UserIndex.get_A3_02_03(user_data),
-            "A3_02_04": UserIndex.get_A3_02_04(user_data),
-            "C1_03_01": UserIndex.get_C1_03_01(user_data),
-            "C1_03_02": UserIndex.get_C1_03_02(user_data),
-            "C2_01_01": UserIndex.get_C2_01_01(user_data),
-            "C2_01_02": UserIndex.get_C2_01_02(user_data),
-            "C2_01_03": UserIndex.get_C2_01_03(user_data),
-            "C2_02_01": UserIndex.get_C2_02_01(user_data),
-            "C2_02_02": UserIndex.get_C2_02_02(user_data),
-            "D1_01_01": UserIndex.get_D1_01_01(user_data),
-            "D2_01_01": UserIndex.get_D2_01_01(user_data),
-            "D2_03_01": UserIndex.get_D2_03_01(user_data),
-            "D3_01_01": UserIndex.get_D3_01_01(user_data),
-            "E2_02_01": UserIndex.get_E2_02_01(user_data),
-            "E2_02_02": UserIndex.get_E2_02_02(user_data),
-            "E2_02_03": UserIndex.get_E2_02_03(user_data),
-            "E2_02_04": UserIndex.get_E2_02_04(user_data),
+    def get_user_indexs(user_data: dict, type_code: int, cur):
+        status = {
+            'status': 0
         }
-
+        user_indexs = {
+            "A1_02_01": UserIndex.get_A1_02_01(user_data, type_code, status, cur),
+            "A2_01_01": UserIndex.get_A2_01_01(user_data, type_code, status, cur),
+            "A2_01_02": UserIndex.get_A2_01_02(user_data, type_code, status, cur),
+            "A3_01_01": UserIndex.get_A3_01_01(user_data, type_code, status, cur),
+            "A3_02_01": UserIndex.get_A3_02_01(user_data, type_code, status, cur),
+            "A3_02_02": UserIndex.get_A3_02_02(user_data, type_code, status, cur),
+            "A3_02_03": UserIndex.get_A3_02_03(user_data, type_code, status, cur),
+            "A3_02_04": UserIndex.get_A3_02_04(user_data, type_code, status, cur),
+            "C1_03_01": UserIndex.get_C1_03_01(user_data, type_code, status, cur),
+            "C1_03_02": UserIndex.get_C1_03_02(user_data, type_code, status, cur),
+            "C2_01_01": UserIndex.get_C2_01_01(user_data, type_code, status, cur),
+            "C2_01_02": UserIndex.get_C2_01_02(user_data, type_code, status, cur),
+            "C2_01_03": UserIndex.get_C2_01_03(user_data, type_code, status, cur),
+            "C2_02_01": UserIndex.get_C2_02_01(user_data, type_code, status, cur),
+            "C2_02_02": UserIndex.get_C2_02_02(user_data, type_code, status, cur),
+            "D1_01_01": UserIndex.get_D1_01_01(user_data, type_code, status, cur),
+            "D2_01_01": UserIndex.get_D2_01_01(user_data, type_code, status, cur),
+            "D2_03_01": UserIndex.get_D2_03_01(user_data, type_code, status, cur),
+            "D3_01_01": UserIndex.get_D3_01_01(user_data, type_code, status, cur),
+            "E2_02_01": UserIndex.get_E2_02_01(user_data, type_code, status, cur),
+            "E2_02_02": UserIndex.get_E2_02_02(user_data, type_code, status, cur),
+            "E2_02_03": UserIndex.get_E2_02_03(user_data, type_code, status, cur),
+            "E2_02_04": UserIndex.get_E2_02_04(user_data, type_code, status, cur),
+        }
+        if status['status'] == 1:
+            return
+        else:
+            log_get_element(user_data, type_code, cur, status['status'])
         return user_indexs
 
 
@@ -646,15 +722,16 @@ user_list = [
 ]
 
 
-def get_user_scores(user_data: dict):
-    user_indexs = UserIndex.get_user_indexs(user_data)
+def get_user_scores(user_data: dict, type_code: int, cur):
+    user_indexs = UserIndex.get_user_indexs(user_data, type_code, cur)
+    if not user_indexs:
+        return
     print('user_indexs')
     print(user_indexs)
     user_scores = calculate_user_scores(user_indexs)
     return user_scores
 
-
-for i in user_list:
-    print(i)
-    print(get_user_scores(i))
-    print('---------------------------------------------------------------------')
+# for i in user_list:
+#     print(i)
+#     print(get_user_scores(i))
+#     print('---------------------------------------------------------------------')

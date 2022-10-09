@@ -3,6 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="355ce705-41fd-41f5-8ec4-37b3f902bd2d" name="变更" comment="查询是否存在calculate_score_log_year_month 表,无则创建">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Credit_Score_Test/score/get_element_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/Credit_Score_Test/score/get_element_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Credit_Score_Test/score/get_elements_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/Credit_Score_Test/score/get_elements_data.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Credit_Score_Test/score/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/Credit_Score_Test/score/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -49,22 +51,22 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\willo\Desktop\Score\venv" />
       <recent name="$PROJECT_DIR$/Credit_Score_Test/score" />
       <recent name="$APPLICATION_CONFIG_DIR$/scratches/credit_Deyang" />
       <recent name="$APPLICATION_CONFIG_DIR$/scratches" />
       <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/Credit_Score_Test/Credit_Score_Test" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\willo\AppData\Roaming\JetBrains\PyCharmCE2022.2\scratches" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/config" />
       <recent name="$PROJECT_DIR$/Credit_Score_Test" />
       <recent name="$PROJECT_DIR$/CreditScore/Credit_Score_Test/mission" />
-      <recent name="$PROJECT_DIR$/CreditScore" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.1">
-    <configuration name="1" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python.test_get_app_token (1)">
+    <configuration name="test_get_app_token (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="CreditServer-Local" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -76,7 +78,7 @@
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$APPLICATION_CONFIG_DIR$/scratches/1.py" />
+      <option name="SCRIPT_NAME" value="$APPLICATION_CONFIG_DIR$/scratches/test_get_app_token.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -85,7 +87,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="get_element_data" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="test_get_app_token" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="CreditServer-Local" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -93,32 +95,32 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Credit_Score_Test/score" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Credit_Score_Test/score/get_element_data.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="CreditServer-Local" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$APPLICATION_CONFIG_DIR$/scratches/credit_Deyang" />
+      <option name="WORKING_DIRECTORY" value="$APPLICATION_CONFIG_DIR$/scratches" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$APPLICATION_CONFIG_DIR$/scratches/credit_Deyang/main.py" />
+      <option name="SCRIPT_NAME" value="C:\Users\willo\AppData\Roaming\JetBrains\PyCharmCE2022.2\scratches\test_get_app_token.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="test_get_element" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="CreditServer-Local" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$APPLICATION_CONFIG_DIR$/scratches" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$APPLICATION_CONFIG_DIR$/scratches/test_get_element.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -171,11 +173,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.1" />
+        <item itemvalue="Python.test_get_app_token (1)" />
+        <item itemvalue="Python.test_get_element" />
+        <item itemvalue="Python.test_get_app_token" />
         <item itemvalue="Python.test_watch" />
         <item itemvalue="Python.threading_test" />
-        <item itemvalue="Python.get_element_data" />
-        <item itemvalue="Python.main" />
       </list>
     </recent_temporary>
   </component>
@@ -187,13 +189,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1663051722455</updated>
-    </task>
-    <task id="LOCAL-00010" summary="CreditServer mission&amp;score API">
-      <created>1663119335944</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1663119335944</updated>
     </task>
     <task id="LOCAL-00011" summary="CreditServer mission&amp;score judge API param">
       <created>1663124668225</created>
@@ -531,7 +526,14 @@
       <option name="project" value="LOCAL" />
       <updated>1665285380179</updated>
     </task>
-    <option name="localTasksCounter" value="59" />
+    <task id="LOCAL-00059" summary="查询是否存在calculate_score_log_year_month 表,无则创建">
+      <created>1665294639176</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1665294639176</updated>
+    </task>
+    <option name="localTasksCounter" value="60" />
     <servers />
   </component>
   <component name="UnknownFeatures">

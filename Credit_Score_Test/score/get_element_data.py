@@ -29,10 +29,10 @@ mysql_config = conf[envi + '_mysql']
 redis_config = conf[envi + '_redis']
 
 # 元件api地址
-element_api_url = 'http://59.213.91.96:80/dc-dbapi/api/getApi'
+
 
 element_appkey_id = {
-    "德阳市职工婚姻登记状态数据元件": ("", "164819098898223"),
+    "德阳市婚姻登记状态数据元件": ("770ef02d79e9ce0bc788f94607809664", "166366600733822"),
     "德阳市职工社保缴费状态数据元件": ("", ""),
     "德阳市职工社保累计缴纳月份数数据元件": ("63cba0b30cf0aca74782d188f9b307af", "164670660220556"),
     "德阳市职工社保缴费单位性质数据元件": ("3e486cc7b222ccf8901c36fc43066eae", "164670499149768"),
@@ -112,6 +112,7 @@ class Element(Elements):
         :param qygtgshmc:企业/个体工商户名称
         """
         super().__init__()
+        self.element_api_url = 'http://59.213.91.96:80/dc-dbapi/api/getApi'
         self.appkey = appkey
         if redis_config["PASSWORD"] == "None":
             self.redis_connection = redis.Redis(host=redis_config["HOST"], port=int(redis_config["PORT"]), db=0)
@@ -148,21 +149,21 @@ class Element(Elements):
 
     # http://59.213.91.96:80/dc-dbapi/api/getApi164***********?sfzh=*****&xm=***&pageSize=20&pageNo=1
     def get_element_data(self):
-        """"""
-        url = element_api_url + self.id + '?' + parse.urlencode(self.query)
+        """
+        获取元件
+        """
+        url = self.element_api_url + self.id + '?' + parse.urlencode(self.query)
         app_token = self.redis_connection.get(self.appkey)
         if not app_token:
             for i in range(4):
                 app_token = super().get_app_token(self.appkey)
                 if app_token:
-                    self.redis_connection.set(self.appkey, app_token, 3000)
+                    self.redis_connection.set(self.appkey, app_token, 3600)
                     break
                 else:
                     if i == 3:
                         print(f'get_app_token id:{self.id} failed ')
-                        # TODO raise exception
-                        # TODO 暂时返回 0
-                        return 0
+                        return 'get app_token failed'
                     continue
         else:
             app_token = app_token.decode()
@@ -172,7 +173,6 @@ class Element(Elements):
         # TODO 判断token是否过期
         data = 0
         try:
-            # TODO timeout?
             data = requests.get(url=url, headers=headers).json()
         except Exception as e:
             # TODO: log
@@ -180,23 +180,23 @@ class Element(Elements):
         if data:
             return data
         else:
-            return 0
+            return 'get element data failed'
 
     @staticmethod
     def get_marriage_state(user_data: dict):
         """
-        获取 德阳市职工婚姻登记状态数据元件 婚姻状态
-        反映1960至1996年出生职工的婚姻状态，无输出信息可认定为未婚；（查询人年龄=1960至1996年）
-        婚姻状态：1-已婚，2-离异
+        获取 德阳市婚姻登记状态数据元件 婚姻状态
+        通过查询职工身份证号反映婚姻登记信息
+        婚姻状态：lx
         :query param data:user_info
         :return:lx:varchar
         """
         data = {
-            'appkey': element_appkey_id["德阳市职工婚姻登记状态数据元件"][0],
-            'id': element_appkey_id["德阳市职工婚姻登记状态数据元件"][1],
+            'appkey': element_appkey_id["德阳市婚姻登记状态数据元件"][0],
+            'id': element_appkey_id["德阳市婚姻登记状态数据元件"][1],
             'pagesize': 20,
             'pageno': 1,
-            'xm': user_data['xm'],
+            # 'xm': user_data['xm'],  元件服务对姓名做了姓氏隐藏，只用身份证号查询即可
             'sfzh': user_data['sfzh']
         }
         element = Element(**data)
@@ -215,12 +215,9 @@ class Element(Elements):
             'id': element_appkey_id["德阳市职工社保累计缴纳月份数数据元件"][1],
             'pagesize': 1,
             'pageno': 1,
-            'xm': user_data.get('xm')
+            'xm': user_data.get('xm'),
+            'sfzh': user_data.get('sfzh')
         }
-        # TODO 根据用户身份证查询姓名 的函数
-        print(data['xm'])
-        data['sfzh'] = user_data['sfzh']
-        # data['jfljnxqj'] = "十年以上"  # 必填
         '''
         十年以上
         五年至十年
@@ -236,17 +233,17 @@ class Element(Elements):
         try:
             result = result['data'][0]["jfljnxqj"]
             if result == "十年以上":
-                return 5
+                return "5"
             if result == "五年至十年":
-                return 4
+                return "4"
             if result == "三年至五年":
-                return 3
+                return "3"
             if result == "一年至三年":
-                return 2
+                return "2"
             if result == "半年至一年":
-                return 1
+                return "1"
             if result == "半年以内":
-                return 0
+                return "0"
             else:
                 return "None"
         except:
