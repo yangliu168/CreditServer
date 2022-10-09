@@ -254,18 +254,19 @@ def calculate_score_log_year_month(cur):
     sql = 'show tables'
     cur.execute(sql)
     result = cur.fetchall()
-    if f'calculate_score_log_{year}_{month}' in result:
-        print('本月日志表已存在')
-        return f'calculate_score_log_{year}_{month}'
-    else:
-        try:
-            sql = f"CREATE TABLE 'calculate_score_log_{year}_{month}' ('id' int NOT NULL AUTO_INCREMENT,'uid' char(18) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '身份证号','type' varchar(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '个人查询/个人更新/批量更新','status' tinyint DEFAULT NULL COMMENT '所有元件数据获取成功，设置为0','element' varchar(32) DEFAULT NULL COMMENT '异常元件简称','reason' varchar(256) DEFAULT NULL COMMENT '第三方接口异常原因','mission_time' datetime DEFAULT NULL COMMENT '创建时间',PRIMARY KEY ('id'))"
-            cur.execute(sql)
-        except Exception as e:
-            print('本月日志表创建失败')
-            return False
-        print('本月日志表创建成功')
-        return f'calculate_score_log_{year}_{month}'
+    for i in result:
+        print(i)
+        if f'calculate_score_log_{year}_{month}' in i:
+            print('本月日志表已存在')
+            return f'calculate_score_log_{year}_{month}'
+    try:
+        sql = f"CREATE TABLE calculate_score_log_{year}_{month} (id int NOT NULL PRIMARY KEY AUTO_INCREMENT,uid char(18) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '身份证号',type varchar(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '个人查询/个人更新/批量更新',status tinyint DEFAULT NULL COMMENT '所有元件数据获取成功，设置为0',element varchar(32) DEFAULT NULL COMMENT '异常元件简称',reason varchar(256) DEFAULT NULL COMMENT '第三方接口异常原因',mission_time datetime DEFAULT NULL COMMENT '创建时间')"
+        cur.execute(sql)
+    except Exception as e:
+        print(f'本月日志表创建失败    {e}')
+        return False
+    print('本月日志表创建成功')
+    return f'calculate_score_log_{year}_{month}'
 
 class MissionView(View):
     def get(self, request):
@@ -463,7 +464,7 @@ def start_mission(mission_time, statu, first):
         print(max_id)
         sql = 'update mission_record_time set statu=1 where id=%s'
         cur.execute(sql, [max_id])
-        print("seccess")
+        print("success")
         sql = 'select statu from mission_record_time ORDER BY id DESC limit 1'
         cur.execute(sql)
         statu = cur.fetchone()[0]
