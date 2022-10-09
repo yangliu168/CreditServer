@@ -12,7 +12,7 @@ from threading import Thread
 from multiprocessing import Process
 import pymysql
 import re
-from .get_element_data import get_user_scores
+from .get_elements_data import get_user_scores
 import configparser
 import os
 
@@ -52,7 +52,7 @@ def connect_mysql():
         return db
 
 
-def caculate_user_credit_scores_first_time(db, cur, cardID, user_data):
+def calculate_user_credit_scores_first_time(db, cur, cardID, user_data):
     """
         功能：用户第一次查询信用分
         param:
@@ -61,7 +61,7 @@ def caculate_user_credit_scores_first_time(db, cur, cardID, user_data):
             cardID:身份证号
             user_data：用户数据 todo 数据未知
     """
-    print(f'ready to caculate  user credit_scores the first time {cardID}')
+    print(f'ready to calculate  user credit_scores the first time {cardID}')
     user_scores = get_user_scores(user_data)
     sql = 'insert into user_credit_scores (uid,basic_info,corporate,public_welfare,law,economic,life,created_time,updated_time,credit_score) values (%s,%s,%s,%s,%s,%s,%s,now(),now(),%s)'
     try:
@@ -222,7 +222,7 @@ class ScoreView(View):
             return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
         else:
             # 该用户为新用户
-            result = caculate_user_credit_scores_first_time(db, cur, cardID, user_data)
+            result = calculate_user_credit_scores_first_time(db, cur, cardID, user_data)
             if result:
                 result = {
                     "code": '0',
@@ -325,7 +325,7 @@ class MissionView(View):
                     'data': {}
                 }
                 print('任务准备继续执行')
-                mission_statu=0
+                mission_statu = 0
                 mission_threading = Thread(target=start_mission, args=[mission_time, mission_statu, first])
                 mission_threading.start()
                 print('任务继续执行')
@@ -415,7 +415,7 @@ def start_mission(mission_time, statu, first):
             else:
                 print(" first != 1")
                 sql = 'select id,uid from user_credit_scores where id between %s and %s and updated_time<'
-                sql+='(select mission_time from mission_record_time ORDER BY id DESC limit 1)'
+                sql += '(select mission_time from mission_record_time ORDER BY id DESC limit 1)'
                 cur.execute(sql, [i, i + update_one_time_quantity])
             users = cur.fetchall()
             print(users)
@@ -436,12 +436,12 @@ def start_mission(mission_time, statu, first):
     # cur.execute(sql, [1, mission_time])
     time.sleep(1)
     try:
-        sql='select max(id) from mission_record_time'
+        sql = 'select max(id) from mission_record_time'
         cur.execute(sql)
-        max_id= cur.fetchone()[0]
+        max_id = cur.fetchone()[0]
         print(max_id)
         sql = 'update mission_record_time set statu=1 where id=%s'
-        cur.execute(sql,[max_id])
+        cur.execute(sql, [max_id])
         print("seccess")
         sql = 'select statu from mission_record_time ORDER BY id DESC limit 1'
         cur.execute(sql)
