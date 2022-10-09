@@ -11,7 +11,7 @@ import urllib3
 from urllib import parse
 
 from .algorithm.calculate_user_scores import calculate_user_scores
-from get_element_data import Element
+from .get_element_data import Element
 
 # 忽略警告
 urllib3.disable_warnings()
