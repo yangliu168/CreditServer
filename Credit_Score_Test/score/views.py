@@ -16,6 +16,7 @@ from .get_elements_data import get_user_scores
 import configparser
 import os
 
+# 获取配置
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 with open('myconfig.ini', 'w', encoding="utf-8") as f:
     with open(BASE_DIR + '/config.ini', 'r', encoding="utf-8") as con_f:
@@ -29,10 +30,14 @@ redis_config = conf[envi + '_redis']
 mission_config = conf['mission']
 update_credit_score_quantity = mission_config.get('update_credit_score_quantity', 1000)
 
+# 调度任务状态标记
 mission_statu = 1
 
 
 def connect_mysql():
+    """
+    连接数据库
+    """
     for i in range(5):
         try:
             db = pymysql.connect(
@@ -240,6 +245,28 @@ class ScoreView(View):
             return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
 
 
+def calculate_score_log_year_month(cur):
+    """
+    查询是否存在calculate_score_log_year_month 表,无则创建
+    """
+    year = time.localtime()[0]
+    month = time.localtime()[1]
+    sql = 'show tables'
+    cur.execute(sql)
+    result = cur.fetchall()
+    if f'calculate_score_log_{year}_{month}' in result:
+        print('本月日志表已存在')
+        return f'calculate_score_log_{year}_{month}'
+    else:
+        try:
+            sql = f"CREATE TABLE 'calculate_score_log_{year}_{month}' ('id' int NOT NULL AUTO_INCREMENT,'uid' char(18) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '身份证号','type' varchar(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '个人查询/个人更新/批量更新','status' tinyint DEFAULT NULL COMMENT '所有元件数据获取成功，设置为0','element' varchar(32) DEFAULT NULL COMMENT '异常元件简称','reason' varchar(256) DEFAULT NULL COMMENT '第三方接口异常原因','mission_time' datetime DEFAULT NULL COMMENT '创建时间',PRIMARY KEY ('id'))"
+            cur.execute(sql)
+        except Exception as e:
+            print('本月日志表创建失败')
+            return False
+        print('本月日志表创建成功')
+        return f'calculate_score_log_{year}_{month}'
+
 class MissionView(View):
     def get(self, request):
         result = {
@@ -269,7 +296,6 @@ class MissionView(View):
             }
             return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
         global mission_statu
-        print('xxxx')
         db = connect_mysql()
         if not db:
             result = {
@@ -292,6 +318,9 @@ class MissionView(View):
                 'data': {}
             }
             return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
+        # 查询是否存在calculate_score_log_year_month 表,无则创建
+        calculate_score_log_table_name = calculate_score_log_year_month(cur)
+        # 第一次调度任务标记
         first = 0
         if result:
             print(result)
@@ -336,14 +365,6 @@ class MissionView(View):
 
             mission_threading = Thread(target=start_mission, args=[mission_time, mission_statu, first])
             mission_threading.start()
-            # result = start_mission()
-            # if result == '数据库连接失败':
-            #     result = {
-            #         'code': '1',
-            #         'message': '开始任务数据库连接失败',
-            #         'data': {}
-            #     }
-            # else:
             mission_statu = 0
             print('return success')
             result = {
