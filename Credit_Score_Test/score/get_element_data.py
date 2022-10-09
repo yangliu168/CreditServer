@@ -15,7 +15,7 @@ import json
 from urllib import parse
 import redis
 
-from algorithm.calculate_user_scores import calculate_user_scores
+from .algorithm.calculate_user_scores import calculate_user_scores
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 with open('myconfig.ini', 'w', encoding="utf-8") as f:

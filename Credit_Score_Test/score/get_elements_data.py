@@ -10,7 +10,7 @@ import time
 import urllib3
 from urllib import parse
 
-from algorithm.calculate_user_scores import calculate_user_scores
+from .algorithm.calculate_user_scores import calculate_user_scores
 from get_element_data import Element
 
 # 忽略警告

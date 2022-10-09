@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="355ce705-41fd-41f5-8ec4-37b3f902bd2d" name="变更" comment="ready to log">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Credit_Score_Test/score/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/Credit_Score_Test/score/views.py" afterDir="false" />
-    </list>
+    <list default="true" id="355ce705-41fd-41f5-8ec4-37b3f902bd2d" name="变更" comment="查询是否存在calculate_score_log_year_month 表,无则创建" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -187,13 +184,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1663051722455</updated>
-    </task>
-    <task id="LOCAL-00007" summary="CreditServer unicode">
-      <created>1663062163842</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1663062163842</updated>
     </task>
     <task id="LOCAL-00008" summary="CreditServer before channels">
       <created>1663063172137</created>
@@ -531,7 +521,14 @@
       <option name="project" value="LOCAL" />
       <updated>1665282757416</updated>
     </task>
-    <option name="localTasksCounter" value="56" />
+    <task id="LOCAL-00056" summary="查询是否存在calculate_score_log_year_month 表,无则创建">
+      <created>1665284967284</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1665284967284</updated>
+    </task>
+    <option name="localTasksCounter" value="57" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -602,6 +599,7 @@
     <MESSAGE value="i" />
     <MESSAGE value="1" />
     <MESSAGE value="ready to log" />
-    <option name="LAST_COMMIT_MESSAGE" value="ready to log" />
+    <MESSAGE value="查询是否存在calculate_score_log_year_month 表,无则创建" />
+    <option name="LAST_COMMIT_MESSAGE" value="查询是否存在calculate_score_log_year_month 表,无则创建" />
   </component>
 </project>
