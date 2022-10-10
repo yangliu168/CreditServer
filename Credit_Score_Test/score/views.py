@@ -88,7 +88,6 @@ def calculate_user_credit_scores_first_time(db, cur, cardID, user_data):
         db.rollback()
         print(f"calculate user credit_score the first time failed:{cardID} : {e}")
         return
-    print(time.time())
     return cardID
 
 
@@ -99,7 +98,8 @@ def update_user_credit_scores(db, cur, cardID, user_data, type_code):
         db:
         cur:
         cardID:身份证号
-        user_data：用户数据 todo 数据未知
+        user_data：用户数据
+        type_code：0：个人首次查询  1：个人更新  2：批量更新
     """
     print(f'ready to update user credit_scores {cardID}')
     user_scores = get_user_scores(user_data, type_code, cur)
@@ -247,7 +247,6 @@ class ScoreView(View):
                 }
             cur.close()
             db.close()
-            print(time.time())
             return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
 
 
@@ -449,9 +448,10 @@ def start_mission(mission_time, statu, first):
             users = cur.fetchall()
             print(users)
             for user in users:
-                user_data = {"sfzh": user[1]}
-                user_data = {"xm": user[2]}
-                # TODO 获取用户姓名？根据元件借口需求获取
+                user_data = {
+                    "sfzh": user[1],
+                    "xm": user[2]
+                }
                 time.sleep(0.1)
                 update_user_credit_scores(db, cur, user[1], user_data, 2)
         elif mission_statu == 2:

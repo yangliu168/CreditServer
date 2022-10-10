@@ -155,39 +155,97 @@ class Element(Elements):
         url = self.element_api_url + self.id + '?' + parse.urlencode(self.query)
         app_token = self.redis_connection.get(self.appkey)
         if not app_token:
-            for i in range(4):
+            for i in range(3):
                 app_token = super().get_app_token(self.appkey)
                 if app_token:
                     self.redis_connection.set(self.appkey, app_token, 3600)
                     break
                 else:
-                    if i == 3:
-                        print(f'get_app_token id:{self.id} failed ')
-                        return 'get app_token failed'
+                    if i == 2:
+                        result = {
+                            'code': 500,
+                            'message': f'{self.id} 该元件获取app_token失败',
+                        }
+                        return result
                     continue
         else:
             app_token = app_token.decode()
         headers = {
             "app-token": app_token
         }
-        # TODO 判断token是否过期
-        data = 0
         try:
             data = requests.get(url=url, headers=headers).json()
+            if data:
+                #   token过期，重新获取token
+                if data.get('code') == 401:
+                    for i in range(3):
+                        app_token = super().get_app_token(self.appkey)
+                        if app_token:
+                            self.redis_connection.set(self.appkey, app_token, 3600)
+                            break
+                        else:
+                            if i == 2:
+                                result = {
+                                    'code': 500,
+                                    'message': f'{self.id} 该元件获取app_token失败',
+                                    'data': None
+                                }
+                                return result
+                            continue
+                    # 重新请求元件接口获取数据
+                    headers = {
+                        "app-token": app_token
+                    }
+                    try:
+                        data = requests.get(url=url, headers=headers).json()
+                        if data:
+                            result = {
+                                'code': 200,
+                                'message': f'{self.id} 该元件数据获取成功',
+                                'data': data
+                            }
+                            return result
+                        result = {
+                            'code': 500,
+                            'message': f'{self.id} 该元件数据获取失败：requests get no data',
+                            'data': None
+                        }
+                        return result
+                    except Exception as e:
+                        result = {
+                            'code': 500,
+                            'message': f'{self.id} 该元件数据获取失败：{e}',
+                            'data': None
+                        }
+                        return result
+                result = {
+                    'code': 200,
+                    'message': f'{self.id} 该元件数据获取成功',
+                    'data': data
+                }
+                return result
+            result = {
+                'code': 500,
+                'message': f'{self.id} 该元件获取数据失败：requests get no data',
+                'data': None
+            }
+            return result
         except Exception as e:
-            # TODO: log
-            print(f"{self.id} get_element_data failed")
-        if data:
-            return data
-        else:
-            return 'get element data failed'
+            result = {
+                'code': 500,
+                'message': f'{self.id} 该元件获取数据失败：{e}',
+                'data': None
+            }
+            return result
 
     @staticmethod
     def get_marriage_state(user_data: dict):
         """
         获取 德阳市婚姻登记状态数据元件 婚姻状态
         通过查询职工身份证号反映婚姻登记信息
-        婚姻状态：lx
+        婚姻状态：lx 无输出信息可认定为未婚； 婚姻状态：1-已婚，2-离异
+        get_element_data返回值result['data]
+            {'code': 200, 'data': [{'sfzh': '510603xxxxxxxx6678', 'lx': '1'}], 'message': '操作成功'}
         :query param data:user_info
         :return:lx:varchar
         """
@@ -200,7 +258,21 @@ class Element(Elements):
             'sfzh': user_data['sfzh']
         }
         element = Element(**data)
-        return element.get_element_data()
+        result = element.get_element_data()
+        if result['code'] == 500:
+            return result
+        elif result['code'] == 200:
+            data = {
+                'code': 200,
+                'message': result['message'],
+            }
+            if result['data']['data'][0]['lx'] == 1:
+                data['data'] = 1
+            elif result['data']['data'][0]['lx'] == 2:
+                data['data'] = 3
+            else:
+                data['data'] = 2
+        return data
 
     @staticmethod
     def get_social_security_payment_months(user_data: dict):
@@ -228,26 +300,29 @@ class Element(Elements):
         '''
         element = Element(**data)
         result = element.get_element_data()
-        print('德阳市职工社保累计缴纳月份数数据元件',end='    ')
-        print(result)
-        try:
-            result = result['data'][0]["jfljnxqj"]
+        if result['code'] == 500:
+            return result
+        elif result['code'] == 200:
+            data = {
+                'code': 200,
+                'message': result['message'],
+            }
+            result = result['data']['data'][0]["jfljnxqj"]
             if result == "十年以上":
-                return "5"
+                data['data'] = 5
             if result == "五年至十年":
-                return "4"
+                data['data'] = 4
             if result == "三年至五年":
-                return "3"
+                data['data'] = 3
             if result == "一年至三年":
-                return "2"
+                data['data'] = 2
             if result == "半年至一年":
-                return "1"
+                data['data'] = 1
             if result == "半年以内":
-                return "0"
+                data['data'] = 0
             else:
-                return "None"
-        except:
-            return 'None'
+                data['data'] = 'None'
+            return data
 
     @staticmethod
     def get_unit_nature(user_data: dict):
@@ -308,63 +383,62 @@ class Element(Elements):
         element = Element(**data)
         return element.get_element_data()
 
+#
+# user_list = [
+#     {'sfzh': '510623198009210017', 'xm': '刘辉'},
+#     {'sfzh': '510603198511186678', 'xm': '唐龑'},
+#     {'sfzh': '510622199608195718', 'xm': '何颖'},
+#     {'sfzh': '510625199507110016', 'xm': '郭朋鑫'},
+#     {'sfzh': '510723199804070017', 'xm': '胡笛潇'},
+#     {'sfzh': '510603199303110303', 'xm': '杨春桃'},
+#     {'sfzh': '510603199702240985', 'xm': '邓雨桐'},
+#     {'sfzh': '500229199510210220', 'xm': '周付琴'},
+#     {'sfzh': '510682198512240029', 'xm': '曾潇潇'},
+#     {'sfzh': '510723199705030044', 'xm': '贾丽莎'},
+#     {'sfzh': '510603198701115969', 'xm': '李仁可'},
+#     {'sfzh': '510682198707070031', 'xm': '赖韬'},
+#     {'sfzh': '510682198607010525', 'xm': '边明思'},
+#     {'sfzh': '510602199606227661', 'xm': '朱航'},
+#     {'sfzh': '510602197601261693', 'xm': '曾振金'},
+#     {'sfzh': '511025197309216791', 'xm': '周龙生'},
+#     {'sfzh': '513721199009081008', 'xm': '张又杉'},
+#     {'sfzh': '51060319931108783X', 'xm': '邓杰堃'},
+#     {'sfzh': '510603199705095939', 'xm': '邱奕铭'},
+#     {'sfzh': '510622199510103010', 'xm': '董永亮'},
+#     {'sfzh': '510623199606040815', 'xm': '龚荣志'},
+#     {'sfzh': '510722199401270026', 'xm': '曾小苡'},
+#     {'sfzh': '510622199508123012', 'xm': '牟小虎'},
+#     {'sfzh': '51068320000831091X', 'xm': '杜沛霖'},
+#     {'sfzh': '510603198710262047', 'xm': '罗琛'},
+#     {'sfzh': '510623199606292115', 'xm': '满光东'},
+#     {'sfzh': '510681199908230319', 'xm': '廖朗迅'},
+#     {'sfzh': '510683200105220027', 'xm': '梅筱璐'},
+#     {'sfzh': '141034199606110068', 'xm': '王舒婷'},
+#     {'sfzh': '510603198602056502', 'xm': '肖燕燕'},
+# ]
+#
+# company_list = [
+#     {"qygtgshmc": "德阳鑫锐科技有限公司"},
+#     {"qygtgshmc": "工赋（德阳）科技有限公司"},
+#     {"qygtgshmc": "百度"},
+#     {"qygtgshmc": "德阳市南天科技有限公司"},
+#     {"qygtgshmc": "德阳市恒志科技有限公司"},
+#     {"qygtgshmc": "德阳鼎宏科技有限责任公司"},
+# ]
 
-user_list = [
-    {'sfzh': '510623198009210017', 'xm': '刘辉'},
-    # {'sfzh': '510603198511186678', 'xm': '唐龑'},
-    # {'sfzh': '510622199608195718', 'xm': '何颖'},
-    # {'sfzh': '510625199507110016', 'xm': '郭朋鑫'},
-    # {'sfzh': '510723199804070017', 'xm': '胡笛潇'},
-    # {'sfzh': '510603199303110303', 'xm': '杨春桃'},
-    # {'sfzh': '510603199702240985', 'xm': '邓雨桐'},
-    # {'sfzh': '500229199510210220', 'xm': '周付琴'},
-    # {'sfzh': '510682198512240029', 'xm': '曾潇潇'},
-    # {'sfzh': '510723199705030044', 'xm': '贾丽莎'},
-    # {'sfzh': '510603198701115969', 'xm': '李仁可'},
-    # {'sfzh': '510682198707070031', 'xm': '赖韬'},
-    # {'sfzh': '510682198607010525', 'xm': '边明思'},
-    # {'sfzh': '510602199606227661', 'xm': '朱航'},
-    # {'sfzh': '510602197601261693', 'xm': '曾振金'},
-    # {'sfzh': '511025197309216791', 'xm': '周龙生'},
-    # {'sfzh': '513721199009081008', 'xm': '张又杉'},
-    # {'sfzh': '51060319931108783X', 'xm': '邓杰堃'},
-    # {'sfzh': '510603199705095939', 'xm': '邱奕铭'},
-    # {'sfzh': '510622199510103010', 'xm': '董永亮'},
-    # {'sfzh': '510623199606040815', 'xm': '龚荣志'},
-    # {'sfzh': '510722199401270026', 'xm': '曾小苡'},
-    # {'sfzh': '510622199508123012', 'xm': '牟小虎'},
-    # {'sfzh': '51068320000831091X', 'xm': '杜沛霖'},
-    # {'sfzh': '510603198710262047', 'xm': '罗琛'},
-    # {'sfzh': '510623199606292115', 'xm': '满光东'},
-    # {'sfzh': '510681199908230319', 'xm': '廖朗迅'},
-    # {'sfzh': '510683200105220027', 'xm': '梅筱璐'},
-    # {'sfzh': '141034199606110068', 'xm': '王舒婷'},
-    # {'sfzh': '510603198602056502', 'xm': '肖燕燕'},
+# for i in user_list:
+#     data = Element.get_unit_nature(i)
+#     print(data)
+#     data = Element.get_social_security_payment_months(i)
+#     print(data)
+#     data = Element.get_personal_dishonesty_state(i)
+#     print(data)
+#     pass
 
-]
-
-company_list = [
-    {"qygtgshmc": "德阳鑫锐科技有限公司"},
-    {"qygtgshmc": "工赋（德阳）科技有限公司"},
-    {"qygtgshmc": "百度"},
-    {"qygtgshmc": "德阳市南天科技有限公司"},
-    {"qygtgshmc": "德阳市恒志科技有限公司"},
-    {"qygtgshmc": "德阳鼎宏科技有限责任公司"},
-]
-
-for i in user_list:
-    # data = Element.get_unit_nature(i)
-    # print(data)
-    # data = Element.get_social_security_payment_months(i)
-    # print(data)
-    # data = Element.get_personal_dishonesty_state(i)
-    # print(data)
-    pass
-
-for item in company_list:
-    # data = Element.get_black_and_red_list(i)
-    # print(data)
-    pass
+# for item in company_list:
+#     data = Element.get_black_and_red_list(i)
+#     print(data)
+#     pass
 
 # def calculate_user_scores(user_indexs: dict):
 #     """

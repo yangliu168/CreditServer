@@ -436,9 +436,9 @@ class TemporaryElement(TemporaryElements):
     #     pass
 
 
-def log_get_element(user_data, type_code, cur, status, element=None, reason="成功获取该用户所有指标数据"):
+def log_get_element(user_data, type_code, cur, status=0, element=None, reason="成功获取该用户所有指标数据"):
     """
-    记录获取元件异常日志
+    记录获取元件获取结果日志
     """
     year = time.localtime()[0]
     month = time.localtime()[1]
@@ -463,8 +463,13 @@ class UserIndex:
         """
         婚姻状况
         """
-        pass
-        return 0
+        result = Element.get_marriage_state(user_data)
+        if result['code'] == 500:
+            status['status'] = 1
+            log_get_element(user_data, type_code, cur, status['status'], '婚姻状况', result['message'])
+            return
+        elif result['code'] == 200:
+            return result['data']
 
     @staticmethod
     def get_A2_01_01(user_data: dict, type_code, status, cur):
@@ -480,15 +485,12 @@ class UserIndex:
         近五年社保累计缴纳时间
         """
         result = Element.get_social_security_payment_months(user_data)
-        if result.startswith('ERROR'):
+        if result['code'] == 500:
             status['status'] = 1
-            # TODO 记录异常日志
-            log_get_element(user_data, type_code, cur, status['status'], '近五年社保累计缴纳时间', result)
+            log_get_element(user_data, type_code, cur, status['status'], '近五年社保累计缴纳时间', result['message'])
             return
-        elif result == 'None':
-            return 'None'
-        else:
-            return int(result)
+        elif result['code'] == 200:
+            return result['data']
 
     @staticmethod
     def get_A3_01_01(user_data: dict, type_code, status, cur):
@@ -654,8 +656,15 @@ class UserIndex:
 
     @staticmethod
     def get_user_indexs(user_data: dict, type_code: int, cur):
+        """
+        获取用户各项指标数据
+        param：
+            user_data:用户信息字典，身份证号，姓名
+            type_code：0：个人首次查询  1：个人更新  2：批量更新
+            cur：cursor对象
+        """
         status = {
-            'status': 0
+            'status': 0  # 接口查询状态，失败改为1
         }
         user_indexs = {
             "A1_02_01": UserIndex.get_A1_02_01(user_data, type_code, status, cur),
@@ -685,7 +694,7 @@ class UserIndex:
         if status['status'] == 1:
             return
         else:
-            log_get_element(user_data, type_code, cur, status['status'])
+            log_get_element(user_data, type_code, cur)
         return user_indexs
 
 
@@ -723,15 +732,47 @@ user_list = [
 ]
 
 
-def get_user_scores(user_data: dict, type_code: int, cur):
-    # user_indexs = UserIndex.get_user_indexs(user_data, type_code, cur)
-    # if not user_indexs:
-    #     return
-    # print('user_indexs')
-    # print(user_indexs)
-    user_scores = calculate_user_scores(1)
-    return user_scores
+def log_user_credit_index_history(user_data, user_indexs, cur):
+    """
+    记录用户历史信用指标数据
+    # TODO
+    """
+    # 判断是否存在当前月份指标数据表，无则创建
+    pass
 
+
+def log_user_credit_scores_history(user_data, user_scores, cur):
+    """
+    记录用户历史信用分数数据
+    # TODO
+    """
+    date = str(time.localtime()[0]) + "-" + str(time.localtime()[1])
+    # 判断当月是否存该用户分数
+    sql = 'select uid from user_credit_scores_history where uid=%s and date=%s'
+    cur.execute(sql, [user_data['sfzh'], date])
+    if not cur.fetchone():
+        # 插入数据
+        pass
+    # 更新数据
+    pass
+
+
+def get_user_scores(user_data: dict, type_code: int, cur):
+    """
+    功能：计算信用分
+    param:
+        user_data:用户信息字典，sfzh，xm
+        type_code：0：个人首次查询  1：个人更新  2：批量更新
+        cur:cursor对象
+    """
+    user_indexs = UserIndex.get_user_indexs(user_data, type_code, cur)
+    if not user_indexs:
+        return
+    print(user_indexs)
+    log_user_credit_index_history(user_data, user_indexs, cur)
+    user_scores = calculate_user_scores(user_indexs)
+    log_user_credit_scores_history(user_data, user_scores, cur)
+    return user_scores
 
 # for i in user_list:
 #     print(i)
@@ -739,17 +780,16 @@ def get_user_scores(user_data: dict, type_code: int, cur):
 #     print('---------------------------------------------------------------------')
 
 
-def calculate_user_scores(user_indexs: dict):
-    """
-    随机模拟分数
-    """
-    user_scores = {}
-    # TODO 根据指标计算用户信用分数
-    user_scores["basic_info"] = random.randint(550, 600),
-    user_scores["corporate"] = 0,
-    user_scores["public_welfare"] = random.randint(500, 550),
-    user_scores["law"] = 1000,
-    user_scores["economic"] = random.randint(650, 700),
-    user_scores["life"] = 800,
-    user_scores["credit_score"] = random.randint(700, 800),
-    return user_scores
+# def calculate_user_scores(user_indexs: dict):
+#     """
+#     随机模拟分数
+#     """
+#     user_scores = {}
+#     user_scores["basic_info"] = random.randint(550, 600),
+#     user_scores["corporate"] = 0,
+#     user_scores["public_welfare"] = random.randint(500, 550),
+#     user_scores["law"] = 1000,
+#     user_scores["economic"] = random.randint(650, 700),
+#     user_scores["life"] = 800,
+#     user_scores["credit_score"] = random.randint(700, 800),
+#     return user_scores
