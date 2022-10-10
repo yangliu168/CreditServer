@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="355ce705-41fd-41f5-8ec4-37b3f902bd2d" name="变更" comment="查询是否存在calculate_score_log_year_month 表,无则创建">
+    <list default="true" id="355ce705-41fd-41f5-8ec4-37b3f902bd2d" name="变更" comment="添加模拟分数">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Credit_Score_Test/score/get_element_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/Credit_Score_Test/score/get_element_data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Credit_Score_Test/score/get_elements_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/Credit_Score_Test/score/get_elements_data.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Credit_Score_Test/score/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/Credit_Score_Test/score/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -37,18 +35,18 @@
     <option name="showLibraryContents" value="true" />
     <option name="showMembers" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/willo/Desktop/Score/venv&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "DefaultHtmlFileTemplate": "HTML File",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "last_opened_file_path": "C:/Users/willo/Desktop/Score/venv",
+    "settings.editor.selected.configurable": "preferences.keymap"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\willo\Desktop\Score\venv" />
@@ -174,10 +172,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.test_get_app_token (1)" />
+        <item itemvalue="Python.threading_test" />
+        <item itemvalue="Python.test_watch" />
         <item itemvalue="Python.test_get_element" />
         <item itemvalue="Python.test_get_app_token" />
-        <item itemvalue="Python.test_watch" />
-        <item itemvalue="Python.threading_test" />
       </list>
     </recent_temporary>
   </component>
@@ -189,27 +187,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1663051722455</updated>
-    </task>
-    <task id="LOCAL-00011" summary="CreditServer mission&amp;score judge API param">
-      <created>1663124668225</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1663124668225</updated>
-    </task>
-    <task id="LOCAL-00012" summary="CreditServer mission&amp;score judge API param">
-      <created>1663125015328</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1663125015328</updated>
-    </task>
-    <task id="LOCAL-00013" summary="cancel import">
-      <created>1663229711692</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1663229711692</updated>
     </task>
     <task id="LOCAL-00014" summary="add config.ini">
       <created>1663321458340</created>
@@ -533,7 +510,28 @@
       <option name="project" value="LOCAL" />
       <updated>1665294639176</updated>
     </task>
-    <option name="localTasksCounter" value="60" />
+    <task id="LOCAL-00060" summary="完成log_get_element函数">
+      <created>1665309671588</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1665309671588</updated>
+    </task>
+    <task id="LOCAL-00061" summary="user_credit_scores表添加xm字段">
+      <created>1665372292251</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1665372292252</updated>
+    </task>
+    <task id="LOCAL-00062" summary="添加模拟分数">
+      <created>1665372939976</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1665372939976</updated>
+    </task>
+    <option name="localTasksCounter" value="63" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -580,9 +578,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/CreditScore" />
     </ignored-roots>
-    <MESSAGE value="CreditServer user users mission API" />
-    <MESSAGE value="CreditServer test API" />
-    <MESSAGE value="CreditServer API message" />
     <MESSAGE value="CreditServer uwsgi.ini" />
     <MESSAGE value="CreditServer unicode" />
     <MESSAGE value="CreditServer before channels" />
@@ -605,6 +600,9 @@
     <MESSAGE value="1" />
     <MESSAGE value="ready to log" />
     <MESSAGE value="查询是否存在calculate_score_log_year_month 表,无则创建" />
-    <option name="LAST_COMMIT_MESSAGE" value="查询是否存在calculate_score_log_year_month 表,无则创建" />
+    <MESSAGE value="完成log_get_element函数" />
+    <MESSAGE value="user_credit_scores表添加xm字段" />
+    <MESSAGE value="添加模拟分数" />
+    <option name="LAST_COMMIT_MESSAGE" value="添加模拟分数" />
   </component>
 </project>
