@@ -7,6 +7,7 @@ description:可通过调用类方法向 中国电子数据流通平台 获取市
 """
 import configparser
 import os
+import random
 
 import pymysql
 import requests
@@ -723,15 +724,32 @@ user_list = [
 
 
 def get_user_scores(user_data: dict, type_code: int, cur):
-    user_indexs = UserIndex.get_user_indexs(user_data, type_code, cur)
-    if not user_indexs:
-        return
-    print('user_indexs')
-    print(user_indexs)
-    user_scores = calculate_user_scores(user_indexs)
+    # user_indexs = UserIndex.get_user_indexs(user_data, type_code, cur)
+    # if not user_indexs:
+    #     return
+    # print('user_indexs')
+    # print(user_indexs)
+    user_scores = calculate_user_scores(1)
     return user_scores
+
 
 # for i in user_list:
 #     print(i)
 #     print(get_user_scores(i))
 #     print('---------------------------------------------------------------------')
+
+
+def calculate_user_scores(user_indexs: dict):
+    """
+    随机模拟分数
+    """
+    user_scores = {}
+    # TODO 根据指标计算用户信用分数
+    user_scores["basic_info"] = random.randint(550, 600),
+    user_scores["corporate"] = 0,
+    user_scores["public_welfare"] = random.randint(500, 550),
+    user_scores["law"] = 1000,
+    user_scores["economic"] = random.randint(650, 700),
+    user_scores["life"] = 800,
+    user_scores["credit_score"] = random.randint(700, 800),
+    return user_scores
