@@ -67,13 +67,14 @@ def calculate_user_credit_scores_first_time(db, cur, cardID, user_data):
             user_data：用户数据 todo 数据未知
     """
     print(f'ready to calculate  user credit_scores the first time {cardID}')
-    user_scores = get_user_scores(user_data, cur)
+    user_scores = get_user_scores(user_data, 0, cur)
     if not user_scores:
         return
-    sql = 'insert into user_credit_scores (uid,basic_info,corporate,public_welfare,law,economic,life,created_time,updated_time,credit_score) values (%s,%s,%s,%s,%s,%s,%s,now(),now(),%s)'
+    sql = 'insert into user_credit_scores (uid,xm,basic_info,corporate,public_welfare,law,economic,life,created_time,updated_time,credit_score) values (%s,%s,%s,%s,%s,%s,%s,%s,now(),now(),%s)'
     try:
         cur.execute(sql, [
             cardID,
+            user_data.get('xm'),
             user_scores["basic_info"],
             user_scores["corporate"],
             user_scores["public_welfare"],
@@ -85,12 +86,12 @@ def calculate_user_credit_scores_first_time(db, cur, cardID, user_data):
         db.commit()
     except Exception as e:
         db.rollback()
-        print(f"cuculate user credit_score the first time failed:{cardID} : {e}")
+        print(f"calculate user credit_score the first time failed:{cardID} : {e}")
         return
     return cardID
 
 
-def update_user_credit_scores(db, cur, cardID, user_data):
+def update_user_credit_scores(db, cur, cardID, user_data, type_code):
     """
     功能：用户更新信用分
     param:
@@ -100,7 +101,7 @@ def update_user_credit_scores(db, cur, cardID, user_data):
         user_data：用户数据 todo 数据未知
     """
     print(f'ready to update user credit_scores {cardID}')
-    user_scores = get_user_scores(user_data, cur)
+    user_scores = get_user_scores(user_data, type_code, cur)
     if not user_scores:
         return
     sql = 'update user_credit_scores set basic_info=%s,corporate=%s,public_welfare=%s,law=%s,economic=%s,life=%s,updated_time=now(),credit_score=%s where uid=%s'
@@ -116,7 +117,7 @@ def update_user_credit_scores(db, cur, cardID, user_data):
             cardID
         ])
         db.commit()
-        print('updated scores successed')
+        print('updated scores successes')
     except Exception as e:
         print('xxxxxxxxxxx')
         db.rollback()
@@ -212,7 +213,7 @@ class ScoreView(View):
         select_result = cur.fetchone()
         if select_result:
             # 该用户为旧用户
-            result = update_user_credit_scores(db, cur, cardID, user_data)
+            result = update_user_credit_scores(db, cur, cardID, user_data, 1)
             if result:
                 result = {
                     "code": '0',
@@ -435,21 +436,22 @@ def start_mission(mission_time, statu, first):
         if mission_statu == 0:
             # 获取开始到结束的批量用户
             if first == 1:
-                sql = 'select id,uid from user_credit_scores where id between %s and %s and updated_time<now()'
+                sql = 'select id,uid,xm from user_credit_scores where id between %s and %s and updated_time<now()'
                 cur.execute(sql, [i, i + update_one_time_quantity])
                 print(" first == 1")
             else:
                 print(" first != 1")
-                sql = 'select id,uid from user_credit_scores where id between %s and %s and updated_time<'
+                sql = 'select id,uid,xm from user_credit_scores where id between %s and %s and updated_time<'
                 sql += '(select mission_time from mission_record_time ORDER BY id DESC limit 1)'
                 cur.execute(sql, [i, i + update_one_time_quantity])
             users = cur.fetchall()
             print(users)
             for user in users:
                 user_data = {"sfzh": user[1]}
+                user_data = {"xm": user[2]}
                 # TODO 获取用户姓名？根据元件借口需求获取
                 time.sleep(0.1)
-                update_user_credit_scores(db, cur, user[1], user_data)
+                update_user_credit_scores(db, cur, user[1], user_data, 2)
         elif mission_statu == 2:
             # 停止任务
             return
