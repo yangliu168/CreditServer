@@ -88,7 +88,7 @@ def calculate_user_credit_scores_first_time(db, cur, cardID, user_data):
         db.rollback()
         print(f"calculate user credit_score the first time failed:{cardID} : {e}")
         return
-    print(time.ctime())
+    print(time.time())
     return cardID
 
 
@@ -247,7 +247,7 @@ class ScoreView(View):
                 }
             cur.close()
             db.close()
-            print(time.ctime())
+            print(time.time())
             return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
 
 
