@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="355ce705-41fd-41f5-8ec4-37b3f902bd2d" name="变更" comment="add scores history function">
+    <list default="true" id="355ce705-41fd-41f5-8ec4-37b3f902bd2d" name="变更" comment="add scores and index history function">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Credit_Score_Test/score/get_element_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/Credit_Score_Test/score/get_element_data.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Credit_Score_Test/score/get_elements_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/Credit_Score_Test/score/get_elements_data.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Credit_Score_Test/score/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/Credit_Score_Test/score/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config.ini" beforeDir="false" afterPath="$PROJECT_DIR$/config.ini" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -189,13 +189,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1663051722455</updated>
-    </task>
-    <task id="LOCAL-00017" summary="&gt; requirements.txt">
-      <created>1663510826137</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1663510826138</updated>
     </task>
     <task id="LOCAL-00018" summary="requirements.txt remove dwebsocket">
       <created>1663520012265</created>
@@ -533,7 +526,14 @@
       <option name="project" value="LOCAL" />
       <updated>1665398601161</updated>
     </task>
-    <option name="localTasksCounter" value="66" />
+    <task id="LOCAL-00066" summary="add scores and index history function">
+      <created>1665470897710</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1665470897711</updated>
+    </task>
+    <option name="localTasksCounter" value="67" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -580,7 +580,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/CreditScore" />
     </ignored-roots>
-    <MESSAGE value="CreditServer before channels" />
     <MESSAGE value="CreditServer mission redis" />
     <MESSAGE value="CreditServer mission&amp;score API" />
     <MESSAGE value="CreditServer mission&amp;score judge API param" />
@@ -605,6 +604,7 @@
     <MESSAGE value="添加模拟分数" />
     <MESSAGE value="print(time.ctime())" />
     <MESSAGE value="add scores history function" />
-    <option name="LAST_COMMIT_MESSAGE" value="add scores history function" />
+    <MESSAGE value="add scores and index history function" />
+    <option name="LAST_COMMIT_MESSAGE" value="add scores and index history function" />
   </component>
 </project>

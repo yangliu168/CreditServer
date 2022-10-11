@@ -437,10 +437,12 @@ class TemporaryElement(TemporaryElements):
     #     pass
 
 
-def log_get_element(user_data, type_code, cur, status=0, element=None, reason="成功获取该用户所有指标数据"):
+def log_get_element(user_data, type_code, db, cur, status=0, element=None, reason="成功获取该用户所有指标数据"):
     """
     记录获取元件获取结果日志
     """
+    if element:
+        print(5555)
     year = time.localtime()[0]
     month = time.localtime()[1]
     uid = user_data.get('sfzh')
@@ -448,26 +450,29 @@ def log_get_element(user_data, type_code, cur, status=0, element=None, reason="�
         sql = f'insert into calculate_score_log_{year}_{month} (uid,type,status,reason,mission_time) values (%s,%s,%s,%s,now())'
         try:
             cur.execute(sql, [uid, type_code, 0, reason])
+            db.commit()
         except Exception as e:
             print(f'{time.strftime("%Y-%m-%d %H:%M:%S")} ERROR log_get_element all element success execute failed {e}')
     else:
         sql = f'insert into calculate_score_log_{year}_{month} (uid,type,status,element,reason,mission_time) values (%s,%s,%s,%s,%s,now())'
         try:
             cur.execute(sql, [uid, type_code, 1, element, reason])
+            db.commit()
         except Exception as e:
             print(f'{time.strftime("%Y-%m-%d %H:%M:%S")} ERROR log_get_element single element error execute failed {e}')
+    print(6666)
 
 
 class UserIndex:
     @staticmethod
-    def get_A1_02_01(user_data: dict, type_code, status, cur):
+    def get_A1_02_01(user_data: dict, type_code, status, db, cur):
         """
         婚姻状况
         """
         result = Element.get_marriage_state(user_data)
         if result['code'] == 500:
             status['status'] = 1
-            log_get_element(user_data, type_code, cur, status['status'], '婚姻状况', result['message'])
+            log_get_element(user_data, type_code, db, cur, status['status'], '婚姻状况', result['message'])
             return
         elif result['code'] == 200:
             return result['data']
@@ -481,14 +486,15 @@ class UserIndex:
         return 0
 
     @staticmethod
-    def get_A2_01_02(user_data: dict, type_code, status, cur):
+    def get_A2_01_02(user_data: dict, type_code, status, db, cur):
         """
         近五年社保累计缴纳时间
         """
         result = Element.get_social_security_payment_months(user_data)
         if result['code'] == 500:
             status['status'] = 1
-            log_get_element(user_data, type_code, cur, status['status'], '近五年社保累计缴纳时间', result['message'])
+            print('123456')
+            log_get_element(user_data, type_code, db, cur, status['status'], '近五年社保累计缴纳时间', result['message'])
             return
         elif result['code'] == 200:
             return result['data']
@@ -656,7 +662,7 @@ class UserIndex:
         return TemporaryElement.get_E2_02(user_data)
 
     @staticmethod
-    def get_user_index(user_data: dict, type_code: int, cur):
+    def get_user_index(user_data: dict, type_code: int, db, cur):
         """
         获取用户各项指标数据
         param：
@@ -668,35 +674,37 @@ class UserIndex:
             'status': 0  # 接口查询状态,失败改为1
         }
         user_index = {
-            "A1_02_01": UserIndex.get_A1_02_01(user_data, type_code, status, cur),
-            "A2_01_01": UserIndex.get_A2_01_01(user_data, type_code, status, cur),
-            "A2_01_02": UserIndex.get_A2_01_02(user_data, type_code, status, cur),
-            "A3_01_01": UserIndex.get_A3_01_01(user_data, type_code, status, cur),
-            "A3_02_01": UserIndex.get_A3_02_01(user_data, type_code, status, cur),
-            "A3_02_02": UserIndex.get_A3_02_02(user_data, type_code, status, cur),
-            "A3_02_03": UserIndex.get_A3_02_03(user_data, type_code, status, cur),
-            "A3_02_04": UserIndex.get_A3_02_04(user_data, type_code, status, cur),
-            "C1_03_01": UserIndex.get_C1_03_01(user_data, type_code, status, cur),
-            "C1_03_02": UserIndex.get_C1_03_02(user_data, type_code, status, cur),
-            "C2_01_01": UserIndex.get_C2_01_01(user_data, type_code, status, cur),
-            "C2_01_02": UserIndex.get_C2_01_02(user_data, type_code, status, cur),
-            "C2_01_03": UserIndex.get_C2_01_03(user_data, type_code, status, cur),
-            "C2_02_01": UserIndex.get_C2_02_01(user_data, type_code, status, cur),
-            "C2_02_02": UserIndex.get_C2_02_02(user_data, type_code, status, cur),
-            "D1_01_01": UserIndex.get_D1_01_01(user_data, type_code, status, cur),
-            "D2_01_01": UserIndex.get_D2_01_01(user_data, type_code, status, cur),
-            "D2_03_01": UserIndex.get_D2_03_01(user_data, type_code, status, cur),
-            "D3_01_01": UserIndex.get_D3_01_01(user_data, type_code, status, cur),
-            "E2_02_01": UserIndex.get_E2_02_01(user_data, type_code, status, cur),
-            "E2_02_02": UserIndex.get_E2_02_02(user_data, type_code, status, cur),
-            "E2_02_03": UserIndex.get_E2_02_03(user_data, type_code, status, cur),
-            "E2_02_04": UserIndex.get_E2_02_04(user_data, type_code, status, cur),
+            "A1_02_01": UserIndex.get_A1_02_01(user_data, type_code, status, db, cur),
+            "A2_01_01": UserIndex.get_A2_01_01(user_data, type_code, status, db, cur),
+            "A2_01_02": UserIndex.get_A2_01_02(user_data, type_code, status, db, cur),
+            "A3_01_01": UserIndex.get_A3_01_01(user_data, type_code, status, db, cur),
+            "A3_02_01": UserIndex.get_A3_02_01(user_data, type_code, status, db, cur),
+            "A3_02_02": UserIndex.get_A3_02_02(user_data, type_code, status, db, cur),
+            "A3_02_03": UserIndex.get_A3_02_03(user_data, type_code, status, db, cur),
+            "A3_02_04": UserIndex.get_A3_02_04(user_data, type_code, status, db, cur),
+            "C1_03_01": UserIndex.get_C1_03_01(user_data, type_code, status, db, cur),
+            "C1_03_02": UserIndex.get_C1_03_02(user_data, type_code, status, db, cur),
+            "C2_01_01": UserIndex.get_C2_01_01(user_data, type_code, status, db, cur),
+            "C2_01_02": UserIndex.get_C2_01_02(user_data, type_code, status, db, cur),
+            "C2_01_03": UserIndex.get_C2_01_03(user_data, type_code, status, db, cur),
+            "C2_02_01": UserIndex.get_C2_02_01(user_data, type_code, status, db, cur),
+            "C2_02_02": UserIndex.get_C2_02_02(user_data, type_code, status, db, cur),
+            "D1_01_01": UserIndex.get_D1_01_01(user_data, type_code, status, db, cur),
+            "D2_01_01": UserIndex.get_D2_01_01(user_data, type_code, status, db, cur),
+            "D2_03_01": UserIndex.get_D2_03_01(user_data, type_code, status, db, cur),
+            "D3_01_01": UserIndex.get_D3_01_01(user_data, type_code, status, db, cur),
+            "E2_02_01": UserIndex.get_E2_02_01(user_data, type_code, status, db, cur),
+            "E2_02_02": UserIndex.get_E2_02_02(user_data, type_code, status, db, cur),
+            "E2_02_03": UserIndex.get_E2_02_03(user_data, type_code, status, db, cur),
+            "E2_02_04": UserIndex.get_E2_02_04(user_data, type_code, status, db, cur),
         }
-        if status['status'] == 1:
-            return
-        else:
+        if status['status'] == 0:
+            print(status['status'])
             log_get_element(user_data, type_code, cur)
-        return user_index
+            return user_index
+        else:
+            print(status['status'])
+        return
 
 
 user_list = [
@@ -748,14 +756,15 @@ def log_user_credit_index_history(user_data, user_index, db, cur):
     cur.execute(sql, [user_data['sfzh'], date])
     # 该月无该用户指标数据记录
     if not cur.fetchone():
-        sql = 'insert into user_credit_index_history (uid,xm,index,date) values (%s,%s,%s,%s)'
+        sql = 'insert into user_credit_index_history (uid,xm,indexs,date) values (%s,%s,%s,%s)'
         try:
             cur.execute(sql, [user_data['sfzh'], user_data['xm'], json.dumps(user_index), date])
+            db.commit()
         except Exception as e:
             print(f'Error 插入用户{user_data}时间{date}指标数据{user_index}失败:{e}')
             return
     # 该月该用户指标数据记录已存在
-    sql = 'update user_credit_index_history set index=%s where uid=%s and date=%s'
+    sql = 'update user_credit_index_history set indexs=%s where uid=%s and date=%s'
     try:
         cur.execute(sql, [json.dumps(user_index), user_data['sfzh'], date])
         db.commit()
@@ -782,6 +791,7 @@ def log_user_credit_scores_history(user_data, user_scores, db, cur):
         sql = 'insert into user_credit_scores_history (uid,xm,basic_info,corporate,public_welfare,law,economic,life,credit_score,date) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
         try:
             cur.execute(sql, [user_data['sfzh'], user_data['xm'], user_scores['basic_info'], user_scores['corporate'], user_scores['public_welfare'], user_scores['law'], user_scores['economic'], user_scores['life'], user_scores['credit_score'], date])
+            db.commit()
         except Exception as e:
             print(f'Error 插入用户{user_data}时间{date}信用分数据{user_scores}失败:{e}')
             return
@@ -801,9 +811,10 @@ def get_user_scores(user_data: dict, type_code: int, db, cur):
     param:
         user_data:用户信息字典,sfzh,xm
         type_code：0：个人首次查询  1：个人更新  2：批量更新
+        db:数据库连接对象
         cur:cursor对象
     """
-    user_index = UserIndex.get_user_index(user_data, type_code, cur)
+    user_index = UserIndex.get_user_index(user_data, type_code, db, cur)
     if not user_index:
         return
     print(user_index)

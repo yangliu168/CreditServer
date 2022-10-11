@@ -67,7 +67,7 @@ def calculate_user_credit_scores_first_time(db, cur, cardID, user_data):
             user_data：用户数据 todo 数据未知
     """
     print(f'ready to calculate  user credit_scores the first time {cardID}')
-    user_scores = get_user_scores(user_data, 0, db,cur)
+    user_scores = get_user_scores(user_data, 0, db, cur)
     if not user_scores:
         return
     sql = 'insert into user_credit_scores (uid,xm,basic_info,corporate,public_welfare,law,economic,life,created_time,updated_time,credit_score) values (%s,%s,%s,%s,%s,%s,%s,%s,now(),now(),%s)'
@@ -102,7 +102,7 @@ def update_user_credit_scores(db, cur, cardID, user_data, type_code):
         type_code：0：个人首次查询  1：个人更新  2：批量更新
     """
     print(f'ready to update user credit_scores {cardID}')
-    user_scores = get_user_scores(user_data, type_code,db, cur)
+    user_scores = get_user_scores(user_data, type_code, db, cur)
     if not user_scores:
         return
     sql = 'update user_credit_scores set basic_info=%s,corporate=%s,public_welfare=%s,law=%s,economic=%s,life=%s,updated_time=now(),credit_score=%s where uid=%s'
@@ -154,10 +154,11 @@ class ScoreView(View):
                 'data': {}
             }
             return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
-        json_obj = json.loads(json_str)
-        cardID = json_obj.get('cardID')
-        name = json_obj.get('name')
 
+        json_obj = json.loads(json_str)
+        cardID = str(json_obj.get('cardID'))
+        name = str(json_obj.get('name'))
+        print(11111)
         # 判断是否包含必要参数cardID & name
         if not cardID or not name:
             result = {
@@ -166,16 +167,20 @@ class ScoreView(View):
                 'data': {}
             }
             return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
+        print(22222)
 
         # 判断身份证格式
-        re_result = re.findall('^\d{17}[0-9Xx]$', cardID)
-        if not re_result:
-            result = {
-                "code": '1',
-                'message': "身份证格式有误",
-                'data': {}
-            }
-            return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
+        try:
+            re_result = re.findall('^\d{17}[0-9Xx]$', cardID)
+            if not re_result:
+                result = {
+                    "code": '1',
+                    'message': "身份证格式有误",
+                    'data': {}
+                }
+                return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
+        except Exception as e:
+            print(e)
 
         print(f"# POST v1/score/user {cardID} is ready to calculate or update credit score")
 
@@ -195,7 +200,8 @@ class ScoreView(View):
             }
             return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
         cur = db.cursor()
-
+        # 查询是否存在calculate_score_log_year_month 表,无则创建
+        calculate_score_log_year_month(cur)
         # 查询是否为旧用户
         sql = 'select uid from user_credit_scores where uid=%s'
         try:
@@ -265,7 +271,7 @@ def calculate_score_log_year_month(cur):
             print('本月日志表已存在')
             return f'calculate_score_log_{year}_{month}'
     try:
-        sql = f"CREATE TABLE calculate_score_log_{year}_{month} (id int NOT NULL PRIMARY KEY AUTO_INCREMENT,uid char(18) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '身份证号',type tinyint(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '个人查询/个人更新/批量更新',status tinyint(1) DEFAULT NULL COMMENT '所有元件数据获取成功，设置为0',element varchar(128) DEFAULT NULL COMMENT '异常元件简称',reason varchar(256) DEFAULT NULL COMMENT '第三方接口异常原因',mission_time datetime DEFAULT NULL COMMENT '创建时间')"
+        sql = f"CREATE TABLE calculate_score_log_{year}_{month} (id int NOT NULL PRIMARY KEY AUTO_INCREMENT,uid char(18)  DEFAULT NULL COMMENT '身份证号',type tinyint(1)  DEFAULT NULL COMMENT '个人查询/个人更新/批量更新',status tinyint(1) DEFAULT NULL COMMENT '所有元件数据获取成功，设置为0',element varchar(128) DEFAULT NULL COMMENT '异常元件简称',reason varchar(256) DEFAULT NULL COMMENT '第三方接口异常原因',mission_time datetime DEFAULT NULL COMMENT '创建时间')"
         cur.execute(sql)
     except Exception as e:
         print(f'本月日志表创建失败    {e}')
@@ -294,7 +300,7 @@ class MissionView(View):
             }
             return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
         json_obj = json.loads(json_str)
-        mission = json_obj.get('mission', '1')
+        mission = str(json_obj.get('mission', '1'))
         if not mission:
             result = {
                 'code': '1',
@@ -326,7 +332,7 @@ class MissionView(View):
             }
             return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
         # 查询是否存在calculate_score_log_year_month 表,无则创建
-        calculate_score_log_table_name = calculate_score_log_year_month(cur)
+        calculate_score_log_year_month(cur)
         # 第一次调度任务标记
         first = 0
         if result:
