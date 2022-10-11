@@ -478,7 +478,7 @@ class UserIndex:
             return result['data']
 
     @staticmethod
-    def get_A2_01_01(user_data: dict, type_code, status, cur):
+    def get_A2_01_01(user_data: dict, type_code, status, db, cur):
         """
         近5年是否缴纳社保
         """
@@ -500,7 +500,7 @@ class UserIndex:
             return result['data']
 
     @staticmethod
-    def get_A3_01_01(user_data: dict, type_code, status, cur):
+    def get_A3_01_01(user_data: dict, type_code, status, db, cur):
         """
         工作类型
         """
@@ -508,21 +508,21 @@ class UserIndex:
         return 'None'
 
     @staticmethod
-    def get_A3_02_01(user_data: dict, type_code, status, cur):
+    def get_A3_02_01(user_data: dict, type_code, status, db, cur):
         """
         是否具有律师执业资格
         """
         return TemporaryElement.get_A3_02_01(user_data)
 
     @staticmethod
-    def get_A3_02_02(user_data: dict, type_code, status, cur):
+    def get_A3_02_02(user_data: dict, type_code, status, db, cur):
         """
         是否具有导游资格
         """
         return TemporaryElement.get_A3_02_02(user_data)
 
     @staticmethod
-    def get_A3_02_03(user_data: dict, type_code, status, cur):
+    def get_A3_02_03(user_data: dict, type_code, status, db, cur):
         """
         教师资格
         """
@@ -541,7 +541,7 @@ class UserIndex:
         return 0
 
     @staticmethod
-    def get_A3_02_04(user_data: dict, type_code, status, cur):
+    def get_A3_02_04(user_data: dict, type_code, status, db, cur):
         """
         是否具有其他职业资格
         """
@@ -549,7 +549,7 @@ class UserIndex:
         return 'None'
 
     @staticmethod
-    def get_C1_03_01(user_data: dict, type_code, status, cur):
+    def get_C1_03_01(user_data: dict, type_code, status, db, cur):
         """
         个人房产数量
         """
@@ -557,14 +557,14 @@ class UserIndex:
         return TemporaryElement.get_C1_03_01(user_data)
 
     @staticmethod
-    def get_C1_03_02(user_data: dict, type_code, status, cur):
+    def get_C1_03_02(user_data: dict, type_code, status, db, cur):
         """
         个人被抵押房产数量
         """
         return TemporaryElement.get_C1_03_02(user_data)
 
     @staticmethod
-    def get_C2_01_01(user_data: dict, type_code, status, cur):
+    def get_C2_01_01(user_data: dict, type_code, status, db, cur):
         """
         账户状态
         """
@@ -572,7 +572,7 @@ class UserIndex:
         return 0
 
     @staticmethod
-    def get_C2_01_02(user_data: dict, type_code, status, cur):
+    def get_C2_01_02(user_data: dict, type_code, status, db, cur):
         """
         账户余额
         """
@@ -580,7 +580,7 @@ class UserIndex:
         return 0
 
     @staticmethod
-    def get_C2_01_03(user_data: dict, type_code, status, cur):
+    def get_C2_01_03(user_data: dict, type_code, status, db, cur):
         """
         缴存基数
         """
@@ -588,7 +588,7 @@ class UserIndex:
         return 0
 
     @staticmethod
-    def get_C2_02_01(user_data: dict, type_code, status, cur):
+    def get_C2_02_01(user_data: dict, type_code, status, db, cur):
         """
         贷款业务明细类型
         """
@@ -596,7 +596,7 @@ class UserIndex:
         return 0
 
     @staticmethod
-    def get_C2_02_02(user_data: dict, type_code, status, cur):
+    def get_C2_02_02(user_data: dict, type_code, status, db, cur):
         """
         罚息金额
         """
@@ -604,21 +604,21 @@ class UserIndex:
         return 0
 
     @staticmethod
-    def get_D1_01_01(user_data: dict, type_code, status, cur):
+    def get_D1_01_01(user_data: dict, type_code, status, db, cur):
         """
         近5年被行政处罚的次数
         """
         return TemporaryElement.get_D1_01_01(user_data)
 
     @staticmethod
-    def get_D2_01_01(user_data: dict, type_code, status, cur):
+    def get_D2_01_01(user_data: dict, type_code, status, db, cur):
         """
         近5年被列入失信被执行人的次数
         """
         return TemporaryElement.get_D2_01_01(user_data)
 
     @staticmethod
-    def get_D2_03_01(user_data: dict, type_code, status, cur):
+    def get_D2_03_01(user_data: dict, type_code, status, db, cur):
         """
         近5年税务违约的次数
         """
@@ -626,7 +626,7 @@ class UserIndex:
         return 0
 
     @staticmethod
-    def get_D3_01_01(user_data: dict, type_code, status, cur):
+    def get_D3_01_01(user_data: dict, type_code, status, db, cur):
         """
         近5年发生失信行为的次数（包括被列入失信黑名单、列入经营异常、失信被执行等）
         """
@@ -634,28 +634,28 @@ class UserIndex:
         return 0
 
     @staticmethod
-    def get_E2_02_01(user_data: dict, type_code, status, cur):
+    def get_E2_02_01(user_data: dict, type_code, status, db, cur):
         """
         近5年获得县（区）级荣誉的次数
         """
         return TemporaryElement.get_E2_02(user_data)
 
     @staticmethod
-    def get_E2_02_02(user_data: dict, type_code, status, cur):
+    def get_E2_02_02(user_data: dict, type_code, status, db, cur):
         """
         近5年获得市级荣誉的次数
         """
         return TemporaryElement.get_E2_02(user_data)
 
     @staticmethod
-    def get_E2_02_03(user_data: dict, type_code, status, cur):
+    def get_E2_02_03(user_data: dict, type_code, status, db, cur):
         """
         近5年获得省级荣誉的次数
         """
         return TemporaryElement.get_E2_02(user_data)
 
     @staticmethod
-    def get_E2_02_04(user_data: dict, type_code, status, cur):
+    def get_E2_02_04(user_data: dict, type_code, status, db, cur):
         """
         近5年获得国家级荣誉的次数
         """

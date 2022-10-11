@@ -318,6 +318,17 @@ class MissionView(View):
             }
             return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
         cur = db.cursor()
+        # 获取用户总数
+        sql = 'select max(id) from user_credit_scores'
+        cur.execute(sql)
+        users_count = cur.fetchone()[0]
+        if not users_count:
+            result = {
+                'code': '1',
+                'message': '数据库暂无用户',
+                'data': {}
+            }
+            return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
         try:
             sql = 'select max(id) from mission_record_time'
             cur.execute(sql)
@@ -368,7 +379,7 @@ class MissionView(View):
                 }
                 print('任务准备继续执行')
                 mission_statu = 0
-                mission_threading = Thread(target=start_mission, args=[mission_time, mission_statu, first])
+                mission_threading = Thread(target=start_mission, args=[mission_time, mission_statu, first,db,cur])
                 mission_threading.start()
                 print('任务继续执行')
                 return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
@@ -376,7 +387,7 @@ class MissionView(View):
             # cur.execute(sql, [0,mission_time])
             print('3')
 
-            mission_threading = Thread(target=start_mission, args=[mission_time, mission_statu, first])
+            mission_threading = Thread(target=start_mission, args=[mission_time, mission_statu, first,db,cur])
             mission_threading.start()
             mission_statu = 0
             print('return success')
@@ -411,22 +422,22 @@ class MissionView(View):
         return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
 
 
-def start_mission(mission_time, statu, first):
+def start_mission(mission_time, statu, first,db, cur):
     """
     调度任务开始
     """
     print('调度任务开始')
-    time.sleep(1)
-    # 创建mysql connect
-    db = connect_mysql()
-    if not db:
-        return '数据库连接失败'
-    cur = db.cursor()
-
     # 获取用户总数
     sql = 'select max(id) from user_credit_scores'
     cur.execute(sql)
     users_count = cur.fetchone()[0]
+    if not users_count:
+        result = {
+            'code': '1',
+            'message': '数据库暂无用户',
+            'data': {}
+        }
+        return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
     print("users_count")
     print(users_count)
     mission_config = conf['mission']
