@@ -67,7 +67,7 @@ def calculate_user_credit_scores_first_time(db, cur, cardID, user_data):
             user_data：用户数据 todo 数据未知
     """
     print(f'ready to calculate  user credit_scores the first time {cardID}')
-    user_scores = get_user_scores(user_data, 0, cur)
+    user_scores = get_user_scores(user_data, 0, db,cur)
     if not user_scores:
         return
     sql = 'insert into user_credit_scores (uid,xm,basic_info,corporate,public_welfare,law,economic,life,created_time,updated_time,credit_score) values (%s,%s,%s,%s,%s,%s,%s,%s,now(),now(),%s)'
@@ -102,7 +102,7 @@ def update_user_credit_scores(db, cur, cardID, user_data, type_code):
         type_code：0：个人首次查询  1：个人更新  2：批量更新
     """
     print(f'ready to update user credit_scores {cardID}')
-    user_scores = get_user_scores(user_data, type_code, cur)
+    user_scores = get_user_scores(user_data, type_code,db, cur)
     if not user_scores:
         return
     sql = 'update user_credit_scores set basic_info=%s,corporate=%s,public_welfare=%s,law=%s,economic=%s,life=%s,updated_time=now(),credit_score=%s where uid=%s'

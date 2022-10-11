@@ -6,6 +6,7 @@ created_time:2022-09-29
 description:可通过调用类方法向 中国电子数据流通平台 获取市民相关数据元件信息
 """
 import configparser
+import json
 import os
 import random
 
@@ -655,18 +656,18 @@ class UserIndex:
         return TemporaryElement.get_E2_02(user_data)
 
     @staticmethod
-    def get_user_indexs(user_data: dict, type_code: int, cur):
+    def get_user_index(user_data: dict, type_code: int, cur):
         """
         获取用户各项指标数据
         param：
-            user_data:用户信息字典，身份证号，姓名
+            user_data:用户信息字典,身份证号,姓名
             type_code：0：个人首次查询  1：个人更新  2：批量更新
             cur：cursor对象
         """
         status = {
-            'status': 0  # 接口查询状态，失败改为1
+            'status': 0  # 接口查询状态,失败改为1
         }
-        user_indexs = {
+        user_index = {
             "A1_02_01": UserIndex.get_A1_02_01(user_data, type_code, status, cur),
             "A2_01_01": UserIndex.get_A2_01_01(user_data, type_code, status, cur),
             "A2_01_02": UserIndex.get_A2_01_02(user_data, type_code, status, cur),
@@ -695,7 +696,7 @@ class UserIndex:
             return
         else:
             log_get_element(user_data, type_code, cur)
-        return user_indexs
+        return user_index
 
 
 user_list = [
@@ -732,46 +733,83 @@ user_list = [
 ]
 
 
-def log_user_credit_index_history(user_data, user_indexs, cur):
+def log_user_credit_index_history(user_data, user_index, db, cur):
     """
     记录用户历史信用指标数据
-    # TODO
+    param:
+        user_data:用户信息字典,sfzh,xm
+        user_index：用户指标字典
+        db:数据库连接对象
+        cur:cursor对象
     """
-    # 判断是否存在当前月份指标数据表，无则创建
-    pass
+    # 判断当月是否存在该用户指标数据记录
+    date = str(time.localtime()[0]) + "-" + str(time.localtime()[1])
+    sql = 'select uid from user_credit_index_history where uid=%s and date=%s'
+    cur.execute(sql, [user_data['sfzh'], date])
+    # 该月无该用户指标数据记录
+    if not cur.fetchone():
+        sql = 'insert into user_credit_index_history (uid,xm,index,date) values (%s,%s,%s,%s)'
+        try:
+            cur.execute(sql, [user_data['sfzh'], user_data['xm'], json.dumps(user_index), date])
+        except Exception as e:
+            print(f'Error 插入用户{user_data}时间{date}指标数据{user_index}失败:{e}')
+            return
+    # 该月该用户指标数据记录已存在
+    sql = 'update user_credit_index_history set index=%s where uid=%s and date=%s'
+    try:
+        cur.execute(sql, [json.dumps(user_index), user_data['sfzh'], date])
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        print(f'Error 更新用户{user_data}时间{date}指标数据{user_index}失败:{e}')
 
 
-def log_user_credit_scores_history(user_data, user_scores, cur):
+def log_user_credit_scores_history(user_data, user_scores, db, cur):
     """
     记录用户历史信用分数数据
-    # TODO
+    param:
+        user_data:用户信息字典,sfzh,xm
+        user_scores：用户信用分数据字典
+        db:数据库连接对象
+        cur:cursor对象
     """
     date = str(time.localtime()[0]) + "-" + str(time.localtime()[1])
     # 判断当月是否存该用户分数
     sql = 'select uid from user_credit_scores_history where uid=%s and date=%s'
     cur.execute(sql, [user_data['sfzh'], date])
+    # 该月无该用户信用分数据记录
     if not cur.fetchone():
-        # 插入数据
-        pass
-    # 更新数据
-    pass
+        sql = 'insert into user_credit_scores_history (uid,xm,basic_info,corporate,public_welfare,law,economic,life,credit_score,date) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
+        try:
+            cur.execute(sql, [user_data['sfzh'], user_data['xm'], user_scores['basic_info'], user_scores['corporate'], user_scores['public_welfare'], user_scores['law'], user_scores['economic'], user_scores['life'], user_scores['credit_score'], date])
+        except Exception as e:
+            print(f'Error 插入用户{user_data}时间{date}信用分数据{user_scores}失败:{e}')
+            return
+    # 该月该用户信用分数据记录已存在
+    sql = 'update user_credit_scores_history set basic_info=%s corporate=%s public_welfare=%s law=%s economic=%s life=%s credit_score=%s where uid=%s and date=%s'
+    try:
+        cur.execute(sql, [user_scores['basic_info'], user_scores['corporate'], user_scores['public_welfare'], user_scores['law'], user_scores['economic'], user_scores['life'], user_scores['credit_score'], user_data['sfzh'], date])
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        print(f'Error 更新用户{user_data}时间{date}信用分数据{user_scores}失败:{e}')
 
 
-def get_user_scores(user_data: dict, type_code: int, cur):
+def get_user_scores(user_data: dict, type_code: int, db, cur):
     """
     功能：计算信用分
     param:
-        user_data:用户信息字典，sfzh，xm
+        user_data:用户信息字典,sfzh,xm
         type_code：0：个人首次查询  1：个人更新  2：批量更新
         cur:cursor对象
     """
-    user_indexs = UserIndex.get_user_indexs(user_data, type_code, cur)
-    if not user_indexs:
+    user_index = UserIndex.get_user_index(user_data, type_code, cur)
+    if not user_index:
         return
-    print(user_indexs)
-    log_user_credit_index_history(user_data, user_indexs, cur)
-    user_scores = calculate_user_scores(user_indexs)
-    log_user_credit_scores_history(user_data, user_scores, cur)
+    print(user_index)
+    log_user_credit_index_history(user_data, user_index, db, cur)
+    user_scores = calculate_user_scores(user_index)
+    log_user_credit_scores_history(user_data, user_scores, db, cur)
     return user_scores
 
 # for i in user_list:
@@ -780,7 +818,7 @@ def get_user_scores(user_data: dict, type_code: int, cur):
 #     print('---------------------------------------------------------------------')
 
 
-# def calculate_user_scores(user_indexs: dict):
+# def calculate_user_scores(user_index: dict):
 #     """
 #     随机模拟分数
 #     """

@@ -173,6 +173,12 @@ class Element(Elements):
         headers = {
             "app-token": app_token
         }
+        result = {
+            'code': 500,
+            'message': f'{self.id} 该元件数据获取失败：请求无返回数据',
+            'data': None
+        }
+        return result
         try:
             data = requests.get(url=url, headers=headers).json()
             if data:
@@ -207,7 +213,7 @@ class Element(Elements):
                             return result
                         result = {
                             'code': 500,
-                            'message': f'{self.id} 该元件数据获取失败：requests get no data',
+                            'message': f'{self.id} 该元件数据获取失败：请求无返回数据',
                             'data': None
                         }
                         return result
@@ -226,7 +232,7 @@ class Element(Elements):
                 return result
             result = {
                 'code': 500,
-                'message': f'{self.id} 该元件获取数据失败：requests get no data',
+                'message': f'{self.id} 该元件获取数据失败：请求无返回数据',
                 'data': None
             }
             return result
