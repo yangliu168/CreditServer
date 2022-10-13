@@ -68,10 +68,10 @@ class Elements:
             'password': self.password
         }
         try:
-            data = requests.post(url=self.url, headers=headers, json=data, timeout=self.timeout).json()
+            data = requests.post(url=self.url, headers=headers, json=data).json()
         except Exception as e:
             # TODO: log
-            print(f"post {appkey} failed!!!!!!!")
+            print(f"获取app_token失败 {appkey} failed!!!!{e}")
             # 获取app_token失败 登录信息有误
             # TODO
             return
@@ -117,8 +117,7 @@ class Element(Elements):
         if redis_config["PASSWORD"] == "None":
             self.redis_connection = redis.Redis(host=redis_config["HOST"], port=int(redis_config["PORT"]), db=0)
         else:
-            self.redis_connection = redis.Redis(host=redis_config["HOST"], port=int(redis_config["PORT"]),
-                                                password=redis_config["PASSWORD"], db=0)
+            self.redis_connection = redis.Redis(host=redis_config["HOST"], port=int(redis_config["PORT"]), password=redis_config["PASSWORD"], db=0)
         self.id = id
         self.query = {
             "appkey": appkey,
@@ -165,6 +164,7 @@ class Element(Elements):
                         result = {
                             'code': 500,
                             'message': f'{self.id} 该元件获取app_token失败',
+                            'data':None
                         }
                         return result
                     continue
@@ -173,14 +173,17 @@ class Element(Elements):
         headers = {
             "app-token": app_token
         }
-        result = {
-            'code': 500,
-            'message': f'{self.id} 该元件数据获取失败：请求无返回数据',
-            'data': None
-        }
-        return result
+
+        # 抛错以便测试指标获取异常日志记录功能
+        # result = {
+        #     'code': 500,
+        #     'message': f'{self.id} 该元件数据获取失败：请求无返回数据',
+        #     'data': None
+        # }
+        # return result
         try:
             data = requests.get(url=url, headers=headers).json()
+            print(data)
             if data:
                 #   token过期，重新获取token
                 if data.get('code') == 401:
@@ -272,13 +275,16 @@ class Element(Elements):
                 'code': 200,
                 'message': result['message'],
             }
+            if not result['data']['data']:
+                data['data'] = 2
+                return data
             if result['data']['data'][0]['lx'] == 1:
                 data['data'] = 1
             elif result['data']['data'][0]['lx'] == 2:
                 data['data'] = 3
             else:
                 data['data'] = 2
-        return data
+            return data
 
     @staticmethod
     def get_social_security_payment_months(user_data: dict):
@@ -313,6 +319,9 @@ class Element(Elements):
                 'code': 200,
                 'message': result['message'],
             }
+            if not result['data']['data']:
+                data['data'] = 'None'
+                return data
             result = result['data']['data'][0]["jfljnxqj"]
             if result == "十年以上":
                 data['data'] = 5

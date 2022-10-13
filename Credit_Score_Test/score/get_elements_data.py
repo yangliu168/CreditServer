@@ -9,6 +9,7 @@ import configparser
 import json
 import os
 import random
+from threading import Thread
 
 import pymysql
 import requests
@@ -53,7 +54,7 @@ def connect_mysql():
             # todo 邮件告警
             print(f'# POST v1/score/user {i} connect to mysql failed: {e}')
             if i == 4:
-                return False
+                return
             continue
         return db
 
@@ -108,7 +109,6 @@ element_indexname_apiToken_path = {
 
     # 个人房产数量
     # C1_03_01
-    # TODO POST
     "市住建局-德阳市根据买方身份信息获取存量房合同": {
         "indexname": "C1_03_01",
         "apiToken": "115305536eb2486a88e1198b711aadcf",
@@ -464,247 +464,272 @@ def log_get_element(user_data, type_code, db, cur, status=0, element=None, reaso
 
 
 class UserIndex:
-    @staticmethod
-    def get_A1_02_01(user_data: dict, type_code, status, db, cur):
+    def __init__(self, user_date=None, type_code=None, db=None, cur=None):
+        self.user_index = {}
+        self.user_data = user_date
+        self.type_code = type_code
+        self.status = 0  # 元件获取状态码，失败设为1
+        self.db = db
+        self.cur = cur
+
+    def get_A1_02_01(self):
         """
         婚姻状况
         """
-        result = Element.get_marriage_state(user_data)
+        result = Element.get_marriage_state(self.user_data)
         if result['code'] == 500:
-            status['status'] = 1
-            log_get_element(user_data, type_code, db, cur, status['status'], '婚姻状况', result['message'])
-            return
+            self.status = 1
+            log_get_element(self.user_data, self.type_code, self.db, self.cur, self.status, '婚姻状况', result['message'])
         elif result['code'] == 200:
-            return result['data']
+            self.user_index["A1_02_01"] = result['data']
 
-    @staticmethod
-    def get_A2_01_01(user_data: dict, type_code, status, db, cur):
+    def get_A2_01_01(self):
         """
         近5年是否缴纳社保
         """
-        pass
-        return 0
+        self.user_index["A2_01_01"] = 0
 
-    @staticmethod
-    def get_A2_01_02(user_data: dict, type_code, status, db, cur):
+    def get_A2_01_02(self):
         """
         近五年社保累计缴纳时间
         """
-        result = Element.get_social_security_payment_months(user_data)
+        result = Element.get_social_security_payment_months(self.user_data)
         if result['code'] == 500:
-            status['status'] = 1
-            print('123456')
-            log_get_element(user_data, type_code, db, cur, status['status'], '近五年社保累计缴纳时间', result['message'])
-            return
+            self.status = 1
+            log_get_element(self.user_data, self.type_code, self.db, self.cur, self.status, '近五年社保累计缴纳时间', result['message'])
         elif result['code'] == 200:
-            return result['data']
+            self.user_index["A2_01_02"] = result['data']
 
-    @staticmethod
-    def get_A3_01_01(user_data: dict, type_code, status, db, cur):
+    def get_A3_01_01(self):
         """
         工作类型
         """
         # TODO 无数据来源
-        return 'None'
+        self.user_index["A3_01_01"] = 'None'
 
-    @staticmethod
-    def get_A3_02_01(user_data: dict, type_code, status, db, cur):
+    def get_A3_02_01(self):
         """
         是否具有律师执业资格
         """
-        return TemporaryElement.get_A3_02_01(user_data)
+        self.user_index["A3_02_01"] = TemporaryElement.get_A3_02_01(self.user_data)
 
-    @staticmethod
-    def get_A3_02_02(user_data: dict, type_code, status, db, cur):
+    def get_A3_02_02(self):
         """
         是否具有导游资格
         """
-        return TemporaryElement.get_A3_02_02(user_data)
+        self.user_index["A3_02_02"] = TemporaryElement.get_A3_02_02(self.user_data)
 
-    @staticmethod
-    def get_A3_02_03(user_data: dict, type_code, status, db, cur):
+    def get_A3_02_03(self):
         """
         教师资格
         """
-        result = TemporaryElement.get_A3_02_03_mianzhu(user_data)
+        result = TemporaryElement.get_A3_02_03_mianzhu(self.user_data)
+        print(f'教师资格   {result}')
         if result:
-            return result
-        result = TemporaryElement.get_A3_02_03_shifang(user_data)
+            self.user_index["A3_02_03"] = result
+            return
+        result = TemporaryElement.get_A3_02_03_shifang(self.user_data)
+        print(f'教师资格   {result}')
         if result:
-            return result
-        result = TemporaryElement.get_A3_02_03_jingyang(user_data)
+            self.user_index["A3_02_03"] = result
+            return
+        result = TemporaryElement.get_A3_02_03_jingyang(self.user_data)
+        print(f'教师资格   {result}')
         if result:
-            return result
-        result = TemporaryElement.get_A3_02_03_guanghan(user_data)
+            self.user_index["A3_02_03"] = result
+            return
+        result = TemporaryElement.get_A3_02_03_guanghan(self.user_data)
+        print(f'教师资格   {result}')
         if result:
-            return result
-        return 0
+            self.user_index["A3_02_03"] = result
+            return
+        self.user_index["A3_02_03"] = 0
 
-    @staticmethod
-    def get_A3_02_04(user_data: dict, type_code, status, db, cur):
+    def get_A3_02_04(self):
         """
         是否具有其他职业资格
         """
         # TODO 无数据来源
-        return 'None'
+        self.user_index["A3_02_04"] = 'None'
 
-    @staticmethod
-    def get_C1_03_01(user_data: dict, type_code, status, db, cur):
+    def get_C1_03_01(self):
         """
         个人房产数量
         """
-        # TODO POST
-        return TemporaryElement.get_C1_03_01(user_data)
+        self.user_index["C1_03_01"] = TemporaryElement.get_C1_03_01(self.user_data)
 
-    @staticmethod
-    def get_C1_03_02(user_data: dict, type_code, status, db, cur):
+    def get_C1_03_02(self):
         """
         个人被抵押房产数量
         """
-        return TemporaryElement.get_C1_03_02(user_data)
+        self.user_index["C1_03_02"] = TemporaryElement.get_C1_03_02(self.user_data)
 
-    @staticmethod
-    def get_C2_01_01(user_data: dict, type_code, status, db, cur):
+    def get_C2_01_01(self):
         """
         账户状态
         """
-        pass
-        return 0
 
-    @staticmethod
-    def get_C2_01_02(user_data: dict, type_code, status, db, cur):
+        self.user_index["C2_01_01"] = 0
+
+    def get_C2_01_02(self):
         """
         账户余额
         """
-        pass
-        return 0
 
-    @staticmethod
-    def get_C2_01_03(user_data: dict, type_code, status, db, cur):
+        self.user_index["C2_01_02"] = 0
+
+    def get_C2_01_03(self):
         """
         缴存基数
         """
-        pass
-        return 0
 
-    @staticmethod
-    def get_C2_02_01(user_data: dict, type_code, status, db, cur):
+        self.user_index["C2_01_03"] = 0
+
+    def get_C2_02_01(self):
         """
         贷款业务明细类型
         """
         pass
-        return 0
+        self.user_index["C2_02_01"] = 0
 
-    @staticmethod
-    def get_C2_02_02(user_data: dict, type_code, status, db, cur):
+    def get_C2_02_02(self):
         """
         罚息金额
         """
         pass
-        return 0
+        self.user_index["C2_02_02"] = 0
 
-    @staticmethod
-    def get_D1_01_01(user_data: dict, type_code, status, db, cur):
+    def get_D1_01_01(self):
         """
         近5年被行政处罚的次数
         """
-        return TemporaryElement.get_D1_01_01(user_data)
+        self.user_index["D1_01_01"] = TemporaryElement.get_D1_01_01(self.user_data)
 
-    @staticmethod
-    def get_D2_01_01(user_data: dict, type_code, status, db, cur):
+    def get_D2_01_01(self):
         """
         近5年被列入失信被执行人的次数
         """
-        return TemporaryElement.get_D2_01_01(user_data)
+        self.user_index["D2_01_01"] = TemporaryElement.get_D2_01_01(self.user_data)
 
-    @staticmethod
-    def get_D2_03_01(user_data: dict, type_code, status, db, cur):
+    def get_D2_03_01(self):
         """
         近5年税务违约的次数
         """
         pass
-        return 0
+        self.user_index["D2_03_01"] = 0
 
-    @staticmethod
-    def get_D3_01_01(user_data: dict, type_code, status, db, cur):
+    def get_D3_01_01(self):
         """
         近5年发生失信行为的次数（包括被列入失信黑名单、列入经营异常、失信被执行等）
         """
         pass
-        return 0
+        self.user_index["D3_01_01"] = 0
 
-    @staticmethod
-    def get_E2_02_01(user_data: dict, type_code, status, db, cur):
+    def get_E2_02_01(self):
         """
         近5年获得县（区）级荣誉的次数
         """
-        return TemporaryElement.get_E2_02(user_data)
+        self.user_index["E2_02_01"] = TemporaryElement.get_E2_02(self.user_data)
 
-    @staticmethod
-    def get_E2_02_02(user_data: dict, type_code, status, db, cur):
+    def get_E2_02_02(self):
         """
         近5年获得市级荣誉的次数
         """
-        return TemporaryElement.get_E2_02(user_data)
+        self.user_index["E2_02_02"] = TemporaryElement.get_E2_02(self.user_data)
 
-    @staticmethod
-    def get_E2_02_03(user_data: dict, type_code, status, db, cur):
+    def get_E2_02_03(self):
         """
         近5年获得省级荣誉的次数
         """
-        return TemporaryElement.get_E2_02(user_data)
+        self.user_index["E2_02_03"] = TemporaryElement.get_E2_02(self.user_data)
 
-    @staticmethod
-    def get_E2_02_04(user_data: dict, type_code, status, db, cur):
+    def get_E2_02_04(self):
         """
         近5年获得国家级荣誉的次数
         """
-        return TemporaryElement.get_E2_02(user_data)
+        self.user_index["E2_02_04"] = TemporaryElement.get_E2_02(self.user_data)
 
     @staticmethod
     def get_user_index(user_data: dict, type_code: int, db, cur):
         """
         获取用户各项指标数据
-        param：
+        param:
             user_data:用户信息字典,身份证号,姓名
-            type_code：0：个人首次查询  1：个人更新  2：批量更新
-            cur：cursor对象
+            type_code:0:个人首次查询  1:个人更新  2:批量更新
+            db:数据库连接对象
+            cur:cursor对象
         """
-        status = {
-            'status': 0  # 接口查询状态,失败改为1
-        }
-        user_index = {
-            "A1_02_01": UserIndex.get_A1_02_01(user_data, type_code, status, db, cur),
-            "A2_01_01": UserIndex.get_A2_01_01(user_data, type_code, status, db, cur),
-            "A2_01_02": UserIndex.get_A2_01_02(user_data, type_code, status, db, cur),
-            "A3_01_01": UserIndex.get_A3_01_01(user_data, type_code, status, db, cur),
-            "A3_02_01": UserIndex.get_A3_02_01(user_data, type_code, status, db, cur),
-            "A3_02_02": UserIndex.get_A3_02_02(user_data, type_code, status, db, cur),
-            "A3_02_03": UserIndex.get_A3_02_03(user_data, type_code, status, db, cur),
-            "A3_02_04": UserIndex.get_A3_02_04(user_data, type_code, status, db, cur),
-            "C1_03_01": UserIndex.get_C1_03_01(user_data, type_code, status, db, cur),
-            "C1_03_02": UserIndex.get_C1_03_02(user_data, type_code, status, db, cur),
-            "C2_01_01": UserIndex.get_C2_01_01(user_data, type_code, status, db, cur),
-            "C2_01_02": UserIndex.get_C2_01_02(user_data, type_code, status, db, cur),
-            "C2_01_03": UserIndex.get_C2_01_03(user_data, type_code, status, db, cur),
-            "C2_02_01": UserIndex.get_C2_02_01(user_data, type_code, status, db, cur),
-            "C2_02_02": UserIndex.get_C2_02_02(user_data, type_code, status, db, cur),
-            "D1_01_01": UserIndex.get_D1_01_01(user_data, type_code, status, db, cur),
-            "D2_01_01": UserIndex.get_D2_01_01(user_data, type_code, status, db, cur),
-            "D2_03_01": UserIndex.get_D2_03_01(user_data, type_code, status, db, cur),
-            "D3_01_01": UserIndex.get_D3_01_01(user_data, type_code, status, db, cur),
-            "E2_02_01": UserIndex.get_E2_02_01(user_data, type_code, status, db, cur),
-            "E2_02_02": UserIndex.get_E2_02_02(user_data, type_code, status, db, cur),
-            "E2_02_03": UserIndex.get_E2_02_03(user_data, type_code, status, db, cur),
-            "E2_02_04": UserIndex.get_E2_02_04(user_data, type_code, status, db, cur),
-        }
-        if status['status'] == 0:
-            print(status['status'])
-            log_get_element(user_data, type_code, cur)
-            return user_index
-        else:
-            print(status['status'])
-        return
+        user_index = UserIndex(user_data, type_code, db, cur)
+        thread_list = [
+            Thread(target=user_index.get_A1_02_01),
+            Thread(target=user_index.get_A2_01_01),
+            Thread(target=user_index.get_A2_01_02),
+            Thread(target=user_index.get_A3_01_01),
+            Thread(target=user_index.get_A3_02_01),
+            Thread(target=user_index.get_A3_02_02),
+            Thread(target=user_index.get_A3_02_03),
+            Thread(target=user_index.get_A3_02_04),
+            Thread(target=user_index.get_C1_03_01),
+            Thread(target=user_index.get_C1_03_02),
+            Thread(target=user_index.get_C2_01_01),
+            Thread(target=user_index.get_C2_01_02),
+            Thread(target=user_index.get_C2_01_03),
+            Thread(target=user_index.get_C2_02_01),
+            Thread(target=user_index.get_C2_02_02),
+            Thread(target=user_index.get_D1_01_01),
+            Thread(target=user_index.get_D2_01_01),
+            Thread(target=user_index.get_D2_03_01),
+            Thread(target=user_index.get_D3_01_01),
+            Thread(target=user_index.get_E2_02_01),
+            Thread(target=user_index.get_E2_02_02),
+            Thread(target=user_index.get_E2_02_03),
+            Thread(target=user_index.get_E2_02_04),
+        ]
+        for i in thread_list:
+            i.start()
+        if type_code == 2:
+            for i in range(20):
+                time.sleep(1)
+                if len(user_index.user_index) == len(thread_list):
+                    print('用户所有指标数据获取完成')
+                    log_get_element(user_data, type_code, db, cur)
+                    return user_index.user_index
+        for i in range(10):
+            time.sleep(1)
+            if len(user_index.user_index) == len(thread_list):
+                print('用户所有指标数据获取完成')
+                log_get_element(user_data, type_code, db, cur)
+                return user_index.user_index
+
+        #
+        # user_index = {
+        #     "A1_02_01": UserIndex.get_A1_02_01(user_data, type_code, status, db, cur),
+        #     "A2_01_01": UserIndex.get_A2_01_01(user_data, type_code, status, db, cur),
+        #     "A2_01_02": UserIndex.get_A2_01_02(user_data, type_code, status, db, cur),
+        #     "A3_01_01": UserIndex.get_A3_01_01(user_data, type_code, status, db, cur),
+        #     "A3_02_01": UserIndex.get_A3_02_01(user_data, type_code, status, db, cur),
+        #     "A3_02_02": UserIndex.get_A3_02_02(user_data, type_code, status, db, cur),
+        #     "A3_02_03": UserIndex.get_A3_02_03(user_data, type_code, status, db, cur),
+        #     "A3_02_04": UserIndex.get_A3_02_04(user_data, type_code, status, db, cur),
+        #     "C1_03_01": UserIndex.get_C1_03_01(user_data, type_code, status, db, cur),
+        #     "C1_03_02": UserIndex.get_C1_03_02(user_data, type_code, status, db, cur),
+        #     "C2_01_01": UserIndex.get_C2_01_01(user_data, type_code, status, db, cur),
+        #     "C2_01_02": UserIndex.get_C2_01_02(user_data, type_code, status, db, cur),
+        #     "C2_01_03": UserIndex.get_C2_01_03(user_data, type_code, status, db, cur),
+        #     "C2_02_01": UserIndex.get_C2_02_01(user_data, type_code, status, db, cur),
+        #     "C2_02_02": UserIndex.get_C2_02_02(user_data, type_code, status, db, cur),
+        #     "D1_01_01": UserIndex.get_D1_01_01(user_data, type_code, status, db, cur),
+        #     "D2_01_01": UserIndex.get_D2_01_01(user_data, type_code, status, db, cur),
+        #     "D2_03_01": UserIndex.get_D2_03_01(user_data, type_code, status, db, cur),
+        #     "D3_01_01": UserIndex.get_D3_01_01(user_data, type_code, status, db, cur),
+        #     "E2_02_01": UserIndex.get_E2_02_01(user_data, type_code, status, db, cur),
+        #     "E2_02_02": UserIndex.get_E2_02_02(user_data, type_code, status, db, cur),
+        #     "E2_02_03": UserIndex.get_E2_02_03(user_data, type_code, status, db, cur),
+        #     "E2_02_04": UserIndex.get_E2_02_04(user_data, type_code, status, db, cur),
+        # }
+        # if status['status'] == 0:
+        #     log_get_element(user_data, type_code, db, cur)
+        #     return user_index
 
 
 user_list = [
@@ -746,7 +771,7 @@ def log_user_credit_index_history(user_data, user_index, db, cur):
     记录用户历史信用指标数据
     param:
         user_data:用户信息字典,sfzh,xm
-        user_index：用户指标字典
+        user_index:用户指标字典
         db:数据库连接对象
         cur:cursor对象
     """
@@ -778,7 +803,7 @@ def log_user_credit_scores_history(user_data, user_scores, db, cur):
     记录用户历史信用分数数据
     param:
         user_data:用户信息字典,sfzh,xm
-        user_scores：用户信用分数据字典
+        user_scores:用户信用分数据字典
         db:数据库连接对象
         cur:cursor对象
     """
@@ -796,7 +821,7 @@ def log_user_credit_scores_history(user_data, user_scores, db, cur):
             print(f'Error 插入用户{user_data}时间{date}信用分数据{user_scores}失败:{e}')
             return
     # 该月该用户信用分数据记录已存在
-    sql = 'update user_credit_scores_history set basic_info=%s corporate=%s public_welfare=%s law=%s economic=%s life=%s credit_score=%s where uid=%s and date=%s'
+    sql = 'update user_credit_scores_history set basic_info=%s,corporate=%s,public_welfare=%s,law=%s,economic=%s,life=%s,credit_score=%s where uid=%s and date=%s'
     try:
         cur.execute(sql, [user_scores['basic_info'], user_scores['corporate'], user_scores['public_welfare'], user_scores['law'], user_scores['economic'], user_scores['life'], user_scores['credit_score'], user_data['sfzh'], date])
         db.commit()
@@ -807,10 +832,10 @@ def log_user_credit_scores_history(user_data, user_scores, db, cur):
 
 def get_user_scores(user_data: dict, type_code: int, db, cur):
     """
-    功能：计算信用分
+    功能:计算信用分
     param:
         user_data:用户信息字典,sfzh,xm
-        type_code：0：个人首次查询  1：个人更新  2：批量更新
+        type_code:0:个人首次查询  1:个人更新  2:批量更新
         db:数据库连接对象
         cur:cursor对象
     """

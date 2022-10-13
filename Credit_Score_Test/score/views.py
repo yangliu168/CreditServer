@@ -15,6 +15,7 @@ import re
 from .get_elements_data import get_user_scores
 import configparser
 import os
+import redis
 
 # 获取配置
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -30,8 +31,10 @@ redis_config = conf[envi + '_redis']
 mission_config = conf['mission']
 update_credit_score_quantity = mission_config.get('update_credit_score_quantity', 1000)
 
-# 调度任务状态标记
+# 调度任务状态标记：0-执行,1-结束,2-暂停
 mission_statu = 1
+# 已计算用户数量
+users_had_calculated_number = 0
 
 
 def connect_mysql():
@@ -52,7 +55,7 @@ def connect_mysql():
             # todo 邮件告警
             print(f'# POST v1/score/user {i} connect to mysql failed: {e}')
             if i == 4:
-                return False
+                return
             continue
         return db
 
@@ -91,7 +94,7 @@ def calculate_user_credit_scores_first_time(db, cur, cardID, user_data):
     return cardID
 
 
-def update_user_credit_scores(db, cur, cardID, user_data, type_code):
+def update_user_credit_scores(db, cur, cardID, user_data, type_code, users_number=0, mission_max_id=0):
     """
     功能：用户更新信用分
     param:
@@ -101,8 +104,30 @@ def update_user_credit_scores(db, cur, cardID, user_data, type_code):
         user_data：用户数据
         type_code：0：个人首次查询  1：个人更新  2：批量更新
     """
+    db = connect_mysql()
+    if not db:
+        return
+    cur = db.cursor()
     print(f'ready to update user credit_scores {cardID}')
     user_scores = get_user_scores(user_data, type_code, db, cur)
+    if type_code == 2:
+        print(f'mission_max_id   {mission_max_id}')
+        global users_had_calculated_number
+        users_had_calculated_number += 1
+        print(f'users_had_calculated_number   {users_had_calculated_number}')
+        if users_had_calculated_number >= users_number:
+            # 等待java服务创建 mission_record_time 表
+            users_had_calculated_number = 0
+            time.sleep(1)
+            try:
+                sql = 'update mission_record_time set statu=1 where id=%s'
+                cur.execute(sql, [mission_max_id])
+                db.commit()
+            except Exception as e:
+                print(f"update mission_record_time set statu=1  failed {e}")
+                db.rollback()
+            global mission_statu
+            mission_statu = 1
     if not user_scores:
         return
     sql = 'update user_credit_scores set basic_info=%s,corporate=%s,public_welfare=%s,law=%s,economic=%s,life=%s,updated_time=now(),credit_score=%s where uid=%s'
@@ -120,7 +145,6 @@ def update_user_credit_scores(db, cur, cardID, user_data, type_code):
         db.commit()
         print('updated scores successes')
     except Exception as e:
-        print('xxxxxxxxxxx')
         db.rollback()
         print(f"update user credit_scores failed ：{cardID} :{e}")
         return
@@ -139,7 +163,7 @@ class ScoreView(View):
 
     def post(self, request):
         """
-        功能：单个用户查询信用分，计算或者更新
+        功能：单个用户查询信用分,计算或者更新
         param:
             cardID:身份证号
             name：姓名
@@ -266,12 +290,11 @@ def calculate_score_log_year_month(cur):
     cur.execute(sql)
     result = cur.fetchall()
     for i in result:
-        print(i)
         if f'calculate_score_log_{year}_{month}' in i:
             print('本月日志表已存在')
             return f'calculate_score_log_{year}_{month}'
     try:
-        sql = f"CREATE TABLE calculate_score_log_{year}_{month} (id int NOT NULL PRIMARY KEY AUTO_INCREMENT,uid char(18)  DEFAULT NULL COMMENT '身份证号',type tinyint(1)  DEFAULT NULL COMMENT '个人查询/个人更新/批量更新',status tinyint(1) DEFAULT NULL COMMENT '所有元件数据获取成功，设置为0',element varchar(128) DEFAULT NULL COMMENT '异常元件简称',reason varchar(256) DEFAULT NULL COMMENT '第三方接口异常原因',mission_time datetime DEFAULT NULL COMMENT '创建时间')"
+        sql = f"CREATE TABLE calculate_score_log_{year}_{month} (id int NOT NULL PRIMARY KEY AUTO_INCREMENT,uid char(18)  DEFAULT NULL COMMENT '身份证号',type tinyint(1)  DEFAULT NULL COMMENT '个人查询/个人更新/批量更新',status tinyint(1) DEFAULT NULL COMMENT '所有元件数据获取成功,设置为0',element varchar(128) DEFAULT NULL COMMENT '异常元件简称',reason varchar(256) DEFAULT NULL COMMENT '第三方接口异常原因',mission_time datetime DEFAULT NULL COMMENT '创建时间')"
         cur.execute(sql)
     except Exception as e:
         print(f'本月日志表创建失败    {e}')
@@ -330,10 +353,11 @@ class MissionView(View):
             }
             return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
         try:
+            # 获取最新的任务id
             sql = 'select max(id) from mission_record_time'
             cur.execute(sql)
             result = cur.fetchone()[0]
-            print(result)
+            print(f"select max(id) from mission_record_time{result}")
         except Exception as e:
             print('mission_record_time  max(id) 查询失败')
             result = {
@@ -346,24 +370,20 @@ class MissionView(View):
         calculate_score_log_year_month(cur)
         # 第一次调度任务标记
         first = 0
+        mission_max_id = 0
         if result:
-            print(result)
-            max_id = result
-            print(max_id)
-            sql = 'select mission_time,statu from mission_record_time where id=(select max(id) from mission_record_time)'
-            cur.execute(sql)
+            mission_max_id = result
+            print(f'mission_max_id{mission_max_id}')
+            sql = 'select mission_time,statu from mission_record_time where id=%s'
+            cur.execute(sql, [mission_max_id])
             result = cur.fetchone()
             mission_time = result[0]
-            statu = result[1]
-            print(statu)
             print(mission_time)
             print('不是第一次')
         else:
             first = 1
-            mission_time = None
             print('第一次请求')
         if mission == '0':
-            print(mission_statu)
             if mission_statu == 0:
                 result = {
                     'code': '1',
@@ -379,18 +399,13 @@ class MissionView(View):
                 }
                 print('任务准备继续执行')
                 mission_statu = 0
-                mission_threading = Thread(target=start_mission, args=[mission_time, mission_statu, first,db,cur])
+                mission_threading = Thread(target=start_mission, args=[first, db, cur])
                 mission_threading.start()
                 print('任务继续执行')
                 return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
-            # sql = 'update mission_record_time set statu=%s where mission_time=%s'
-            # cur.execute(sql, [0,mission_time])
-            print('3')
-
-            mission_threading = Thread(target=start_mission, args=[mission_time, mission_statu, first,db,cur])
+            mission_threading = Thread(target=start_mission, args=[first, db, cur])
             mission_threading.start()
             mission_statu = 0
-            print('return success')
             result = {
                 'code': '0',
                 'message': '已开始任务',
@@ -407,12 +422,10 @@ class MissionView(View):
             elif mission_statu == 2:
                 result = {
                     'code': '1',
-                    'message': '任务已被暂停，请勿重复提交',
+                    'message': '任务已被暂停,请勿重复提交',
                     'data': {}
                 }
             else:
-                # sql = 'update mission_record_time set statu=%s where id=(select max(id) from mission_record_time)'
-                # cur.execute(sql, [1])
                 mission_statu = 2
                 result = {
                     'code': '0',
@@ -422,35 +435,64 @@ class MissionView(View):
         return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
 
 
-def start_mission(mission_time, statu, first,db, cur):
+def start_mission(first, db, cur):
     """
     调度任务开始
     """
+    global mission_statu
     print('调度任务开始')
-    # 获取用户总数
+    db = connect_mysql()
+    if not db:
+        mission_statu = 1
+        return
+    cur = db.cursor()
+    # 获取最新的任务id
+    time.sleep(2)
+    sql = 'select max(id) from mission_record_time'
+    cur.execute(sql)
+    mission_max_id = cur.fetchone()[0]
+    print(f"select max(id) from mission_record_time{mission_max_id}")
+    # 获取用户最大id
     sql = 'select max(id) from user_credit_scores'
     cur.execute(sql)
-    users_count = cur.fetchone()[0]
-    if not users_count:
-        result = {
-            'code': '1',
-            'message': '数据库暂无用户',
-            'data': {}
-        }
-        return JsonResponse(result, json_dumps_params={'ensure_ascii': False})
-    print("users_count")
-    print(users_count)
-    mission_config = conf['mission']
-    update_credit_score_quantity = int(mission_config.get('update_credit_score_quantity', 1000))
-    if users_count <= update_credit_score_quantity:
-        update_one_time_quantity = 2
+    users_max_id = cur.fetchone()[0]
+    if not users_max_id:
+        return
+    # 获取用户数量
+    sql = 'select count(id) from user_credit_scores'
+    cur.execute(sql)
+    users_number = cur.fetchone()[0]
+    if not users_number:
+        return
+    _mission_config = conf['mission']
+    _update_credit_score_quantity = int(_mission_config.get('update_credit_score_quantity', "1000"))
+    if users_max_id <= _update_credit_score_quantity:
+        update_one_time_quantity = 100
     else:
-        update_one_time_quantity = update_credit_score_quantity
+        update_one_time_quantity = _update_credit_score_quantity
     # 循环 批量获取数据
-    print("begin")
-    global mission_statu
     print(mission_statu)
-    for i in range(1, users_count, update_one_time_quantity):
+    print(f'users_max_id {users_max_id}')
+    print(f'mission_max_id {mission_max_id}')
+    print(update_one_time_quantity)
+    # 判断是否所有用户信用分数据更新时间均早于最新任务时间
+    try:
+        sql = 'select id,uid,xm from user_credit_scores where updated_time<'
+        sql += '(select mission_time from mission_record_time where id=%s)'
+        cur.execute(sql, [mission_max_id])
+        if not cur.fetchone():
+            mission_statu = 1
+            # 将该任务状态更改为1
+            try:
+                sql = 'update mission_record_time set statu=1 where id=%s'
+                cur.execute(sql, [mission_max_id])
+                db.commit()
+            except Exception as e:
+                print(f"update mission_record_time set statu=1  failed {e}")
+                db.rollback()
+    except Exception as e:
+        print(f'获取信用分数据更新时间均早于最新任务时间的用户查询失败 {e}')
+    for i in range(1, users_max_id, update_one_time_quantity):
         if mission_statu == 0:
             # 获取开始到结束的批量用户
             if first == 1:
@@ -460,44 +502,21 @@ def start_mission(mission_time, statu, first,db, cur):
             else:
                 print(" first != 1")
                 sql = 'select id,uid,xm from user_credit_scores where id between %s and %s and updated_time<'
-                sql += '(select mission_time from mission_record_time ORDER BY id DESC limit 1)'
-                cur.execute(sql, [i, i + update_one_time_quantity])
+                sql += '(select mission_time from mission_record_time where id=%s)'
+                cur.execute(sql, [i, i + update_one_time_quantity, mission_max_id])
             users = cur.fetchall()
             print(users)
+            if not users:
+                print(f'no users found between {i} and {i + update_one_time_quantity} mission_max_id {mission_max_id}')
+                continue
             for user in users:
+                print(user)
                 user_data = {
                     "sfzh": user[1],
                     "xm": user[2]
                 }
-                time.sleep(0.1)
-                update_user_credit_scores(db, cur, user[1], user_data, 2)
+                mission_threading = Thread(target=update_user_credit_scores, args=[db, cur, user[1], user_data, 2, users_number, mission_max_id])
+                mission_threading.start()
         elif mission_statu == 2:
             # 停止任务
             return
-    # sql = 'select mission_time,statu from mission_record_time where id=(select max(id) from mission_record_time)'
-    # cur.execute(sql)
-    # result = cur.fetchone()[0]
-    # print(result)
-    # mission_time = result[0]
-    # sql = 'update mission_record_time set statu=%s where mission_time=%s '
-    # cur.execute(sql, [1, mission_time])
-    time.sleep(1)
-    try:
-        sql = 'select max(id) from mission_record_time'
-        cur.execute(sql)
-        max_id = cur.fetchone()[0]
-        print(max_id)
-        sql = 'update mission_record_time set statu=1 where id=%s'
-        cur.execute(sql, [max_id])
-        print("success")
-        sql = 'select statu from mission_record_time ORDER BY id DESC limit 1'
-        cur.execute(sql)
-        statu = cur.fetchone()[0]
-        print(statu)
-        db.commit()
-    except:
-        print("update mission_record_time set statu=1  failed")
-        db.rollback()
-    mission_statu = 1
-    print(mission_statu)
-    return
