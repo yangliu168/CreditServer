@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/CreditServer-Local.iml" filepath="$PROJECT_DIR$/.idea/CreditServer-Local.iml" />
+      <module fileurl="file://D:/个人文件/信用分重构/.idea/信用分重构.iml" filepath="D:/个人文件/信用分重构/.idea/信用分重构.iml" />
     </modules>
   </component>
 </project>

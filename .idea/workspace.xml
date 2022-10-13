@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="355ce705-41fd-41f5-8ec4-37b3f902bd2d" name="变更" comment="添加日志方法">
+    <list default="true" id="355ce705-41fd-41f5-8ec4-37b3f902bd2d" name="变更" comment="解决已知bug，完成指标获取线程">
+      <change beforePath="$PROJECT_DIR$/.idea/CreditServer-Local.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/CreditServer-Local.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Credit_Score_Test/score/get_elements_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/Credit_Score_Test/score/get_elements_data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Credit_Score_Test/score/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/Credit_Score_Test/score/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,7 +44,7 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/willo/Desktop/Score/venv&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/个人文件/信用分重构&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;
   }
 }</component>
@@ -188,20 +188,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1663051722455</updated>
-    </task>
-    <task id="LOCAL-00019" summary="requirements.txt remove dwebsocket">
-      <created>1663559432955</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1663559432955</updated>
-    </task>
-    <task id="LOCAL-00020" summary="test.py">
-      <created>1663559527327</created>
-      <option name="number" value="00020" />
-      <option name="presentableId" value="LOCAL-00020" />
-      <option name="project" value="LOCAL" />
-      <updated>1663559527327</updated>
     </task>
     <task id="LOCAL-00021" summary="envi  and 0-1000">
       <created>1663769155121</created>
@@ -532,7 +518,21 @@
       <option name="project" value="LOCAL" />
       <updated>1665479693031</updated>
     </task>
-    <option name="localTasksCounter" value="68" />
+    <task id="LOCAL-00068" summary="添加日志方法">
+      <created>1665484344031</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1665484344031</updated>
+    </task>
+    <task id="LOCAL-00069" summary="解决已知bug，完成指标获取线程">
+      <created>1665652862562</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1665652862562</updated>
+    </task>
+    <option name="localTasksCounter" value="70" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -579,7 +579,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/CreditScore" />
     </ignored-roots>
-    <MESSAGE value="CreditServer mission&amp;score API" />
     <MESSAGE value="CreditServer mission&amp;score judge API param" />
     <MESSAGE value="cancel import" />
     <MESSAGE value="add config.ini" />
@@ -604,6 +603,7 @@
     <MESSAGE value="add scores history function" />
     <MESSAGE value="add scores and index history function" />
     <MESSAGE value="添加日志方法" />
-    <option name="LAST_COMMIT_MESSAGE" value="添加日志方法" />
+    <MESSAGE value="解决已知bug，完成指标获取线程" />
+    <option name="LAST_COMMIT_MESSAGE" value="解决已知bug，完成指标获取线程" />
   </component>
 </project>
